@@ -17,6 +17,7 @@ Index of tools used across local SEO workflows. Each tool has a full skill with 
 
 | Tool | Category | Integration | Skill |
 |------|----------|-------------|-------|
+| **LocalSEOData** | **Default data source** — SERP, audits, reviews, citations, keywords, AI visibility, geogrid, competitor analysis (36 endpoints) | **MCP** (connected) | `localseodata-tool` |
 | Local Falcon | Geogrid rankings, competitor reports, GBP monitoring | **MCP** (connected) | `local-falcon-tool` |
 | LSA Spy | LSA rankings, competitive intelligence | **MCP** (connected) | `lsa-spy-tool` |
 | SerpAPI | Live SERP data, local pack, PAA, AI Overviews | **MCP** (connected) | `serpapi-tool` |
