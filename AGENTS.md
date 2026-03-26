@@ -7,8 +7,8 @@ Guidelines for AI agents working in this repository.
 This repository contains **Agent Skills** for AI agents following the [Agent Skills specification](https://agentskills.io/specification.md). Skills install to `.agents/skills/` (the cross-agent standard).
 
 - **Name**: Local SEO Skills
-- **GitHub**: [gmbgorilla/localseoskills](https://github.com/gmbgorilla/localseoskills)
-- **Creator**: Garrett Smith (GMB Gorilla)
+- **GitHub**: [garrettjsmith/localseoskills](https://github.com/gmbgorilla/localseoskills)
+- **Creator**: Garrett Smith
 - **License**: MIT
 
 ## Repository Structure
