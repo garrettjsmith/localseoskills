@@ -31,6 +31,8 @@ See [tool routing](docs/tool-routing.md) for the full decision tree.
 | [geogrid-analysis](skills/geogrid-analysis) | Map pack ranking analysis using geogrid scans and ARP/ATRP/SoLV |
 | [local-seo-audit](skills/local-seo-audit) | Comprehensive local search presence audit |
 | [local-competitor-analysis](skills/local-competitor-analysis) | Local pack competitor analysis and benchmarking |
+| [local-content-briefs](skills/local-content-briefs) | Generate semantic content briefs for local SEO content |
+| [local-content-strategy](skills/local-content-strategy) | Generate semantic content briefs for local SEO content |
 | [local-reporting](skills/local-reporting) | Local SEO metrics, multi-location reporting, and ROI |
 | [local-keyword-research](skills/local-keyword-research) | Local keyword research, geo-modified keywords, intent classification |
 | [client-deliverables](skills/client-deliverables) | Audit reports, proposals, scopes of work, competitive reports |
