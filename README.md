@@ -1,22 +1,22 @@
 # Local SEO Skills for Claude Code
 
-36 open-source agent skills that turn Claude into a local SEO specialist. Built for freelancers, consultants, and agencies running local SEO with AI, not around it.
+38 open-source agent skills that turn Claude into a local SEO specialist. Built for owners, marketers, freelancers, consultants, and agencies who want to do local SEO with AI.
 
-Built by [Garrett Smith](https://garrettsmith.com) — AI-native marketer with 20+ years in SEO as practitioner, consultant, CMO, agency owner, and entrepreneur.
+Built by [Garrett Smith](https://garrettsmith.com) — AI-native marketer with 20+ years in SEO as practitioner, consultant, CMO, agency owner, and entrepreneur. Skills and workflows currently support single shingle SMBs all the way up to Fortune 50s with hundreds of locations. 
 
 ## What's Inside
 
-- **24 strategy skills** — GBP optimization, audits, citations, reviews, keywords, competitor analysis, AI visibility, reporting, and more
+- **26 strategy skills** — Keyword research, audits, citations, reviews, GBP optimization, content generation, competitor analysis, AI visibility, reporting, and more
 - **12 tool skills** — MCP integrations for LocalSEOData, Local Falcon, LSA Spy, SerpAPI, Semrush, Ahrefs, BrightLocal, DataForSEO, Whitespark, Google Search Console, Google Analytics, and Screaming Frog
 - **3 foundational docs** — how local search works, glossary, and tool routing
 - **1 dispatch guide** — routes requests to the right skill combination automatically
-- **9,000+ lines of expertise** in a 175K zip
+- **10,000+ lines of expertise** in a 175K zip
 
 ## Default Data Source: LocalSEOData
 
 [LocalSEOData](https://localseodata.com) is the default data tool for LocalSEOSkills. It covers 36 endpoints across SERP data, business intelligence, audits, reviews, citations, keywords, AI visibility, competitor analysis, and geogrid scans — all through a single MCP connection.
 
-Other tools (Local Falcon, Ahrefs, Semrush, etc.) are positioned as specialists for things LocalSEOData doesn't cover: geogrid trend reports, deep backlink analysis, full site crawls, and actual traffic data.
+Other tools (Local Falcon, Ahrefs, Semrush, etc.) are positioned as specialists for things LocalSEOData doesn't cover: geogrid trend reports, deep backlink analysis, full site crawls, and actual traffic data. They can also be used by default if they are your prefer sources or tooling.
 
 See [tool routing](docs/tool-routing.md) for the full decision tree.
 
@@ -83,7 +83,7 @@ Download the .zip → Settings → Customize → Skills → Upload
 ### Claude Code (Clone)
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/localseoskills.git ~/.claude/skills/localseoskills
+git clone https://github.com/garrettjsmith/localseoskills.git ~/.claude/skills/localseoskills
 ```
 
 ### API (Custom Skills)
