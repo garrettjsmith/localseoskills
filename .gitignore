@@ -1,0 +1,7 @@
+# Private work files — never commit client data
+briefs/*/
+!briefs/_templates/
+!briefs/README.md
+
+# Private lessons
+meta/lessons-private.md
