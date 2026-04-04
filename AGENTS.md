@@ -17,17 +17,27 @@ This repository contains **Agent Skills** for AI agents following the [Agent Ski
 localseoskills/
 ├── .claude-plugin/
 │   └── marketplace.json
+├── briefs/
+│   ├── README.md                    # Brief system overview
+│   └── _templates/
+│       ├── location.brief.md        # Single location template
+│       └── _brand.brief.md          # Multi-location brand rollup template
 ├── docs/
 │   ├── how-local-search-works.md    # Ranking model fundamentals
 │   ├── local-seo-glossary.md        # 80+ terms defined
 │   └── tool-routing.md              # Task → tool options mapping
+├── meta/
+│   └── lessons.md                   # Living record of observed pattern changes
 ├── skills/
-│   ├── [strategy skills]/           # 23 skills — WHAT to do
+│   ├── brief/                       # Meta skill — manages session state
 │   │   └── SKILL.md
-│   └── [tool skills]/               # 11 skills — HOW to execute in specific tools
+│   ├── [strategy skills]/           # 24 skills — WHAT to do
+│   │   └── SKILL.md
+│   └── [tool skills]/               # 12 skills — HOW to execute in specific tools
 │       └── SKILL.md
 ├── tools/
 │   └── REGISTRY.md                  # Cross-reference: tools, categories, overlap
+├── .gitignore
 ├── CONTRIBUTING.md
 ├── LICENSE
 ├── VERSIONS.md
@@ -41,6 +51,16 @@ localseoskills/
 **Tool skills** (11): Tell the agent when and how to use a specific tool, what the data means, and what to do with results. Named `*-tool` (e.g., `brightlocal-tool`, `ahrefs-tool`). Each includes decision logic for when to use this tool vs alternatives.
 
 **Routing**: Strategy skills reference `docs/tool-routing` for tool selection. `tool-routing` maps task categories to tool options. Only hardcodes a tool when it's the sole option (e.g., Local Falcon for geogrid scans). When multiple tools can do the job, lists options with "preferred if connected" guidance.
+
+
+### Meta Skills
+
+**Meta skills** manage agent behavior and state rather than local SEO tasks directly.
+
+- `brief` — creates, updates, and resumes work state (briefs) for specific businesses and locations. Triggered automatically on the first tool call for a business. See `briefs/README.md` for the full system.
+
+Meta skills are not included in the strategy or tool skill counts.
+
 
 ## Build / Lint / Test Commands
 
