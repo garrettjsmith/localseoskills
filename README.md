@@ -1,8 +1,8 @@
-# Local SEO Skills for Claude Code
+# Local SEO Skills for Claude
 
 38 open-source agent skills that turn Claude into a local SEO specialist. Built for owners, marketers, freelancers, consultants, and agencies who want to do local SEO with AI.
 
-Built by [Garrett Smith](https://garrettsmith.com) — AI-native marketer with 20+ years in SEO as practitioner, consultant, CMO, agency owner, and entrepreneur. Skills and workflows currently support single shingle SMBs all the way up to Fortune 50s with hundreds of locations. 
+Built by [Garrett Smith](https://garrettsmith.com) — AI-native marketer with 20+ years in SEO as practitioner, consultant, CMO, agency owner, and entrepreneur. Skills and workflows currently support single shingle SMBs all the way up to Fortune 50s with hundreds of locations.
 
 ## What's Inside
 
@@ -10,13 +10,14 @@ Built by [Garrett Smith](https://garrettsmith.com) — AI-native marketer with 2
 - **12 tool skills** — MCP integrations for LocalSEOData, Local Falcon, LSA Spy, SerpAPI, Semrush, Ahrefs, BrightLocal, DataForSEO, Whitespark, Google Search Console, Google Analytics, and Screaming Frog
 - **3 foundational docs** — how local search works, glossary, and tool routing
 - **1 dispatch guide** — routes requests to the right skill combination automatically
+- **1 brief system** — persistent work state per business and location, so you never lose findings between sessions
 - **10,000+ lines of expertise** in a 175K zip
 
 ## Default Data Source: LocalSEOData
 
 [LocalSEOData](https://localseodata.com) is the default data tool for LocalSEOSkills. It covers 36 endpoints across SERP data, business intelligence, audits, reviews, citations, keywords, AI visibility, competitor analysis, and geogrid scans — all through a single MCP connection.
 
-Other tools (Local Falcon, Ahrefs, Semrush, etc.) are positioned as specialists for things LocalSEOData doesn't cover: geogrid trend reports, deep backlink analysis, full site crawls, and actual traffic data. They can also be used by default if they are your prefer sources or tooling.
+Other tools (Local Falcon, Ahrefs, Semrush, etc.) are positioned as specialists for things LocalSEOData doesn't cover: geogrid trend reports, deep backlink analysis, full site crawls, and actual traffic data. They can also be used by default if they are your preferred sources or tooling.
 
 See [tool routing](docs/tool-routing.md) for the full decision tree.
 
@@ -32,7 +33,7 @@ See [tool routing](docs/tool-routing.md) for the full decision tree.
 | [local-seo-audit](skills/local-seo-audit) | Comprehensive local search presence audit |
 | [local-competitor-analysis](skills/local-competitor-analysis) | Local pack competitor analysis and benchmarking |
 | [local-content-briefs](skills/local-content-briefs) | Generate semantic content briefs for local SEO content |
-| [local-content-strategy](skills/local-content-strategy) | Generate semantic content briefs for local SEO content |
+| [local-content-strategy](skills/local-content-strategy) | Local content strategy, topic clusters, and editorial planning |
 | [local-reporting](skills/local-reporting) | Local SEO metrics, multi-location reporting, and ROI |
 | [local-keyword-research](skills/local-keyword-research) | Local keyword research, geo-modified keywords, intent classification |
 | [client-deliverables](skills/client-deliverables) | Audit reports, proposals, scopes of work, competitive reports |
@@ -76,11 +77,41 @@ See [tool routing](docs/tool-routing.md) for the full decision tree.
 | [local-seo-glossary](docs/local-seo-glossary.md) | Every acronym and concept: ARP, ATRP, SoLV, NAP, SAB, LSA, and 80+ more |
 | [tool-routing](docs/tool-routing.md) | Which tool to use for which task — LocalSEOData as default, specialists for gaps |
 
+## Briefs
+
+Briefs are persistent work state for local SEO engagements. When you work on a specific business, Claude automatically creates and maintains a brief — capturing what tools were run, what was found, and what the next step is. When you come back, it picks up where it left off.
+
+**One brief per location. Brand rollup for multi-location work.**
+
+```
+briefs/
+  keystone-insurance/
+    _brand.brief.md       ← rollup: all locations at a glance
+    buffalo/
+      location.brief.md   ← findings, tools run, next action
+    pittsburgh/
+      location.brief.md
+```
+
+### Keeping Briefs Across Sessions
+
+| Context | How briefs persist |
+| --- | --- |
+| Claude Code | Written to disk automatically in `briefs/` |
+| Claude Project | Create a Project per client. Upload the brief file after the first session — every subsequent chat starts with full context. |
+| Browser / Desktop (no Project) | Claude summarizes state at session end. Paste it into a doc or start a Project. |
+
+**Recommended for regular client work:** One Claude Project per client or brand. Skills load account-wide. Briefs live in the Project knowledge base. Every session starts with full context, no re-explaining.
+
+Briefs contain real client data and are gitignored by default. See [briefs/README.md](briefs/README.md) for the full system.
+
 ## Installation
 
 ### Claude.ai (Upload)
 
 Download the .zip → Settings → Customize → Skills → Upload
+
+Skills load account-wide — available in all chats, Projects, and Cowork automatically.
 
 ### Claude Code (Clone)
 
@@ -90,7 +121,7 @@ git clone https://github.com/garrettjsmith/localseoskills.git ~/.claude/skills/l
 
 ### API (Custom Skills)
 
-Upload via /v1/skills endpoint — see Anthropic docs for details.
+Upload via `/v1/skills` endpoint — see Anthropic docs for details.
 
 ## Usage
 
