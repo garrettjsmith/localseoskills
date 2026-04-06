@@ -38,7 +38,7 @@ No SaaS infrastructure. No servers. Runs on Anthropic's cloud with tools you alr
 
 ---
 
-## Default Data Source: LocalSEOData
+## Default Data Source: Local SEO Data
 
 [Local SEO Data](https://localseodata.com) is the default data tool for Local SEO Skills. It covers 36 endpoints across SERP data, business intelligence, audits, reviews, citations, keywords, AI visibility, competitor analysis, and geogrid scans — all through a single MCP connection.
 
