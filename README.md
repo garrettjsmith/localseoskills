@@ -1,8 +1,8 @@
 # Local SEO Skills for Claude
 
-38 open-source agent skills that turn Claude into a local SEO specialist. Built for owners, marketers, freelancers, consultants, and agencies who want to do local SEO with AI.
+38 open-source agent skills that turn Claude into a local SEO specialist — and with scheduled tasks, into autonomous local SEO software. Built for owners, marketers, freelancers, consultants, and agencies who want to do local SEO with AI.
 
-Built by [Garrett Smith](https://garrettsmith.com) — AI-native marketer with 20+ years in SEO as practitioner, consultant, CMO, agency owner, and entrepreneur. Skills and workflows currently support single shingle SMBs all the way up to Fortune 50s with hundreds of locations.
+Built by [Garrett Smith](https://garrettsmith.com) — AI-native marketer with 20+ years in SEO as practitioner, consultant, CMO, agency owner, and entrepreneur. Supports single-location SMBs through Fortune 50s with hundreds of locations.
 
 ## What's Inside
 
@@ -10,16 +10,36 @@ Built by [Garrett Smith](https://garrettsmith.com) — AI-native marketer with 2
 - **12 tool skills** — MCP integrations for LocalSEOData, Local Falcon, LSA Spy, SerpAPI, Semrush, Ahrefs, BrightLocal, DataForSEO, Whitespark, Google Search Console, Google Analytics, and Screaming Frog
 - **3 foundational docs** — how local search works, glossary, and tool routing
 - **1 dispatch guide** — routes requests to the right skill combination automatically
-- **1 brief system** — persistent work state per business and location, so you never lose findings between sessions
-- **10,000+ lines of expertise** in a 175K zip
+- **1 brief system** — persistent work state per business and location, compounding history over time
+- **15 scheduled task templates** — monitoring, reporting, execution, and prospecting workflows that run automatically
+- **10,000+ lines of expertise**
+
+## What This Actually Is
+
+The skills are the expertise. The MCPs are the data. Scheduled tasks are the automation engine. Briefs are the memory. Claude is the software.
+
+With LocalSEOSkills fully configured:
+
+- Rankings are monitored weekly — you get alerted when something moves
+- Reviews are monitored daily — unanswered reviews get drafted responses for your approval
+- GBP changes are caught immediately — unauthorized edits trigger instant alerts
+- Monthly reports are generated and queued for approval before going to clients
+- Quarterly audits run automatically — citations, content, competitive position
+- Every engagement builds a searchable history — ask "why did rankings drop in March?" and get a real answer
+
+No SaaS infrastructure. No servers. Runs on Anthropic's cloud with tools you already have connected.
+
+---
 
 ## Default Data Source: LocalSEOData
 
 [LocalSEOData](https://localseodata.com) is the default data tool for LocalSEOSkills. It covers 36 endpoints across SERP data, business intelligence, audits, reviews, citations, keywords, AI visibility, competitor analysis, and geogrid scans — all through a single MCP connection.
 
-Other tools (Local Falcon, Ahrefs, Semrush, etc.) are positioned as specialists for things LocalSEOData doesn't cover: geogrid trend reports, deep backlink analysis, full site crawls, and actual traffic data. They can also be used by default if they are your preferred sources or tooling.
+Other tools (Local Falcon, Ahrefs, Semrush, etc.) are positioned as specialists for things LocalSEOData doesn't cover: geogrid trend reports, deep backlink analysis, full site crawls, and actual traffic data.
 
 See [tool routing](docs/tool-routing.md) for the full decision tree.
+
+---
 
 ## Strategy Skills
 
@@ -77,59 +97,112 @@ See [tool routing](docs/tool-routing.md) for the full decision tree.
 | [local-seo-glossary](docs/local-seo-glossary.md) | Every acronym and concept: ARP, ATRP, SoLV, NAP, SAB, LSA, and 80+ more |
 | [tool-routing](docs/tool-routing.md) | Which tool to use for which task — LocalSEOData as default, specialists for gaps |
 
+---
+
 ## Briefs
 
-Briefs are persistent work state for local SEO engagements. When you work on a specific business, Claude automatically creates and maintains a brief — capturing what tools were run, what was found, and what the next step is. When you come back, it picks up where it left off.
-
-**One brief per location. Brand rollup for multi-location work.**
+Briefs are persistent work state for local SEO engagements. Claude creates and maintains them automatically — one per location. When you mention a business for the first time, Claude asks 5 questions, runs an initial audit, sets up the brief, and offers to configure scheduled tasks. No manual setup required.
 
 ```
 briefs/
   keystone-insurance/
-    _brand.brief.md       ← rollup: all locations at a glance
+    _brand.brief.md          ← config + rollup across all locations
     buffalo/
-      location.brief.md   ← findings, tools run, next action
-    pittsburgh/
-      location.brief.md
+      location.brief.md      ← always current, always lean
+      reports/               ← weekly, monthly, QBR
+      scans/                 ← geogrid, citations, page audits
+      drafts/                ← GBP posts, review responses (awaiting approval)
+      alerts/                ← monitoring alerts
 ```
 
-### Keeping Briefs Across Sessions
+After months of scheduled tasks writing to a brief, you can ask "why did rankings drop in March?" and get a real answer from the history. No other local SEO tool does this.
 
-| Context | How briefs persist |
-| --- | --- |
-| Claude Code | Written to disk automatically in `briefs/` |
-| Claude Project | Create a Project per client. Upload the brief file after the first session — every subsequent chat starts with full context. |
-| Browser / Desktop (no Project) | Claude summarizes state at session end. Paste it into a doc or start a Project. |
+Briefs are gitignored — client data never touches the repo.
 
-**Recommended for regular client work:** One Claude Project per client or brand. Skills load account-wide. Briefs live in the Project knowledge base. Every session starts with full context, no re-explaining.
+See [briefs/README.md](briefs/README.md) for the full system.
 
-Briefs contain real client data and are gitignored by default. See [briefs/README.md](briefs/README.md) for the full system.
+---
+
+## Scheduled Tasks
+
+15 task templates that turn LocalSEOSkills into always-on local SEO software. Tasks run on Anthropic's cloud infrastructure — no server required, works even when your computer is off.
+
+### Approval Tiers
+
+| Tier | How it works | Used for |
+|---|---|---|
+| **Autonomous** | Runs, writes output, notifies | Monitoring, reporting, audits |
+| **Queue** | Drafts, holds for approval, then executes | GBP posts, review responses, content |
+| **Notify** | Confirms before AND after | Client emails, live GBP pushes |
+
+### Tasks
+
+| ID | Task | Schedule | Tier |
+|---|---|---|---|
+| M1 | Weekly Rankings Monitor | Weekly Mon 7 AM | Autonomous |
+| M2 | Review Velocity Monitor | Weekly Mon 7 AM | Autonomous |
+| M3 | GBP Change Monitor | Daily 8 AM | Autonomous |
+| M4 | LSA Rankings Monitor | Weekly Mon 7 AM | Autonomous |
+| M5 | AI Visibility Monitor | Monthly | Autonomous |
+| R1 | Weekly Performance Report | Weekly Mon 8 AM | Autonomous |
+| R2 | Monthly Client Report | Monthly | Notify |
+| R3 | Multi-Location Rollup | Monthly | Autonomous |
+| R4 | Quarterly Business Review | Quarterly | Queue |
+| E1 | GBP Post Drafts | Monthly | Queue |
+| E2 | Review Response Drafts | Weekly Tue 8 AM | Queue |
+| E3 | Citation Audit | Quarterly | Autonomous |
+| E4 | Local Page Content Audit | Quarterly | Queue |
+| P1 | Prospect Audit | On demand | Autonomous |
+| P2 | Competitor Market Monitor | Monthly | Autonomous |
+
+See [tasks/](tasks/) for individual task files.
+
+---
 
 ## Installation
 
-### Claude.ai (Upload)
-
-Download the .zip → Settings → Customize → Skills → Upload
-
-Skills load account-wide — available in all chats, Projects, and Cowork automatically.
-
-### Claude Code (Clone)
+### Claude Code / Cowork (recommended for full automation)
 
 ```bash
 git clone https://github.com/garrettjsmith/localseoskills.git ~/.claude/skills/localseoskills
 ```
 
+Connect MCP tools in Claude settings. Then just mention a business — Claude handles the rest.
+
+### Claude.ai Browser / Desktop
+
+Skills load account-wide via Settings → Customize → Skills.
+
+The Skills upload expects one skill per zip. For LocalSEOSkills (38 skills), use Claude in Chrome to import all skills at once:
+
+```
+Go to github.com/garrettjsmith/localseoskills, find all the SKILL.md files,
+and add them to my Claude Skills or a new Project called "LocalSEOSkills".
+```
+
+Takes 60-90 seconds. One time.
+
+For scheduled tasks, use Claude Code on the web at claude.ai/code/scheduled — available to all paid plans, runs on Anthropic's cloud without your computer.
+
 ### API (Custom Skills)
 
 Upload via `/v1/skills` endpoint — see Anthropic docs for details.
 
+### Other Platforms (OpenClaw, Perplexity Computer, custom agents)
+
+Skills and briefs are platform-agnostic markdown. Any LLM can use them as context.
+
+Scheduled tasks and MCP connections are Claude-native. For other platforms, implement the scheduling and delivery layers using your own infrastructure. The task files, output file schema, approval workflow, and notification formats in `specs/` are the portable spec.
+
+---
+
 ## Usage
 
-Once installed, just ask Claude about local SEO. The dispatch skill routes to the right combination:
+Once installed, just ask Claude about local SEO. If you mention a specific business Claude doesn't have a brief for yet, it'll ask 5 quick questions and set everything up automatically.
 
 ```
-"Audit this business's local presence"
-→ local-seo-audit + localseodata-tool (local_audit endpoint)
+"Audit Mike's Plumbing in Buffalo"
+→ Claude checks for brief → none found → runs first run setup → audits
 
 "Why am I not in the map pack?"
 → gbp-optimization + localseodata-tool (local_pack, business_profile)
@@ -149,9 +222,11 @@ Once installed, just ask Claude about local SEO. The dispatch skill routes to th
 "Check my LSA rankings over time"
 → lsa-spy-tool + lsa-ads
 
-"Create a proposal for managing 25 GBP locations"
-→ client-deliverables + localseodata-tool (business_profile, profile_health)
+"Pick up where we left off on Keystone Insurance"
+→ brief → reads brief → summarizes state → asks what's next
 ```
+
+---
 
 ## Community
 
