@@ -1,6 +1,8 @@
-# Local SEO Skills for Claude
+# Local SEO Skills — Open-Source Claude SEO Tool
 
-38 open-source agent skills that turn Claude into a local SEO specialist — and with scheduled tasks, into autonomous local SEO software. Built for owners, marketers, freelancers, consultants, and agencies who want to do local SEO with AI.
+38 open-source skills that turn Claude into a local SEO specialist. Connect your data tools, describe a business, and Claude audits it, monitors it, reports on it, and executes — automatically.
+
+Built for owners, marketers, freelancers, consultants, and agencies who want AI-native local SEO without adding SaaS subscriptions.
 
 Built by [Garrett Smith](https://garrettsmith.com) — AI-native marketer with 20+ years in SEO as practitioner, consultant, CMO, agency owner, and entrepreneur. Supports single-location SMBs through Fortune 50s with hundreds of locations.
 
@@ -16,16 +18,21 @@ Built by [Garrett Smith](https://garrettsmith.com) — AI-native marketer with 2
 
 ## What This Actually Is
 
-The skills are the expertise. The MCPs are the data. Scheduled tasks are the automation engine. Briefs are the memory. Claude is the software.
+Local SEO Skills is a Claude SEO tool built from the ground up for local search visbility. The skills are the expertise. The MCPs are the data. Scheduled tasks are the automation engine. Briefs are the memory. Claude is the software and intelligence.
 
-With LocalSEOSkills fully configured:
+With Local SEO Skills fully configured:
 
 - Rankings are monitored weekly — you get alerted when something moves
-- Reviews are monitored daily — unanswered reviews get drafted responses for your approval
-- GBP changes are caught immediately — unauthorized edits trigger instant alerts
-- Monthly reports are generated and queued for approval before going to clients
-- Quarterly audits run automatically — citations, content, competitive position
-- Every engagement builds a searchable history — ask "why did rankings drop in March?" and get a real answer
+- Reviews are monitored daily — unanswered reviews get drafted responses 
+  for your approval
+- GBP changes are caught immediately — unauthorized edits trigger instant 
+  alerts
+- Monthly reports are generated and queued for approval before going 
+  to clients
+- Quarterly audits run automatically — citations, content, competitive 
+  position
+- Every engagement builds a searchable history — ask "why did rankings 
+  drop in March?" and get a real answer
 
 No SaaS infrastructure. No servers. Runs on Anthropic's cloud with tools you already have connected.
 
