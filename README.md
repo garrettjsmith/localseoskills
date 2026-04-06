@@ -40,7 +40,7 @@ No SaaS infrastructure. No servers. Runs on Anthropic's cloud with tools you alr
 
 ## Default Data Source: LocalSEOData
 
-[LocalSEOData](https://localseodata.com) is the default data tool for LocalSEOSkills. It covers 36 endpoints across SERP data, business intelligence, audits, reviews, citations, keywords, AI visibility, competitor analysis, and geogrid scans — all through a single MCP connection.
+[Local SEO Data](https://localseodata.com) is the default data tool for Local SEO Skills. It covers 36 endpoints across SERP data, business intelligence, audits, reviews, citations, keywords, AI visibility, competitor analysis, and geogrid scans — all through a single MCP connection.
 
 Other tools (Local Falcon, Ahrefs, Semrush, etc.) are positioned as specialists for things LocalSEOData doesn't cover: geogrid trend reports, deep backlink analysis, full site crawls, and actual traffic data.
 
@@ -184,7 +184,7 @@ The Skills upload expects one skill per zip. For LocalSEOSkills (38 skills), use
 
 ```
 Go to github.com/garrettjsmith/localseoskills, find all the SKILL.md files,
-and add them to my Claude Skills or a new Project called "LocalSEOSkills".
+and add them to my Claude Skills or a new Project called "Local SEO Skills".
 ```
 
 Takes 60-90 seconds. One time.
