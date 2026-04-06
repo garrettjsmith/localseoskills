@@ -83,7 +83,7 @@ See [tool routing](docs/tool-routing.md) for the full decision tree.
 
 | Skill | Tool | What It Covers |
 | --- | --- | --- |
-| [localseodata-tool](skills/localseodata-tool) | **LocalSEOData** | **Default data source.** 36 endpoints: SERP data, business profiles, reviews, citations, audits, keywords, AI visibility, geogrid scans, competitor analysis |
+| [localseodata-tool](skills/localseodata-tool) | **Local SEO Data** | **Default data source.** 36 endpoints: SERP data, business profiles, reviews, citations, audits, keywords, AI visibility, geogrid scans, competitor analysis |
 | [local-falcon-tool](skills/local-falcon-tool) | Local Falcon | Geogrid trend reports, recurring campaigns, Falcon Guard (GBP monitoring), AI platform scans |
 | [lsa-spy-tool](skills/lsa-spy-tool) | LSA Spy | LSA market-level ranking tracking and competitive intelligence over time |
 | [serpapi-tool](skills/serpapi-tool) | SerpAPI | Live SERP data (fallback if LocalSEOData not connected, or for non-Google engines) |
@@ -132,7 +132,7 @@ See [briefs/README.md](briefs/README.md) for the full system.
 
 ## Scheduled Tasks
 
-15 task templates that turn LocalSEOSkills into always-on local SEO software. Tasks run on Anthropic's cloud infrastructure — no server required, works even when your computer is off.
+15 task templates that turn Local SEO Skills into always-on local SEO software. Tasks run on Anthropic's cloud infrastructure — no server required, works even when your computer is off.
 
 ### Approval Tiers
 
