@@ -94,3 +94,30 @@ Lessons do NOT belong here if they are:
 **Confidence:** High (every endpoint tested against live API, cross-referenced with credits.ts)
 **Scope:** localseodata-tool, geogrid-analysis, all cost-dependent workflows
 **Expires:** 2026-07-10 (re-verify if pricing model changes)
+
+---
+
+## 2026-04-10 TOOL: MCP composite timeout root cause is hardcoded 60s in api-client.ts
+**Trigger:** Investigating why local_audit, review_velocity, and citation_audit timeout via MCP but work via REST
+**Discovery:** The MCP server's `callApi()` function in `api-client.ts` had a hardcoded `AbortSignal.timeout(60_000)` (60s). Composite endpoints that chain multiple upstream calls (local_audit chains 3 calls, citation_audit queries 20 directories) regularly exceed 60s. Additionally, `callApiGet()` (used for geogrid polling) had NO timeout at all -- could hang forever. Fix: made timeout configurable via optional `timeoutMs` parameter (default 60s), set 120s for all composite endpoints (audit, review_velocity, multi_platform_reviews), and added 60s timeout to `callApiGet()`.
+**Confidence:** High (root cause confirmed in source code, fix implemented)
+**Scope:** localseodata-tool, local-seo-audit, review-management
+**Expires:** monitor -- verify after next MCP server deployment
+
+---
+
+## 2026-04-10 TOOL: competitor_gap reviews_count extraction misses fallback fields
+**Trigger:** MCP-04 investigation -- competitor_gap returning `reviews_count: 0` for businesses with 288 real reviews
+**Discovery:** `backend/src/routes/report.ts` only reads `lp.reviews_count` from DataForSEO local pack items. But DataForSEO stores review counts in three possible fields: `reviews_count`, `reviews`, or nested inside `rating.votes_count`. The SERP route (`serp.ts:247`) already has the correct 3-tier fallback pattern. The report route was missing it. Same issue affected `rating` field extraction (could be a number or nested object with `.value`). Fix: applied the same extraction pattern from serp.ts to report.ts.
+**Confidence:** High (code comparison confirms the discrepancy, fix aligns with existing pattern)
+**Scope:** localseodata-tool, local-competitor-analysis
+**Expires:** monitor
+
+---
+
+## 2026-04-10 TOOL: MCP location_code injection is a backend architectural issue, not MCP bug
+**Trigger:** MCP-02 investigation -- keyword_suggestions and ai_scraper failing with "Invalid Field: 'location_code'" via MCP
+**Discovery:** The MCP server is clean -- it passes location strings directly to the API without any conversion. The root cause is in the main backend's `dataforseo.ts`: a `resolveLocationCode()` function converts ALL location strings to numeric `location_code` integers before forwarding to DataForSEO. Some DataForSEO endpoints (keyword labs, AI scraper) reject `location_code` and expect `location_name` strings. This affects ~20 functions in dataforseo.ts. The conversion happens for both REST and MCP paths -- MCP just makes it more visible because MCP users tend to use canonical location formats that resolve differently. This is an architectural refactor, not a quick fix.
+**Confidence:** High (traced through full call chain in dataforseo.ts)
+**Scope:** localseodata-tool, local-keyword-research, ai-local-search, all keyword/AI skills
+**Expires:** monitor -- needs backend refactor by Garrett
