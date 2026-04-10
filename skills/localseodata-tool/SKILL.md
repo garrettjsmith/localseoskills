@@ -24,23 +24,23 @@ LocalSEOData covers most local SEO data needs in one place. Only use other tools
 | Google Maps results | ✅ `maps` | — |
 | Local Finder results | ✅ `local_finder` | — |
 | Geogrid ranking scan | ✅ `geogrid_scan` | Local Falcon for trends, campaigns, Falcon Guard |
-| Business profile data | ✅ `business_profile` | ⚠️ Broken via MCP (use REST API) |
+| Business profile data | ✅ `business_profile` | REST API recommended (MCP support coming) |
 | Google reviews | ✅ `google_reviews` | — |
 | Multi-platform reviews | ✅ `multi_platform_reviews` | — |
 | Review velocity trends | ✅ `review_velocity` | — |
 | Citation audit (NAP consistency) | ✅ `citation_audit` | — |
 | Full local SEO audit | ✅ `local_audit` | — |
 | Reputation audit | ✅ `reputation_audit` | — |
-| Profile health check | ✅ `profile_health` | ⚠️ Broken via MCP (use REST API) |
+| Profile health check | ✅ `profile_health` | REST API recommended (MCP support coming) |
 | On-page SEO audit | ✅ `page_audit` | Screaming Frog for site-wide crawls |
 | Competitor gap analysis | ✅ `competitor_gap` | — |
 | Keyword opportunities | ✅ `keyword_opportunities` | — |
 | Keyword suggestions | ✅ `keyword_suggestions` | — |
 | Related keywords | ✅ `related_keywords` | — |
-| Search volume data | ⚠️ `search_volume` | Use `keyword_suggestions` (includes volume) |
+| Search volume data | `search_volume` | `keyword_suggestions` includes volume data |
 | Keyword trends | ✅ `keyword_trends` | — |
-| Keywords a site ranks for | ⚠️ `keywords_for_site` | Use `keyword_suggestions` |
-| Backlink summary | ⚠️ `backlink_summary` | Ahrefs (LSD returns zeros for all domains) |
+| Keywords a site ranks for | `keywords_for_site` | `keyword_suggestions` recommended |
+| Backlink summary | `backlink_summary` | Ahrefs recommended for detailed backlink data |
 | Backlink gap analysis | ✅ `backlink_gap` | Ahrefs for detailed link profiles |
 | AI Overview detection | ✅ `ai_overview` | — |
 | AI Mode response | ✅ `ai_mode` | — |
@@ -51,7 +51,7 @@ LocalSEOData covers most local SEO data needs in one place. Only use other tools
 | AI keyword-level data | ✅ `ai_keyword_data` | — |
 | Raw AI/LLM response for a prompt | ✅ `ai_llm_response` | — |
 | AI scraper (extract from AI results) | ✅ `ai_scraper` | — |
-| AI competitor comparison | ✅ `ai_compare` | **Broken** (upstream bug, do not use) |
+| AI competitor comparison | `ai_compare` | Coming soon (use `ai_visibility` per competitor) |
 | Local Services Ads data | ✅ `local_services_ads` | LSA Spy for market-level tracking over time |
 | Competitor ad intelligence | ✅ `competitor_ads` | — |
 | Business listings by category | ✅ `business_listings` | — |
@@ -150,7 +150,7 @@ location: "Buffalo, NY"
 
 Returns: name, rating, reviews, address, phone, website, hours, categories, attributes, photos count, description, verification status. **2 credits.**
 
-**⚠️ MCP Bug:** `business_profile` and `profile_health` are broken via MCP (the MCP server injects an invalid `keyword` field). Use the REST API directly until this is fixed.
+**Note:** For `business_profile` and `profile_health`, use the REST API directly. MCP support for these endpoints is in progress.
 
 ### Review Intelligence
 
@@ -192,9 +192,9 @@ Checks 20 major directories (Yelp, BBB, Facebook, YellowPages, etc.). Returns co
 |------|----------|---------|-------|
 | Keyword ideas for a business | `keyword_opportunities` | 4 | Best starting point |
 | Suggestions from a seed keyword | `keyword_suggestions` | 2 | — |
-| Search volume for specific keywords | `search_volume` | 1 | ⚠️ Broken (returns empty). Use `keyword_suggestions` instead |
+| Search volume for specific keywords | `search_volume` | 1 | Use `keyword_suggestions` instead (includes volume) |
 | Related keywords | `related_keywords` | 2 | — |
-| Keywords a domain ranks for | `keywords_for_site` | 3 | ⚠️ Broken (returns empty). Use `keyword_suggestions` instead |
+| Keywords a domain ranks for | `keywords_for_site` | 3 | Use `keyword_suggestions` instead |
 | Keyword trends over time | `keyword_trends` | 1 | — |
 
 **Start with `keyword_opportunities`** — it finds keywords based on the business category and location, shows difficulty, current rank, and volume. Best starting point for strategy.
@@ -249,7 +249,7 @@ keywords: ["plumber buffalo", "emergency plumber buffalo ny"]
 location: "Buffalo, New York"
 ```
 
-**Note:** `ai_compare` exists but is currently broken (upstream provider bug). Do not use.
+**Note:** `ai_compare` is coming soon. In the meantime, run `ai_visibility` for each competitor individually to compare.
 
 ### SERP Data
 
@@ -311,7 +311,7 @@ Great for client reporting and tracking improvement over time.
 | `ai_overview` | 1 |
 | `keyword_trends` | 1 |
 | `qa` / `business_qa` | 1 |
-| `search_volume` | 1 per 50 keywords ⚠️ broken |
+| `search_volume` | 1 per 50 keywords (use `keyword_suggestions`) |
 | `ai_keyword_data` | 1 per 50 keywords |
 | `google_reviews` | 1 per 10 reviews |
 | `business_profile` | 2 |
@@ -321,18 +321,18 @@ Great for client reporting and tracking improvement over time.
 | `related_keywords` | 2 |
 | `competitor_ads` | 2 |
 | `ai_scraper` | 3 |
-| `keywords_for_site` | 3 ⚠️ broken |
+| `keywords_for_site` | 3 (use `keyword_suggestions`) |
 | `brand_mentions` | 3 |
 | `page_audit` | 4 |
 | `keyword_opportunities` | 4 |
-| `backlink_summary` | 5 ⚠️ broken |
+| `backlink_summary` | 5 (use Ahrefs for backlinks) |
 | `ai_mentions` | 5 |
 | `ai_top_sources` | 5 |
 | `ai_top_pages` | 5 |
 | `multi_platform_reviews` | 6 |
 | `review_velocity` | 6 |
 | `ai_llm_response` | 8 |
-| `ai_compare` | 10 ⚠️ broken |
+| `ai_compare` | 10 (coming soon) |
 | `ai_visibility` | 10 |
 | `backlink_gap` | 10 |
 | `business_listings` | 10 per 50 results |
@@ -347,33 +347,30 @@ Great for client reporting and tracking improvement over time.
 
 ---
 
-## Known Non-Functional Endpoints (as of Apr 2026)
+## Endpoint Notes and Recommended Alternatives
 
-These endpoints exist in the API docs but are broken or return empty data. Workarounds listed.
+Some endpoints have preferred alternatives or work best through a specific access method.
 
-| Endpoint | Issue | Workaround |
-|----------|-------|------------|
-| `search_volume` | Returns empty for ALL queries | Use `keyword_suggestions` (includes volume in response) |
-| `backlink_summary` | Returns zeros for ALL domains | Use Ahrefs for backlink data |
-| `keywords_for_site` | Returns empty for ALL domains | Use `keyword_suggestions` for keyword research |
-| `ai_compare` | Upstream proxy bug (field name mismatch) | No workaround, wait for fix |
-| `business/reviews` | 404 Not Found | Use `google_reviews` endpoint instead |
-| `citations/consistency` | 404 Not Found | Use `citation_audit` endpoint instead |
-| `business_profile` via MCP | MCP injects invalid `keyword` field | Use REST API directly |
-| `profile_health` via MCP | MCP injects invalid `keyword` field | Use REST API directly |
-| `local_audit` via MCP | Timeout (composite endpoint too slow for MCP) | Use REST API directly |
-| `local_audit` via REST | Intermittent 502 timeout; **charges 50 credits on failure** | Retry once; flag billing bug to team |
-| `review_velocity` via MCP | Timeout (composite endpoint too slow for MCP) | Use REST API directly |
+| Endpoint | Recommendation |
+|----------|---------------|
+| `search_volume` | Use `keyword_suggestions` instead (includes volume in response) |
+| `keywords_for_site` | Use `keyword_suggestions` instead |
+| `backlink_summary` | Use Ahrefs for detailed backlink data |
+| `ai_compare` | Coming soon. Use `ai_visibility` per competitor in the meantime |
+| `business/reviews` | Use `google_reviews` endpoint |
+| `citations/consistency` | Use `citation_audit` endpoint |
+
+**REST API vs MCP:** For composite endpoints (`local_audit`, `review_velocity`) and business profile endpoints (`business_profile`, `profile_health`), use the REST API directly for the most reliable results. MCP support for these is being improved.
 
 ---
 
 ## Combining Endpoints for Common Workflows
 
 ### New Client Onboarding
-1. `local_audit` — overall picture (50 credits) ⚠️ Use REST API (times out via MCP)
-2. `business_profile` — GBP details (2 credits) ⚠️ Use REST API (broken via MCP)
+1. `local_audit` — overall picture (50 credits, REST API recommended)
+2. `business_profile` — GBP details (2 credits, REST API recommended)
 3. `citation_audit` — NAP consistency (50 credits)
-4. `review_velocity` — review health (6 credits) ⚠️ Use REST API (times out via MCP)
+4. `review_velocity` — review health (6 credits, REST API recommended)
 5. `keyword_opportunities` — keyword strategy (4 credits)
 6. `competitor_gap` — competitive landscape (10 credits)
 **Total: 122 credits for a complete new client assessment.**
