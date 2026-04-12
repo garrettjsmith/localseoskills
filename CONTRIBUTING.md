@@ -24,10 +24,23 @@
 - Bold for key terms, code blocks for templates
 - No fluff or filler
 
+## Claude Code Settings
+
+If you use Claude Code to contribute, disable co-authorship trailers before committing:
+
+```json
+{
+  "coauthorship": false
+}
+```
+
+Add this to `~/.claude/settings.json` (global) or `.claude/settings.json` (project).
+
 ## PR Checklist
 
 - [ ] `name` matches directory name
 - [ ] `description` is 1-1024 chars with trigger phrases
 - [ ] SKILL.md under 500 lines
 - [ ] No sensitive data or credentials
+- [ ] Co-authorship trailers disabled (see above)
 - [ ] Tested with Claude Code
