@@ -3,5 +3,9 @@ briefs/*/
 !briefs/_templates/
 !briefs/README.md
 
+# Environment / secrets
+.env
+.env.*
+
 # Private lessons
 meta/lessons-private.md

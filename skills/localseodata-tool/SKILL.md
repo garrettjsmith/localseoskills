@@ -24,32 +24,39 @@ LocalSEOData covers most local SEO data needs in one place. Only use other tools
 | Google Maps results | ✅ `maps` | — |
 | Local Finder results | ✅ `local_finder` | — |
 | Geogrid ranking scan | ✅ `geogrid_scan` | Local Falcon for trends, campaigns, Falcon Guard |
-| Business profile data | ✅ `business_profile` | — |
+| Business profile data | ✅ `business_profile` | REST API recommended (MCP support coming) |
 | Google reviews | ✅ `google_reviews` | — |
 | Multi-platform reviews | ✅ `multi_platform_reviews` | — |
 | Review velocity trends | ✅ `review_velocity` | — |
 | Citation audit (NAP consistency) | ✅ `citation_audit` | — |
 | Full local SEO audit | ✅ `local_audit` | — |
 | Reputation audit | ✅ `reputation_audit` | — |
-| Profile health check | ✅ `profile_health` | — |
+| Profile health check | ✅ `profile_health` | REST API recommended (MCP support coming) |
 | On-page SEO audit | ✅ `page_audit` | Screaming Frog for site-wide crawls |
 | Competitor gap analysis | ✅ `competitor_gap` | — |
 | Keyword opportunities | ✅ `keyword_opportunities` | — |
 | Keyword suggestions | ✅ `keyword_suggestions` | — |
-| Search volume data | ✅ `search_volume` | — |
+| Related keywords | ✅ `related_keywords` | — |
+| Search volume data | `search_volume` | `keyword_suggestions` includes volume data |
 | Keyword trends | ✅ `keyword_trends` | — |
-| Keywords a site ranks for | ✅ `keywords_for_site` | — |
-| Backlink summary | ✅ `backlink_summary` | Ahrefs for deep link analysis |
+| Keywords a site ranks for | `keywords_for_site` | `keyword_suggestions` recommended |
+| Backlink summary | `backlink_summary` | Ahrefs recommended for detailed backlink data |
 | Backlink gap analysis | ✅ `backlink_gap` | Ahrefs for detailed link profiles |
 | AI Overview detection | ✅ `ai_overview` | — |
 | AI Mode response | ✅ `ai_mode` | — |
 | AI mentions across platforms | ✅ `ai_mentions` | — |
 | AI visibility scoring | ✅ `ai_visibility` | — |
 | AI top cited sources | ✅ `ai_top_sources` | — |
+| AI top cited pages | ✅ `ai_top_pages` | — |
+| AI keyword-level data | ✅ `ai_keyword_data` | — |
+| Raw AI/LLM response for a prompt | ✅ `ai_llm_response` | — |
+| AI scraper (extract from AI results) | ✅ `ai_scraper` | — |
+| AI competitor comparison | `ai_compare` | Coming soon (use `ai_visibility` per competitor) |
 | Local Services Ads data | ✅ `local_services_ads` | LSA Spy for market-level tracking over time |
 | Competitor ad intelligence | ✅ `competitor_ads` | — |
+| Business listings by category | ✅ `business_listings` | — |
 | Brand mentions | ✅ `brand_mentions` | — |
-| Q&A from GBP | ✅ `qa` | — |
+| Q&A from GBP | ✅ `qa` (or `business_qa`) | — |
 | Local authority score | ✅ `local_authority` | — |
 | Ranking trends over time | ❌ | Local Falcon trend reports |
 | GBP change monitoring | ❌ | Local Falcon (Falcon Guard) |
@@ -62,10 +69,29 @@ LocalSEOData covers most local SEO data needs in one place. Only use other tools
 
 ## Location Resolution
 
-Many endpoints require a location string. For best results:
-- Use "City, State" format: `"Buffalo, NY"` or `"Orchard Park, NY"`
-- If results seem off, use `location_search` first to resolve the exact DataForSEO location name
-- `location_search` is free (0 credits)
+Many endpoints require a location string. **The required format varies by endpoint type:**
+
+| Endpoint Group | Format | Example |
+|---------------|--------|---------|
+| SERP (organic_serp, local_pack, local_services_ads) | Canonical from `location_search` | `"Syracuse, NY,New York,United States"` |
+| Maps, Local Finder | Canonical from `location_search` | `"Syracuse, NY,New York,United States"` |
+| Business (profile, health, reviews, qa, listings) | City, ST | `"Buffalo, NY"` |
+| Reviews (multi_platform, velocity, reputation_audit) | City, ST | `"Buffalo, NY"` |
+| Competitor (competitor_gap, competitor_ads) | City, ST | `"Buffalo, NY"` |
+| Citation audit | Full address + phone (not location param) | `address: "123 Main St, Buffalo, NY 14201"` |
+| Keyword endpoints (US) | City, Full State Name | `"Syracuse, New York"` |
+| Keyword endpoints (Canada) | City, Province Abbreviation | `"Port Colborne, ON"` |
+| AI endpoints (keyword-data, visibility, mentions) | City, Full State Name | `"Syracuse, New York"` |
+| Local audit, local authority | City, ST | `"Buffalo, NY"` |
+| Geogrid scan | City, ST | `"Buffalo, NY"` |
+| Business listings | City, ST | `"Buffalo, NY"` |
+| Brand mentions | Business name only (no location) | `business_name: "Ace Plumbing"` |
+
+**Important:** US abbreviated state names ("NY", "TX") **do not work** for keyword or AI endpoints. Use the full state name instead.
+
+- Use `location_search` first to resolve the exact location name (free, 0 credits, **GET** not POST)
+- For Maps/Local Finder: use the canonical `name` field from `location_search` exactly (commas, no spaces after commas)
+- For keyword/AI endpoints: use "City, Full State Name" format
 
 ---
 
@@ -81,7 +107,7 @@ business_name: "Ace Plumbing"
 location: "Buffalo, NY"
 ```
 
-Returns local pack position, organic rankings, profile completeness, review velocity, and competitors in a single call. **5 credits.**
+Returns local pack position, organic rankings, profile completeness, review velocity, and competitors in a single call. **50 credits.**
 
 This replaces manually combining data from 3-4 different tools.
 
@@ -100,7 +126,7 @@ radius_miles: 3     # default 3
 
 This is an async operation — the tool polls until results are ready. Returns a rank grid, average rank, and coverage stats.
 
-**Credit costs:** 5x5 = 5 credits, 7x7 = 10 credits, 9x9 = 18 credits.
+**Credit costs:** 5x5 = 50 credits, 7x7 = 98 credits, 9x9 = 162 credits. (Formula: grid points × 2.)
 
 **For interpretation:** Load the `geogrid-analysis` strategy skill.
 
@@ -123,6 +149,8 @@ location: "Buffalo, NY"
 ```
 
 Returns: name, rating, reviews, address, phone, website, hours, categories, attributes, photos count, description, verification status. **2 credits.**
+
+**Note:** For `business_profile` and `profile_health`, use the REST API directly. MCP support for these endpoints is in progress.
 
 ### Review Intelligence
 
@@ -152,7 +180,7 @@ address: "123 Main St, Buffalo, NY 14201"
 phone: "(716) 555-1234"
 ```
 
-Checks 20 major directories (Yelp, BBB, Facebook, YellowPages, etc.). Returns consistency score and per-directory details. **5 credits.**
+Checks 20 major directories (Yelp, BBB, Facebook, YellowPages, etc.). Returns consistency score and per-directory details. **50 credits.**
 
 **Note:** Requires all three fields (name, address, phone) for NAP comparison.
 
@@ -160,14 +188,14 @@ Checks 20 major directories (Yelp, BBB, Facebook, YellowPages, etc.). Returns co
 
 **When:** User needs keyword ideas, search volumes, or competitive keyword data.
 
-| Need | Endpoint | Credits |
-|------|----------|---------|
-| Keyword ideas for a business | `keyword_opportunities` | 4 |
-| Suggestions from a seed keyword | `keyword_suggestions` | 2 |
-| Search volume for specific keywords | `search_volume` | 1 |
-| Related keywords | `related_keywords` | 2 |
-| Keywords a domain ranks for | `keywords_for_site` | 3 |
-| Keyword trends over time | `keyword_trends` | 1 |
+| Need | Endpoint | Credits | Notes |
+|------|----------|---------|-------|
+| Keyword ideas for a business | `keyword_opportunities` | 4 | Best starting point |
+| Suggestions from a seed keyword | `keyword_suggestions` | 2 | — |
+| Search volume for specific keywords | `search_volume` | 1 | Use `keyword_suggestions` instead (includes volume) |
+| Related keywords | `related_keywords` | 2 | — |
+| Keywords a domain ranks for | `keywords_for_site` | 3 | Use `keyword_suggestions` instead |
+| Keyword trends over time | `keyword_trends` | 1 | — |
 
 **Start with `keyword_opportunities`** — it finds keywords based on the business category and location, shows difficulty, current rank, and volume. Best starting point for strategy.
 
@@ -189,7 +217,7 @@ Returns ranking gaps, review count differences, and rating advantages vs competi
 
 **For ad intelligence:** `competitor_ads` shows Google Ads campaigns from a competitor domain. **2 credits.**
 
-**For backlink gaps:** `backlink_gap` compares your domain against up to 5 competitors for link opportunities. **5 credits.**
+**For backlink gaps:** `backlink_gap` compares your domain against up to 5 competitors for link opportunities. **10 credits.**
 
 ### AI Visibility
 
@@ -199,11 +227,29 @@ Returns ranking gaps, review count differences, and rating advantages vs competi
 |------|----------|---------|
 | Does Google show an AI Overview? | `ai_overview` | 1 |
 | What does Google AI Mode say? | `ai_mode` | 2 |
-| Where does AI mention this keyword? | `ai_mentions` | 3 |
-| Which sites do AI models cite? | `ai_top_sources` | 3 |
-| How visible is a domain across AI? | `ai_visibility` | 5 |
+| Where does AI mention this keyword? | `ai_mentions` | 5 |
+| Which sites do AI models cite? | `ai_top_sources` | 5 |
+| Which pages do AI models cite? | `ai_top_pages` | 5 |
+| How visible is a domain across AI? | `ai_visibility` | 10 |
+| Keyword-level AI data | `ai_keyword_data` | 1 |
+| Raw LLM response for a prompt | `ai_llm_response` | 8 |
+| Extract data from AI search results | `ai_scraper` | 3 |
 
 **Start with `ai_overview`** to check if AIO exists for the keyword, then use `ai_visibility` for domain-level scoring across multiple keywords.
+
+**`ai_llm_response`** lets you send a prompt directly to an LLM and see the response. Useful for checking what ChatGPT/Gemini says about a business.
+```
+prompt: "Best plumber in Buffalo NY"
+platform: "chat_gpt"    # Options: chat_gpt, claude, gemini, perplexity
+```
+
+**`ai_keyword_data`** returns AI-specific metrics for keywords (uses `keywords` array, not singular).
+```
+keywords: ["plumber buffalo", "emergency plumber buffalo ny"]
+location: "Buffalo, New York"
+```
+
+**Note:** `ai_compare` is coming soon. In the meantime, run `ai_visibility` for each competitor individually to compare.
 
 ### SERP Data
 
@@ -228,7 +274,7 @@ Returns ranking gaps, review count differences, and rating advantages vs competi
 url: "https://aceplumbing.com/services/drain-cleaning"
 ```
 
-Checks 50+ factors: title, meta, headings, images, Core Web Vitals, schema, mobile-friendliness. **2 credits.**
+Checks 50+ factors: title, meta, headings, images, Core Web Vitals, schema, mobile-friendliness. **4 credits.**
 
 For site-wide crawls across many pages, use Screaming Frog instead.
 
@@ -251,58 +297,83 @@ Great for client reporting and tracking improvement over time.
 
 ## Credit Cost Reference
 
+*All costs verified against source code (`credits.ts`) on Apr 10, 2026.*
+
 | Endpoint | Credits |
 |----------|---------|
 | `ping` | 0 |
-| `location_search` | 0 |
+| `location_search` | 0 (GET) |
 | `local_pack` | 1 |
 | `organic_serp` | 1 |
 | `local_services_ads` | 1 |
 | `local_finder` | 1 |
 | `maps` | 1 |
 | `ai_overview` | 1 |
-| `search_volume` | 1 |
 | `keyword_trends` | 1 |
+| `qa` / `business_qa` | 1 |
+| `search_volume` | 1 per 50 keywords (use `keyword_suggestions`) |
+| `ai_keyword_data` | 1 per 50 keywords |
 | `google_reviews` | 1 per 10 reviews |
 | `business_profile` | 2 |
 | `profile_health` | 2 |
-| `page_audit` | 2 |
 | `ai_mode` | 2 |
 | `keyword_suggestions` | 2 |
 | `related_keywords` | 2 |
-| `backlink_summary` | 2 |
 | `competitor_ads` | 2 |
-| `ai_mentions` | 3 |
-| `ai_top_sources` | 3 |
-| `keywords_for_site` | 3 |
+| `ai_scraper` | 3 |
+| `keywords_for_site` | 3 (use `keyword_suggestions`) |
 | `brand_mentions` | 3 |
+| `page_audit` | 4 |
 | `keyword_opportunities` | 4 |
-| `local_audit` | 5 |
-| `citation_audit` | 5 |
-| `ai_visibility` | 5 |
-| `backlink_gap` | 5 |
-| `geogrid_scan` (5x5) | 5 |
+| `backlink_summary` | 5 (use Ahrefs for backlinks) |
+| `ai_mentions` | 5 |
+| `ai_top_sources` | 5 |
+| `ai_top_pages` | 5 |
 | `multi_platform_reviews` | 6 |
 | `review_velocity` | 6 |
+| `ai_llm_response` | 8 |
+| `ai_compare` | 10 (coming soon) |
+| `ai_visibility` | 10 |
+| `backlink_gap` | 10 |
 | `business_listings` | 10 per 50 results |
 | `competitor_gap` | 10 |
 | `local_authority` | 10 |
-| `geogrid_scan` (7x7) | 10 |
-| `geogrid_scan` (9x9) | 18 |
 | `reputation_audit` | 30 |
+| `citation_audit` | 50 |
+| `local_audit` | 50 |
+| `geogrid_scan` (5x5) | 50 |
+| `geogrid_scan` (7x7) | 98 |
+| `geogrid_scan` (9x9) | 162 |
+
+---
+
+## Endpoint Notes and Recommended Alternatives
+
+Some endpoints have preferred alternatives or work best through a specific access method.
+
+| Endpoint | Recommendation |
+|----------|---------------|
+| `search_volume` | Use `keyword_suggestions` instead (includes volume in response) |
+| `keywords_for_site` | Use `keyword_suggestions` instead |
+| `backlink_summary` | Use Ahrefs for detailed backlink data |
+| `ai_compare` | Coming soon. Use `ai_visibility` per competitor in the meantime |
+| `business/reviews` | Use `google_reviews` endpoint |
+| `citations/consistency` | Use `citation_audit` endpoint |
+
+**REST API vs MCP:** For composite endpoints (`local_audit`, `review_velocity`) and business profile endpoints (`business_profile`, `profile_health`), use the REST API directly for the most reliable results. MCP support for these is being improved.
 
 ---
 
 ## Combining Endpoints for Common Workflows
 
 ### New Client Onboarding
-1. `local_audit` — overall picture (5 credits)
-2. `business_profile` — GBP details (2 credits)
-3. `citation_audit` — NAP consistency (5 credits)
-4. `review_velocity` — review health (6 credits)
+1. `local_audit` — overall picture (50 credits, REST API recommended)
+2. `business_profile` — GBP details (2 credits, REST API recommended)
+3. `citation_audit` — NAP consistency (50 credits)
+4. `review_velocity` — review health (6 credits, REST API recommended)
 5. `keyword_opportunities` — keyword strategy (4 credits)
 6. `competitor_gap` — competitive landscape (10 credits)
-**Total: 32 credits for a complete new client assessment.**
+**Total: 122 credits for a complete new client assessment.**
 
 ### Monthly Report Data Pull
 1. `local_pack` for target keywords — ranking check (1 credit each)
