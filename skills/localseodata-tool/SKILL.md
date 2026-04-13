@@ -29,7 +29,7 @@ LocalSEOData covers most local SEO data needs in one place. Only use other tools
 | Multi-platform reviews | ✅ `multi_platform_reviews` | — |
 | Review velocity trends | ✅ `review_velocity` | — |
 | Citation audit (NAP consistency) | ✅ `citation_audit` | — |
-| Full local SEO audit | ✅ `local_audit` | — |
+| Full local SEO audit | `local_audit` | Temporarily broken -- use business_profile + google_reviews + local_pack |
 | Reputation audit | ✅ `reputation_audit` | — |
 | Profile health check | ✅ `profile_health` | REST API recommended (MCP support coming) |
 | On-page SEO audit | ✅ `page_audit` | Screaming Frog for site-wide crawls |
@@ -37,10 +37,10 @@ LocalSEOData covers most local SEO data needs in one place. Only use other tools
 | Keyword opportunities | ✅ `keyword_opportunities` | — |
 | Keyword suggestions | ✅ `keyword_suggestions` | — |
 | Related keywords | ✅ `related_keywords` | — |
-| Search volume data | `search_volume` | `keyword_suggestions` includes volume data |
+| Search volume data | ✅ `search_volume` | `keyword_suggestions` also includes volume |
 | Keyword trends | ✅ `keyword_trends` | — |
-| Keywords a site ranks for | `keywords_for_site` | `keyword_suggestions` recommended |
-| Backlink summary | `backlink_summary` | Ahrefs recommended for detailed backlink data |
+| Keywords a site ranks for | ✅ `keywords_for_site` | — |
+| Backlink summary | ✅ `backlink_summary` | Ahrefs for deep backlink analysis |
 | Backlink gap analysis | ✅ `backlink_gap` | Ahrefs for detailed link profiles |
 | AI Overview detection | ✅ `ai_overview` | — |
 | AI Mode response | ✅ `ai_mode` | — |
@@ -51,7 +51,7 @@ LocalSEOData covers most local SEO data needs in one place. Only use other tools
 | AI keyword-level data | ✅ `ai_keyword_data` | — |
 | Raw AI/LLM response for a prompt | ✅ `ai_llm_response` | — |
 | AI scraper (extract from AI results) | ✅ `ai_scraper` | — |
-| AI competitor comparison | `ai_compare` | Coming soon (use `ai_visibility` per competitor) |
+| AI competitor comparison | ✅ `ai_compare` | — |
 | Local Services Ads data | ✅ `local_services_ads` | LSA Spy for market-level tracking over time |
 | Competitor ad intelligence | ✅ `competitor_ads` | — |
 | Business listings by category | ✅ `business_listings` | — |
@@ -87,11 +87,11 @@ Many endpoints require a location string. **The required format varies by endpoi
 | Business listings | City, ST | `"Buffalo, NY"` |
 | Brand mentions | Business name only (no location) | `business_name: "Ace Plumbing"` |
 
-**Important:** US abbreviated state names ("NY", "TX") **do not work** for keyword or AI endpoints. Use the full state name instead.
+**Note:** The API now normalizes US state and Canadian province abbreviations automatically (e.g. "NY" to "New York", "ON" to "Ontario"). Both "Buffalo, NY" and "Buffalo, New York" should work for all endpoints.
 
 - Use `location_search` first to resolve the exact location name (free, 0 credits, **GET** not POST)
 - For Maps/Local Finder: use the canonical `name` field from `location_search` exactly (commas, no spaces after commas)
-- For keyword/AI endpoints: use "City, Full State Name" format
+- For keyword/AI endpoints: "City, State" format works (abbreviations are expanded server-side)
 
 ---
 
@@ -249,7 +249,7 @@ keywords: ["plumber buffalo", "emergency plumber buffalo ny"]
 location: "Buffalo, New York"
 ```
 
-**Note:** `ai_compare` is coming soon. In the meantime, run `ai_visibility` for each competitor individually to compare.
+**`ai_compare`** compares AI visibility across domains. Requires `domains` (array of 2-5) and `keywords` (array of 1-10). May return sparse data for smaller businesses.
 
 ### SERP Data
 
@@ -332,7 +332,7 @@ Great for client reporting and tracking improvement over time.
 | `multi_platform_reviews` | 6 |
 | `review_velocity` | 6 |
 | `ai_llm_response` | 8 |
-| `ai_compare` | 10 (coming soon) |
+| `ai_compare` | 10 |
 | `ai_visibility` | 10 |
 | `backlink_gap` | 10 |
 | `business_listings` | 10 per 50 results |
@@ -347,20 +347,19 @@ Great for client reporting and tracking improvement over time.
 
 ---
 
-## Endpoint Notes and Recommended Alternatives
+## Endpoint Notes
 
-Some endpoints have preferred alternatives or work best through a specific access method.
+| Endpoint | Note |
+|----------|------|
+| `search_volume` | Works via REST API. `keyword_suggestions` also returns volume data as an alternative |
+| `keywords_for_site` | Works via REST API |
+| `backlink_summary` | REST path is `/v1/backlinks/summary` (not `/v1/links/backlink-summary`) |
+| `ai_compare` | Requires `keywords` (array), not `keyword` (string). May return sparse data for small businesses |
+| `business/reviews` | Works. Also aliased as `google_reviews` |
+| `citation_audit` | REST path is `/v1/audit/citation` (also `/v1/audit/citation-consistency`). Not `/v1/citations/consistency` |
+| `local_audit` | Temporarily returning errors after async migration. Use individual endpoints as fallback (business_profile + google_reviews + local_pack) |
 
-| Endpoint | Recommendation |
-|----------|---------------|
-| `search_volume` | Use `keyword_suggestions` instead (includes volume in response) |
-| `keywords_for_site` | Use `keyword_suggestions` instead |
-| `backlink_summary` | Use Ahrefs for detailed backlink data |
-| `ai_compare` | Coming soon. Use `ai_visibility` per competitor in the meantime |
-| `business/reviews` | Use `google_reviews` endpoint |
-| `citations/consistency` | Use `citation_audit` endpoint |
-
-**REST API vs MCP:** For composite endpoints (`local_audit`, `review_velocity`) and business profile endpoints (`business_profile`, `profile_health`), use the REST API directly for the most reliable results. MCP support for these is being improved.
+**REST API vs MCP:** For composite endpoints (`local_audit`, `review_velocity`, `citation_audit`, `reputation_audit`) and business profile endpoints (`business_profile`, `profile_health`), use the REST API directly. MCP adds an invalid `keyword` parameter to business endpoints and composite endpoints timeout via MCP (>60s).
 
 ---
 
@@ -386,7 +385,7 @@ Some endpoints have preferred alternatives or work best through a specific acces
 Done.
 
 ### Prospecting / Sales Research
-1. `business_profile` — pull their GBP data (2 credits)
-2. `profile_health` — find gaps to pitch on (2 credits)
+1. `business_profile` — pull their GBP data (2 credits, REST API recommended)
+2. `profile_health` — find gaps to pitch on (2 credits, REST API recommended)
 3. `google_reviews` — review situation (1 credit)
 **Total: 5 credits to build a pitch.**
