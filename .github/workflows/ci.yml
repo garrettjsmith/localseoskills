@@ -11,7 +11,7 @@ jobs:
     name: Shellcheck install / uninstall
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Run shellcheck
         run: |
           sudo apt-get update -qq
@@ -22,7 +22,7 @@ jobs:
     name: Uninstall guard regression
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Dangerous inputs must be refused
         shell: bash
@@ -79,7 +79,7 @@ jobs:
     name: Install / uninstall happy path
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install into disposable prefix
         shell: bash
@@ -121,7 +121,7 @@ jobs:
     name: PowerShell install / uninstall
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install PSScriptAnalyzer
         shell: pwsh
