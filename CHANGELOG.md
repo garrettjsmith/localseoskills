@@ -6,6 +6,13 @@ Individual skill versions are tracked in [VERSIONS.md](VERSIONS.md).
 
 ## [Unreleased]
 
+## [1.0.1] — 2026-05-04
+
+### Fixed
+- Windows CI happy-path uses USERPROFILE instead of RUNNER_TEMP
+- PowerShell uninstall happy-path uses -Force flag instead of piping yes
+- CI false failures on first run
+
 ## [1.0.0] — 2026-04-17
 
 Initial public release.

@@ -1,6 +1,6 @@
 {
   "name": "local-seo-skills",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "38 open-source skills that turn Claude into a local SEO specialist. Covers GBP optimization, map pack visibility, audits, citations, reviews, keywords, geogrid analysis, AI visibility, multi-location SEO, and client reporting. Connects to LocalSEOData and 10 other data tools via MCP.",
   "author": {
     "name": "Garrett Smith",
