@@ -110,6 +110,74 @@ update_existing() {
   fi
 }
 
+configure_mcp() {
+  # Interactive prompts need a real terminal. When piped (curl | bash),
+  # stdin is the pipe — reopen from /dev/tty.
+  if [ ! -t 0 ]; then
+    if [ -e /dev/tty ]; then
+      exec 3</dev/tty
+    else
+      return 0
+    fi
+  else
+    exec 3<&0
+  fi
+
+  printf '\nConnect LocalSEOData (free API key at localseodata.com/signup)? [Y/n] '
+  read -r answer <&3
+  case "$answer" in
+    [Nn]*) exec 3<&-; return 0 ;;
+  esac
+
+  printf 'API key: '
+  read -r api_key <&3
+  exec 3<&-
+
+  if [ -z "$api_key" ]; then
+    say "Skipped. Configure MCP later per the README."
+    return 0
+  fi
+
+  local mcp_url="https://mcp.localseodata.com/mcp?key=${api_key}"
+  local configured=0
+
+  # Claude Code CLI — user scope makes it available across all projects.
+  if command -v claude >/dev/null 2>&1; then
+    if claude mcp add localseodata -s http "$mcp_url" --scope user 2>/dev/null; then
+      say "LocalSEOData added to Claude Code (all projects)."
+      configured=1
+    fi
+  fi
+
+  # Claude Desktop (macOS) — edit the global config JSON directly.
+  local desktop_mac="${HOME}/Library/Application Support/Claude/claude_desktop_config.json"
+  if [ -f "$desktop_mac" ] && command -v python3 >/dev/null 2>&1; then
+    if python3 - "$desktop_mac" "$mcp_url" <<'PYEOF'
+import json, sys, os, shutil
+config_path, mcp_url = sys.argv[1], sys.argv[2]
+config = {}
+if os.path.exists(config_path):
+    with open(config_path) as f:
+        try: config = json.load(f)
+        except json.JSONDecodeError: shutil.copy2(config_path, config_path + ".bak")
+if "mcpServers" not in config:
+    config["mcpServers"] = {}
+config["mcpServers"]["localseodata"] = {"url": mcp_url}
+with open(config_path, "w") as f:
+    json.dump(config, f, indent=2); f.write("\n")
+PYEOF
+    then
+      say "LocalSEOData added to Claude Desktop."
+      configured=1
+    fi
+  fi
+
+  if [ "$configured" -eq 0 ]; then
+    say "Add LocalSEOData to your MCP config manually:"
+    printf '\n  "localseodata": { "url": "%s" }\n\n' "$mcp_url"
+  fi
+}
+
 _LSS_TMP=""
 _LSS_LOCK=""
 _LSS_LOCK_OWNED=0
@@ -181,15 +249,14 @@ main() {
   fi
 
   say "Local SEO Skills installed."
+
+  configure_mcp
+
   cat <<'EOF'
 
 Next steps:
   1. Open Claude Code or your preferred AI agent.
-  2. Connect your data tools via MCP. At minimum, LocalSEOData
-     (https://localseodata.com). Other supported tools: Local Falcon, LSA Spy,
-     SerpAPI, Semrush, Ahrefs, BrightLocal, DataForSEO, Whitespark,
-     Google Search Console, Google Analytics, Screaming Frog.
-  3. Mention any local business to get started. For example:
+  2. Mention any local business to get started. For example:
        "Audit Mike's Plumbing in Buffalo"
      The agent will ask 5 questions, run an audit, and set up a persistent
      brief for ongoing work.
