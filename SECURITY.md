@@ -25,6 +25,14 @@ When reporting, include:
 
 As of v1.0.1 the README ships `curl | bash` and `irm | iex` one-liners for install friction parity across platforms. Prior versions deliberately avoided piped execution. The installers include pre-flight guards (path validation, writability checks, origin verification) to mitigate the inherent risks of this pattern. Users who prefer to review before running can clone the repo and execute the script locally.
 
+## API key visibility during `claude mcp add`
+
+The install scripts pass the MCP server URL (which includes the API key as a query parameter) as a CLI argument to `claude mcp add`. This means the key is briefly visible in process listings (`ps aux`, `/proc/<pid>/cmdline`) for the duration of the command. The Claude Code CLI does not currently support stdin or config-file input for server URLs.
+
+On single-user machines this is a non-issue. On shared or multi-user hosts where `/proc/<pid>/cmdline` is world-readable, this is a momentary leak. Users on shared hosts should configure the MCP server manually instead of using the installer's auto-setup.
+
+The install scripts mitigate input exposure by masking the API key during entry (`read -s` on bash, `Read-Host -AsSecureString` on PowerShell), but the key is necessarily passed in the clear to the CLI command itself.
+
 ## Scope
 
 In scope:
