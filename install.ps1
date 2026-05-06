@@ -7,16 +7,15 @@
 #
 # Compatible with PowerShell 5.1 (built in to Windows 10/11) and PowerShell 7+.
 #
-# Usage:
-#   git clone https://github.com/garrettjsmith/localseoskills.git
+# Usage (one-liner):
+#   irm https://raw.githubusercontent.com/garrettjsmith/localseoskills/main/install.ps1 | iex
+#
+# Or after cloning:
 #   powershell -ExecutionPolicy Bypass -File localseoskills\install.ps1
 #
 # Custom install location:
 #   $env:LSS_INSTALL_DIR = "C:\custom\path"
 #   powershell -ExecutionPolicy Bypass -File localseoskills\install.ps1
-#
-# We deliberately do not publish an "irm | iex" one-liner. Review the script
-# locally before running it.
 
 $ErrorActionPreference = "Stop"
 
@@ -246,6 +245,109 @@ function Update-Existing {
     Invoke-Git @("-C", $InstallDir, "reset", "--hard", "origin/$branch")
 }
 
+function Configure-Mcp {
+    # Non-interactive contexts (CI, remoting) skip MCP setup silently.
+    if ($env:CI -or $env:GITHUB_ACTIONS) { return }
+    if (-not [Environment]::UserInteractive) { return }
+
+    Write-Host ""
+    $answer = Read-Host "Connect LocalSEOData (free API key at localseodata.com/signup)? [Y/n]"
+    if ($answer -match '^[Nn]') { return }
+
+    $secure = Read-Host "API key" -AsSecureString
+    $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
+    try {
+        $apiKey = [Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
+    } finally {
+        [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr)
+    }
+    if ([string]::IsNullOrWhiteSpace($apiKey)) {
+        Say "Skipped. Configure MCP later per the README."
+        return
+    }
+
+    $mcpUrl = "https://mcp.localseodata.com/mcp?key=$apiKey"
+    $configured = $false
+
+    # Claude Code CLI — check if already configured, then add with correct flags.
+    if (Get-Command claude -ErrorAction SilentlyContinue) {
+        $prevEAP = $ErrorActionPreference
+        try {
+            $ErrorActionPreference = 'Continue'
+            $existing = & claude mcp list 2>$null
+            if ($existing -match 'localseodata') {
+                Say "LocalSEOData already configured in Claude Code, skipping."
+                $configured = $true
+            } else {
+                & claude mcp add --transport http --scope user localseodata "$mcpUrl" 2>$null
+                if ($LASTEXITCODE -eq 0) {
+                    Say "LocalSEOData added to Claude Code (all projects)."
+                    $configured = $true
+                }
+            }
+        } catch {} finally {
+            $ErrorActionPreference = $prevEAP
+        }
+    }
+
+    # Claude Desktop (Windows) — edit the global config JSON directly.
+    # PS 5.1 compatible: avoid -AsHashtable (PS 6+ only). Parse to PSObject,
+    # convert manually to hashtable for safe key manipulation.
+    $desktopConfig = Join-Path $env:APPDATA "Claude\claude_desktop_config.json"
+    if (Test-Path $desktopConfig) {
+        try {
+            $config = @{}
+            $raw = Get-Content -Raw $desktopConfig -ErrorAction SilentlyContinue
+            if ($raw) {
+                try {
+                    $parsed = $raw | ConvertFrom-Json
+                    $parsed.PSObject.Properties | ForEach-Object {
+                        if ($_.Name -eq 'mcpServers' -and $_.Value) {
+                            $servers = @{}
+                            $_.Value.PSObject.Properties | ForEach-Object { $servers[$_.Name] = $_.Value }
+                            $config[$_.Name] = $servers
+                        } else {
+                            $config[$_.Name] = $_.Value
+                        }
+                    }
+                }
+                catch {
+                    $bak = "$desktopConfig.bak"
+                    Copy-Item $desktopConfig $bak -Force
+                    Say "Existing config was unparseable; backed up to $bak"
+                    $config = @{}
+                }
+            }
+            if (-not $config.ContainsKey('mcpServers')) {
+                $config['mcpServers'] = @{}
+            }
+            if ($config['mcpServers'].ContainsKey('localseodata')) {
+                Say "localseodata already in Claude Desktop config, updating."
+            }
+            $config['mcpServers']['localseodata'] = @{ url = $mcpUrl }
+            # Atomic write: temp file then rename, so a kill mid-write can't corrupt.
+            $tmpFile = "$desktopConfig.$([System.Guid]::NewGuid().ToString('N').Substring(0,8)).tmp"
+            $json = $config | ConvertTo-Json -Depth 10
+            [System.IO.File]::WriteAllText($tmpFile, $json, [System.Text.UTF8Encoding]::new($false))
+            Move-Item -Path $tmpFile -Destination $desktopConfig -Force
+            Say "LocalSEOData added to Claude Desktop."
+            $configured = $true
+        } catch {
+            if (Test-Path $tmpFile -ErrorAction SilentlyContinue) {
+                Remove-Item $tmpFile -Force -ErrorAction SilentlyContinue
+            }
+            # Swallow — fall through to manual instructions.
+        }
+    }
+
+    if (-not $configured) {
+        Say "Add LocalSEOData to your MCP config manually:"
+        Write-Host ""
+        Write-Host "  `"localseodata`": { `"url`": `"$mcpUrl`" }"
+        Write-Host ""
+    }
+}
+
 function Main {
     if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
         Fail "git is required but not found. Install git for Windows and try again."
@@ -313,15 +415,14 @@ function Main {
         }
 
         Say "Local SEO Skills installed."
+
+        Configure-Mcp
+
         Write-Host ""
         Write-Host "Next steps:"
         Write-Host "  1. Open Claude Code or your preferred AI agent."
-        Write-Host "  2. Connect your data tools via MCP. At minimum, LocalSEOData"
-        Write-Host "     (https://localseodata.com). Other supported tools: Local Falcon,"
-        Write-Host "     LSA Spy, SerpAPI, Semrush, Ahrefs, BrightLocal, DataForSEO,"
-        Write-Host "     Whitespark, Google Search Console, Google Analytics, Screaming Frog."
-        Write-Host "  3. Mention any local business to get started. For example:"
-        Write-Host "       'Audit Mike''s Plumbing in Buffalo'"
+        Write-Host "  2. Mention any local business to get started. For example:"
+        Write-Host "       'Audit Mike's Plumbing in Buffalo'"
         Write-Host "     The agent will ask 5 questions, run an audit, and set up a"
         Write-Host "     persistent brief for ongoing work."
         Write-Host ""
