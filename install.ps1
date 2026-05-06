@@ -253,7 +253,13 @@ function Configure-Mcp {
     $answer = Read-Host "Connect LocalSEOData (free API key at localseodata.com/signup)? [Y/n]"
     if ($answer -match '^[Nn]') { return }
 
-    $apiKey = Read-Host "API key"
+    $secure = Read-Host "API key" -AsSecureString
+    $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
+    try {
+        $apiKey = [Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
+    } finally {
+        [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr)
+    }
     if ([string]::IsNullOrWhiteSpace($apiKey)) {
         Say "Skipped. Configure MCP later per the README."
         return
@@ -262,41 +268,73 @@ function Configure-Mcp {
     $mcpUrl = "https://mcp.localseodata.com/mcp?key=$apiKey"
     $configured = $false
 
-    # Claude Code CLI — user scope makes it available across all projects.
+    # Claude Code CLI — check if already configured, then add with correct flags.
     if (Get-Command claude -ErrorAction SilentlyContinue) {
+        $prevEAP = $ErrorActionPreference
         try {
-            $prevEAP = $ErrorActionPreference
             $ErrorActionPreference = 'Continue'
-            & claude mcp add localseodata -s http "$mcpUrl" --scope user 2>$null
-            if ($LASTEXITCODE -eq 0) {
-                Say "LocalSEOData added to Claude Code (all projects)."
+            $existing = & claude mcp list 2>$null
+            if ($existing -match 'localseodata') {
+                Say "LocalSEOData already configured in Claude Code, skipping."
                 $configured = $true
+            } else {
+                & claude mcp add --transport http --scope user localseodata "$mcpUrl" 2>$null
+                if ($LASTEXITCODE -eq 0) {
+                    Say "LocalSEOData added to Claude Code (all projects)."
+                    $configured = $true
+                }
             }
+        } catch {} finally {
             $ErrorActionPreference = $prevEAP
-        } catch {}
+        }
     }
 
     # Claude Desktop (Windows) — edit the global config JSON directly.
+    # PS 5.1 compatible: avoid -AsHashtable (PS 6+ only). Parse to PSObject,
+    # convert manually to hashtable for safe key manipulation.
     $desktopConfig = Join-Path $env:APPDATA "Claude\claude_desktop_config.json"
     if (Test-Path $desktopConfig) {
         try {
             $config = @{}
             $raw = Get-Content -Raw $desktopConfig -ErrorAction SilentlyContinue
             if ($raw) {
-                try { $config = $raw | ConvertFrom-Json -AsHashtable }
+                try {
+                    $parsed = $raw | ConvertFrom-Json
+                    $parsed.PSObject.Properties | ForEach-Object {
+                        if ($_.Name -eq 'mcpServers' -and $_.Value) {
+                            $servers = @{}
+                            $_.Value.PSObject.Properties | ForEach-Object { $servers[$_.Name] = $_.Value }
+                            $config[$_.Name] = $servers
+                        } else {
+                            $config[$_.Name] = $_.Value
+                        }
+                    }
+                }
                 catch {
-                    Copy-Item $desktopConfig "$desktopConfig.bak" -Force
+                    $bak = "$desktopConfig.bak"
+                    Copy-Item $desktopConfig $bak -Force
+                    Say "Existing config was unparseable; backed up to $bak"
                     $config = @{}
                 }
             }
             if (-not $config.ContainsKey('mcpServers')) {
                 $config['mcpServers'] = @{}
             }
+            if ($config['mcpServers'].ContainsKey('localseodata')) {
+                Say "localseodata already in Claude Desktop config, updating."
+            }
             $config['mcpServers']['localseodata'] = @{ url = $mcpUrl }
-            $config | ConvertTo-Json -Depth 10 | Set-Content $desktopConfig -Encoding UTF8
+            # Atomic write: temp file then rename, so a kill mid-write can't corrupt.
+            $tmpFile = "$desktopConfig.$([System.Guid]::NewGuid().ToString('N').Substring(0,8)).tmp"
+            $json = $config | ConvertTo-Json -Depth 10
+            [System.IO.File]::WriteAllText($tmpFile, $json, [System.Text.UTF8Encoding]::new($false))
+            Move-Item -Path $tmpFile -Destination $desktopConfig -Force
             Say "LocalSEOData added to Claude Desktop."
             $configured = $true
         } catch {
+            if (Test-Path $tmpFile -ErrorAction SilentlyContinue) {
+                Remove-Item $tmpFile -Force -ErrorAction SilentlyContinue
+            }
             # Swallow — fall through to manual instructions.
         }
     }

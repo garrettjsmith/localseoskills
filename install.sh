@@ -123,14 +123,15 @@ configure_mcp() {
     exec 3<&0
   fi
 
-  printf '\nConnect LocalSEOData (free API key at localseodata.com/signup)? [Y/n] '
+  printf '\nConnect LocalSEOData (free API key at localseodata.com/signup)? [Y/n] ' >/dev/tty
   read -r answer <&3
   case "$answer" in
     [Nn]*) exec 3<&-; return 0 ;;
   esac
 
-  printf 'API key: '
-  read -r api_key <&3
+  printf 'API key: ' >/dev/tty
+  read -rs api_key <&3
+  printf '\n'
   exec 3<&-
 
   if [ -z "$api_key" ]; then
@@ -141,30 +142,58 @@ configure_mcp() {
   local mcp_url="https://mcp.localseodata.com/mcp?key=${api_key}"
   local configured=0
 
-  # Claude Code CLI — user scope makes it available across all projects.
+  # Claude Code CLI — check if already configured, then add with correct flags.
   if command -v claude >/dev/null 2>&1; then
-    if claude mcp add localseodata -s http "$mcp_url" --scope user 2>/dev/null; then
+    if claude mcp list 2>/dev/null | grep -q localseodata; then
+      say "LocalSEOData already configured in Claude Code, skipping."
+      configured=1
+    elif claude mcp add --transport http --scope user localseodata "$mcp_url" 2>/dev/null; then
       say "LocalSEOData added to Claude Code (all projects)."
       configured=1
     fi
   fi
 
-  # Claude Desktop (macOS) — edit the global config JSON directly.
+  # Claude Desktop (macOS / Linux) — edit the global config JSON directly.
   local desktop_mac="${HOME}/Library/Application Support/Claude/claude_desktop_config.json"
-  if [ -f "$desktop_mac" ] && command -v python3 >/dev/null 2>&1; then
-    if python3 - "$desktop_mac" "$mcp_url" <<'PYEOF'
-import json, sys, os, shutil
+  local desktop_linux="${HOME}/.config/Claude/claude_desktop_config.json"
+  local desktop_config=""
+  if [ -f "$desktop_mac" ]; then
+    desktop_config="$desktop_mac"
+  elif [ -f "$desktop_linux" ]; then
+    desktop_config="$desktop_linux"
+  fi
+  if [ -n "$desktop_config" ] && command -v python3 >/dev/null 2>&1; then
+    if python3 - "$desktop_config" "$mcp_url" <<'PYEOF'
+import json, sys, os, shutil, tempfile
 config_path, mcp_url = sys.argv[1], sys.argv[2]
 config = {}
 if os.path.exists(config_path):
     with open(config_path) as f:
-        try: config = json.load(f)
-        except json.JSONDecodeError: shutil.copy2(config_path, config_path + ".bak")
+        raw = f.read()
+    if raw.strip():
+        try:
+            config = json.loads(raw)
+        except json.JSONDecodeError:
+            bak = config_path + ".bak"
+            shutil.copy2(config_path, bak)
+            print(f"  Existing config was unparseable; backed up to {bak}")
 if "mcpServers" not in config:
     config["mcpServers"] = {}
+if "localseodata" in config.get("mcpServers", {}):
+    print("  localseodata already in Claude Desktop config, updating.")
 config["mcpServers"]["localseodata"] = {"url": mcp_url}
-with open(config_path, "w") as f:
-    json.dump(config, f, indent=2); f.write("\n")
+dir_name = os.path.dirname(config_path)
+orig_mode = os.stat(config_path).st_mode if os.path.exists(config_path) else None
+fd, tmp = tempfile.mkstemp(dir=dir_name, suffix=".tmp")
+try:
+    with os.fdopen(fd, "w") as f:
+        json.dump(config, f, indent=2); f.write("\n")
+    if orig_mode is not None:
+        os.chmod(tmp, orig_mode)
+    os.replace(tmp, config_path)
+except Exception:
+    os.unlink(tmp)
+    raise
 PYEOF
     then
       say "LocalSEOData added to Claude Desktop."

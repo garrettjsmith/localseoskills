@@ -21,6 +21,10 @@ When reporting, include:
 - Observed behavior and expected behavior
 - Your environment (OS, shell, git version)
 
+## Piped-execution installers
+
+As of v1.0.1 the README ships `curl | bash` and `irm | iex` one-liners for install friction parity across platforms. Prior versions deliberately avoided piped execution. The installers include pre-flight guards (path validation, writability checks, origin verification) to mitigate the inherent risks of this pattern. Users who prefer to review before running can clone the repo and execute the script locally.
+
 ## Scope
 
 In scope:
