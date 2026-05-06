@@ -6,6 +6,28 @@ Individual skill versions are tracked in [VERSIONS.md](VERSIONS.md).
 
 ## [Unreleased]
 
+### Fixed
+- `claude mcp add` syntax: `-s http` was parsed as `--scope http`, not `--transport http`. Fixed to `--transport http --scope user`.
+- PowerShell `ConvertFrom-Json -AsHashtable` replaced with PS 5.1-compatible PSObject-to-hashtable conversion. The previous code would fail on stock Windows 10/11 PowerShell (5.1) and could silently overwrite existing MCP server configs.
+- Non-atomic JSON write in both installers: now uses temp-file-then-rename to prevent corruption on kill mid-write.
+- Silent backup-then-overwrite on JSON parse failure now prints a message telling the user their config was backed up.
+- Linux Claude Desktop path (`~/.config/Claude/`) now handled in install.sh alongside macOS path.
+- Re-install idempotency: both installers now skip `claude mcp add` and note existing Desktop config entries instead of erroring or duplicating.
+- API key input masked during entry (`read -s` on bash, `-AsSecureString` on PowerShell) to reduce exposure on shared terminals.
+
+### Security
+- v1.0.1 shipped `curl | bash` and `irm | iex` one-liners in the README, reversing a prior explicit stance against piped-execution installers. This was a deliberate UX decision for install friction parity across platforms, but was not documented as a policy change. Now acknowledged here and in SECURITY.md.
+
+## [1.0.1] — 2026-05-04
+
+### Added
+- Post-install MCP auto-setup: prompts to connect LocalSEOData, configures Claude Code CLI or Claude Desktop config automatically. Falls back to manual instructions when neither is available.
+
+### Fixed
+- Windows CI happy-path uses USERPROFILE instead of RUNNER_TEMP
+- PowerShell uninstall happy-path uses -Force flag instead of piping yes
+- CI false failures on first run
+
 ## [1.0.0] — 2026-04-17
 
 Initial public release.

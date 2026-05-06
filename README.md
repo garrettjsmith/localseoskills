@@ -83,8 +83,7 @@ curl -fsSL https://raw.githubusercontent.com/garrettjsmith/localseoskills/main/i
 ### Windows (PowerShell)
 
 ```powershell
-git clone https://github.com/garrettjsmith/localseoskills.git
-powershell -ExecutionPolicy Bypass -File localseoskills\install.ps1
+irm https://raw.githubusercontent.com/garrettjsmith/localseoskills/main/install.ps1 | iex
 ```
 
 ### Claude.ai web (without Desktop)
