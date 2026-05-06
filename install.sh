@@ -111,30 +111,30 @@ update_existing() {
 }
 
 configure_mcp() {
-  # Interactive prompts need a real terminal. When piped (curl | bash),
-  # stdin is the pipe — reopen from /dev/tty.
-  if [ ! -t 0 ]; then
-    if [ -e /dev/tty ]; then
-      exec 3</dev/tty
-    else
-      return 0
-    fi
-  else
+  # Interactive prompts need a real terminal. In CI or headless environments,
+  # /dev/tty may exist as a device node but fail to open. Skip gracefully.
+  [ -n "${CI:-}" ] && return 0
+  if [ -t 0 ]; then
     exec 3<&0
+  elif exec 3</dev/tty 2>/dev/null; then
+    true
+  else
+    return 0
   fi
 
-  printf '\nConnect LocalSEOData (free API key at localseodata.com/signup)? [Y/n] ' >/dev/tty
+  printf '\nConnect LocalSEOData (free API key at localseodata.com/signup)? [Y/n] ' >&2
   read -r answer <&3
   case "$answer" in
     [Nn]*) exec 3<&-; return 0 ;;
   esac
 
-  printf 'API key: ' >/dev/tty
+  printf 'API key: ' >&2
   read -rs api_key <&3
-  printf '\n'
+  printf '\n' >&2
   exec 3<&-
 
   if [ -z "$api_key" ]; then
+    exec 3<&-
     say "Skipped. Configure MCP later per the README."
     return 0
   fi

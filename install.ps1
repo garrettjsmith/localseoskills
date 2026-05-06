@@ -247,6 +247,7 @@ function Update-Existing {
 
 function Configure-Mcp {
     # Non-interactive contexts (CI, remoting) skip MCP setup silently.
+    if ($env:CI -or $env:GITHUB_ACTIONS) { return }
     if (-not [Environment]::UserInteractive) { return }
 
     Write-Host ""
