@@ -17,7 +17,6 @@ Individual skill versions are tracked in [VERSIONS.md](VERSIONS.md).
 
 ### Security
 - v1.0.1 shipped `curl | bash` and `irm | iex` one-liners in the README, reversing a prior explicit stance against piped-execution installers. This was a deliberate UX decision for install friction parity across platforms, but was not documented as a policy change. Now acknowledged here and in SECURITY.md.
-- **Known limitation:** `claude mcp add` passes the API key as a CLI argument, making it briefly visible in the process list (`ps aux` on macOS/Linux, Task Manager on Windows) for the duration of the command. This is inherent to the Claude Code CLI -- there is no stdin or config-file input mode. Risk is low on single-user machines; users on shared/multi-user hosts should be aware. The key is also stored in plaintext in the MCP config file (`~/.claude/settings.json` or `claude_desktop_config.json`), which is the longer-term exposure surface.
 
 ## [1.0.1] — 2026-05-04
 
