@@ -26,17 +26,22 @@
 
 ## Claude Code Settings
 
-If you use Claude Code to contribute, disable co-authorship trailers before committing:
+If you use Claude Code to contribute, suppress the `Co-Authored-By: Claude` trailer and the PR-description attribution before committing:
 
 ```json
 {
-  "coauthorship": false
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  }
 }
 ```
 
-Add this to `~/.claude/settings.json` (global) or `.claude/settings.json` (project).
+Add this to `~/.claude/settings.json` (global) or `.claude/settings.json` (project). See the [Claude Code attribution settings docs](https://code.claude.com/docs/en/settings#attribution-settings) for details.
 
-The project-level `.claude/settings.json` is checked into this repo with `coauthorship: false`, so commits authored through Claude Code from a clone of this repo preserve single authorship by default. If you use a global `~/.claude/settings.json` as well, the project-level file applies inside this directory.
+The project-level `.claude/settings.json` in this repo already sets `attribution.commit` and `attribution.pr` to empty strings, so commits authored through Claude Code from a clone of this repo preserve single authorship by default. If you use a global `~/.claude/settings.json` as well, the project-level file applies inside this directory.
+
+Other tools (Claude Desktop, the web app, third-party agents) do not read this file. If you commit through one of them, strip any `Co-Authored-By: Claude …` trailer manually — CI will fail the PR otherwise (see `.github/workflows/ci.yml`).
 
 ## Inbound Licensing (DCO)
 
