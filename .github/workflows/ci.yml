@@ -7,6 +7,41 @@ on:
     branches: [main]
 
 jobs:
+  attribution-check:
+    name: No Claude attribution in commits
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reject Co-Authored-By Claude trailers
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="${{ github.event.pull_request.base.sha }}"
+          head="${{ github.event.pull_request.head.sha }}"
+
+          # Pattern matches the default Claude Code trailer and any variant
+          # whose email is on anthropic.com. Case-insensitive on the trailer
+          # key itself; the noreply address is the durable signal.
+          pattern='^[Cc]o-[Aa]uthored-[Bb]y:.*(Claude|@anthropic\.com)'
+
+          offenders="$(git log --format='%H%n%B%n--END--' "$base..$head" \
+            | awk -v RS='--END--' -v pat="$pattern" '$0 ~ pat { print }')"
+
+          if [ -n "$offenders" ]; then
+            echo "FAIL: one or more commits in this PR include a Claude attribution trailer."
+            echo "      Rewrite the offending commits to drop the trailer before merging."
+            echo "      See CONTRIBUTING.md > Claude Code Settings."
+            echo ""
+            echo "Offending commits:"
+            echo "$offenders"
+            exit 1
+          fi
+          echo "OK: no Claude attribution trailers in PR commits."
+
   shellcheck:
     name: Shellcheck install / uninstall
     runs-on: ubuntu-latest
