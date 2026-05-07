@@ -44,5 +44,5 @@ Closes #
 
 ## Claude Code contributors
 
-- [ ] Co-authorship trailers disabled (`{"coauthorship": false}` in settings)
-- [ ] Commits are single-authored (no Claude co-author trailer) — the project-level .claude/settings.json handles this by default
+- [ ] Attribution suppressed (`{"attribution": {"commit": "", "pr": ""}}` in settings) — see [CONTRIBUTING.md](../CONTRIBUTING.md#claude-code-settings)
+- [ ] Commits are single-authored (no `Co-Authored-By: Claude …` trailer) — the project-level `.claude/settings.json` handles this for Claude Code, but other tools require manual scrubbing. CI will fail the PR if a Claude trailer slips through.
