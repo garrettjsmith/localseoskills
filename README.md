@@ -18,7 +18,7 @@
 
 <p align="center">
   <strong>Works with:</strong>
-  Claude Code · Claude Desktop · Claude.ai · Cursor · Codex · OpenClaw · Antigravity · any <a href="https://agentskills.io/specification.md">Agent Skills</a>-compatible agent
+  Claude Code · Claude Desktop · Claude.ai · Cursor · Codex · OpenClaw · Antigravity · any Agent Skills-compatible agent
 </p>
 
 <p align="center">
@@ -33,7 +33,7 @@ Most skill libraries stop at instructions. Local SEO Skills adds the three thing
 
 - **Persistent briefs.** Every client and location has a living file Claude reads and updates automatically. Ask "why did rankings drop in March?" six months into an engagement and get a real answer from the history.
 - **Scheduled tasks that run while you sleep.** 15 task templates with autonomous, queue, and notify approval tiers. Monitoring, reports, drafts, and alerts keep running when your laptop is closed.
-- **A data layer built for local, not bolted on.** The default is [LocalSEOData](https://localseodata.com): 36 endpoints for SERP, GBP, reviews, citations, geogrid, and AI visibility through one MCP connection. Specialist tools (Ahrefs, Semrush, Local Falcon) slot in where LocalSEOData doesn't cover.
+- **A data layer built for local, not bolted on.** The default is [Local SEO Data](https://localseodata.com): 36 endpoints for SERP, GBP, reviews, citations, geogrid, and AI visibility through one MCP connection. Specialist tools (Ahrefs, Semrush, Local Falcon) slot in where Local SEO Data doesn't cover.
 
 ---
 
@@ -109,7 +109,7 @@ Skills are platform-agnostic markdown. Any agent that reads the [Agent Skills sp
 
 ## Quick Start
 
-Before your first audit, connect a data source. [LocalSEOData](https://localseodata.com) is the default and covers 36 endpoints in one MCP connection — see [Default Data Source](#default-data-source-localseodata) below for the setup link. Without a data source connected the skills still load, but the first audit will fail with a clear message telling you which MCP is missing.
+Before your first audit, connect a data source. [Local SEO Data](https://localseodata.com) is the default and covers 36 endpoints in one MCP connection — see [Default Data Source](#default-data-source-localseodata) below for the setup link. Without a data source connected the skills still load, but the first audit will fail with a clear message telling you which MCP is missing.
 
 Once installed and connected, just mention any local business. Claude picks the right skills automatically.
 
@@ -141,7 +141,7 @@ You: "Pick up where we left off on Keystone Insurance"
 ## What's Inside
 
 - **26 strategy skills:** GBP optimization, audits, citations, reviews, keywords, geogrid, content, AI visibility, multi-location SEO, client deliverables, a dispatch router that picks the right skills for every request, and more
-- **12 tool skills:** MCP integrations for [LocalSEOData](https://localseodata.com), Local Falcon, LSA Spy, SerpAPI, Semrush, Ahrefs, BrightLocal, DataForSEO, Whitespark, Google Search Console, Google Analytics, and Screaming Frog
+- **12 tool skills:** MCP integrations for [Local SEO Data](https://localseodata.com), Local Falcon, LSA Spy, SerpAPI, Semrush, Ahrefs, BrightLocal, DataForSEO, Whitespark, Google Search Console, Google Analytics, and Screaming Frog
 - **15 scheduled task templates:** monitoring, reporting, execution, and prospecting workflows that run on Anthropic's cloud, even when your computer is off
 - **1 brief system:** persistent work state per business and location, compounding history over time
 - **3 foundational docs:** how local search works, glossary, and tool routing
@@ -211,7 +211,7 @@ See [tasks/](tasks/) for individual task files and [specs/](specs/) for the appr
 
 ## Default Data Source: LocalSEOData
 
-[LocalSEOData](https://localseodata.com) is the default data tool for Local SEO Skills. One MCP connection, 36 endpoints across SERP data, business intelligence, audits, reviews, citations, keywords, AI visibility, competitor analysis, and geogrid scans.
+[Local SEO Data](https://localseodata.com) is the default data tool for Local SEO Skills. One MCP connection, 36 endpoints across SERP data, business intelligence, audits, reviews, citations, keywords, AI visibility, competitor analysis, and geogrid scans.
 
 Other tools (Local Falcon, Ahrefs, Semrush, and the rest) are positioned as specialists for things LocalSEOData doesn't cover: geogrid trend reports, deep backlink analysis, full site crawls, and actual traffic data.
 
@@ -289,7 +289,7 @@ With Local SEO Skills fully configured:
 
 | Skill | Tool | What It Covers |
 |-------|------|----------------|
-| [localseodata-tool](skills/localseodata-tool) | **LocalSEOData** | **Default.** 36 endpoints: SERP data, business profiles, reviews, citations, audits, keywords, AI visibility, geogrid scans, competitor analysis |
+| [localseodata-tool](skills/localseodata-tool) | **Local SEO Data** | **Default.** 36 endpoints: SERP data, business profiles, reviews, citations, audits, keywords, AI visibility, geogrid scans, competitor analysis |
 | [local-falcon-tool](skills/local-falcon-tool) | Local Falcon | Geogrid trend reports, recurring campaigns, Falcon Guard (GBP monitoring), AI platform scans |
 | [lsa-spy-tool](skills/lsa-spy-tool) | LSA Spy | LSA market-level ranking tracking and competitive intelligence over time |
 | [serpapi-tool](skills/serpapi-tool) | SerpAPI | Live SERP data (fallback if LocalSEOData not connected, or for non-Google engines) |
