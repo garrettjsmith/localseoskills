@@ -68,6 +68,16 @@ Pick the path for your setup. However you install, the 38 skills end up where yo
 
 Full brief experience. Claude reads and writes `briefs/` on your filesystem, so history compounds automatically across sessions.
 
+### Codex (plugin, recommended)
+
+```bash
+codex plugin marketplace add garrettjsmith/localseoskills --ref main
+codex plugin add local-seo-skills --marketplace garrettjsmith-localseo
+codex mcp add localseodata --url "https://mcp.localseodata.com/mcp?key=YOUR_API_KEY"
+```
+
+Restart Codex or start a new thread after installing. The plugin exposes the `skills/` directory directly, which lets Codex discover each Local SEO skill. The MCP command connects the default LocalSEOData source; replace `YOUR_API_KEY` with a key from Local SEO Data.
+
 ### Claude Desktop or Claude.ai in Chrome
 
 Open Settings → Customize → Plugins → add marketplace `garrettjsmith/localseoskills` → install **local-seo-skills**. Three clicks.
@@ -97,13 +107,13 @@ add them to my Claude Skills or a new Project called "Local SEO Skills".
 
 Claude handles the import. Takes 60-90 seconds. One time.
 
-### Cursor, Codex, OpenClaw, or any Agent Skills-compatible agent
+### Cursor, OpenClaw, Antigravity, or any Agent Skills-compatible agent
 
 ```bash
 git clone https://github.com/garrettjsmith/localseoskills.git ~/.agents/skills/localseoskills
 ```
 
-Skills are platform-agnostic markdown. Any agent that reads the [Agent Skills spec](https://agentskills.io/specification.md) can use them as context.
+Skills are platform-agnostic markdown. Any agent that reads the [Agent Skills spec](https://agentskills.io/specification.md) can use them as context. Codex users should prefer the plugin install above because it exposes the nested `skills/` folder through the Codex plugin manifest.
 
 ---
 
@@ -214,6 +224,12 @@ See [tasks/](tasks/) for individual task files and [specs/](specs/) for the appr
 [Local SEO Data](https://localseodata.com) is the default data tool for Local SEO Skills. One MCP connection, 36 endpoints across SERP data, business intelligence, audits, reviews, citations, keywords, AI visibility, competitor analysis, and geogrid scans.
 
 Other tools (Local Falcon, Ahrefs, Semrush, and the rest) are positioned as specialists for things LocalSEOData doesn't cover: geogrid trend reports, deep backlink analysis, full site crawls, and actual traffic data.
+
+Codex setup:
+
+```bash
+codex mcp add localseodata --url "https://mcp.localseodata.com/mcp?key=YOUR_API_KEY"
+```
 
 See [docs/tool-routing.md](docs/tool-routing.md) for the full decision tree.
 

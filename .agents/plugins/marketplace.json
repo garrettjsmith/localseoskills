@@ -1,0 +1,20 @@
+{
+  "name": "garrettjsmith-localseo",
+  "interface": {
+    "displayName": "Local SEO Skills"
+  },
+  "plugins": [
+    {
+      "name": "local-seo-skills",
+      "source": {
+        "source": "local",
+        "path": "./plugins/local-seo-skills"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

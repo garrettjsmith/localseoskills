@@ -1,0 +1,50 @@
+{
+  "name": "local-seo-skills",
+  "version": "1.0.1",
+  "description": "Local SEO skills for GBP optimization, map pack visibility, audits, citations, reviews, keywords, geogrid analysis, AI visibility, multi-location SEO, and reporting.",
+  "author": {
+    "name": "Garrett Smith",
+    "email": "help@localseoskills.com",
+    "url": "https://garrettsmith.com"
+  },
+  "homepage": "https://localseoskills.com",
+  "repository": "https://github.com/garrettjsmith/localseoskills",
+  "license": "MIT",
+  "keywords": [
+    "local-seo",
+    "seo",
+    "codex",
+    "agent-skills",
+    "mcp",
+    "google-business-profile",
+    "gbp",
+    "map-pack",
+    "geogrid",
+    "review-management",
+    "ai-visibility",
+    "localseodata"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Local SEO Skills",
+    "shortDescription": "Local SEO workflows and audits",
+    "longDescription": "Use Local SEO Skills in Codex to audit and improve local search visibility across Google Business Profile, map pack rankings, citations, reviews, local keyword research, geogrid scans, AI visibility, service-area SEO, multi-location SEO, and client reporting. Connect LocalSEOData or another local SEO data MCP server for live ranking, review, citation, and audit data.",
+    "developerName": "Garrett Smith",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://localseoskills.com",
+    "privacyPolicyURL": "https://github.com/garrettjsmith/localseoskills/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/garrettjsmith/localseoskills/blob/main/LICENSE",
+    "defaultPrompt": [
+      "Audit a local business for map pack visibility",
+      "Create a local SEO plan for a service-area business",
+      "Draft a monthly local SEO report"
+    ],
+    "brandColor": "#16A34A",
+    "screenshots": []
+  }
+}
