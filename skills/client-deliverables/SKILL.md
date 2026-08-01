@@ -6,10 +6,11 @@ description: >
   or market intelligence report. Also use when the user mentions "audit report,"
   "proposal," "scope of work," "SOW," "pitch deck," "client presentation,"
   "pricing document," "onboarding checklist," "competitive report,"
-  "market analysis," or "deliverable." For ongoing performance reports,
+  "market analysis," "prospect audit," "free audit," "AI visibility audit,"
+  or "deliverable." For ongoing performance reports,
   see local-reporting. For the research behind audits, see local-seo-audit.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   author: Garrett Smith
 ---
 
@@ -43,10 +44,12 @@ This skill covers six core document types:
 
 | Audit Type | Typical Scope | Price Range |
 |-----------|--------------|-------------|
+| Prospect Audit | Public-data snapshot for a business you don't yet manage — sales lead magnet | Free |
 | GBP Audit | Profile completeness, categories, photos, reviews, posts, Q&A, attributes | $200-500 |
 | Website SEO Audit | Technical crawl, on-page, content, Core Web Vitals, schema, internal links | $800-2,500 |
 | Google Ads / LSA Audit | Campaign structure, keywords, bids, landing pages, conversion tracking | $400-1,000 |
 | Local Visibility Audit | Rankings, geogrids, citations, reviews, competitive position | $500-1,500 |
+| AI Visibility Audit | AI answer presence, citation landscape, entity readiness, competitive AI comparison | $750-2,500 |
 | Comprehensive Audit | All of the above combined | $1,500-5,000 |
 
 Price based on: number of locations, complexity of site, tools needed, turnaround time.
@@ -97,6 +100,39 @@ Price based on: number of locations, complexity of site, tools needed, turnaroun
 - Priority 3 (Nice to Have): Incremental improvements
 - Estimated impact for each recommendation
 
+### Prospect Audit Structure
+
+A sales artifact for a business you don't yet manage. No account access and no history — every finding comes from public data. Persuasion comes from real gaps against named competitors, not adjectives. It ends in a bridge to the engagement, not a next-period plan. Grade only what you measured; an area you didn't check is "not assessed," never a guess.
+
+**Section 1: At-a-Glance Scorecard**
+- Each area scored Healthy or Needs Attention
+- One-line finding per area
+- Overall read in one or two sentences — honest, and pointed where warranted
+
+**Section 2: Google Business Profile**
+- Completeness, primary category, photo count, post recency vs. a named competitor
+- Missing high-intent services or attributes
+
+**Section 3: Local Rankings**
+- Current positions for core terms
+- Which competitor holds the spots they're missing
+
+**Section 4: Reviews & Reputation**
+- Count, rating, velocity, response rate vs. the market leader
+- Usually the widest gap — state it plainly
+
+**Section 5: AI Visibility**
+- Whether AI answers cite the business for core local queries, and who they cite instead
+- Report AI search demand alongside mentions — no demand yet is a monitor item, not a gap
+
+**Section 6: Citations & NAP**
+- Accuracy, inconsistencies, missing key directories
+
+**Section 7: Top 3 Opportunities**
+- Exactly three, ranked by impact
+- Each tied to a gap surfaced above and to the outcome fixing it produces
+- The bridge to the paid engagement
+
 ### Website SEO Audit Structure
 
 **Section 1: Technical Health**
@@ -139,10 +175,52 @@ Price based on: number of locations, complexity of site, tools needed, turnaroun
 Same priority framework: Critical → Important → Nice to Have
 Each recommendation includes: what to fix, why it matters, estimated effort, expected impact.
 
+### AI Visibility Audit Structure
+
+A standalone audit of how a business appears in AI-generated answers. Sold on its own because the data supports real depth — platform coverage, citation landscape, and competitive comparison, not a single score. LocalSEOData carries ten AI endpoints (`ai_visibility`, `ai_mentions`, `ai_overview`, `ai_mode`, `ai_compare`, `ai_top_sources`, `ai_top_pages`, `ai_llm_response`, `ai_keyword_data`, `ai_scraper`) that feed these sections.
+
+Lead with demand. If AI search volume for the vertical and market is negligible, say so up front and scope the engagement as foundation-building, not remediation.
+
+**Section 1: Executive Summary & Scorecard**
+- Each platform scored Healthy or Needs Attention
+- Overall read: cited, partially cited, or absent across AI surfaces
+
+**Section 2: AI Search Demand**
+- Volume for core local queries (`ai_keyword_data`)
+- Establishes whether absence is a real gap or simply no demand yet
+
+**Section 3: Platform-by-Platform Visibility**
+- ChatGPT, Gemini, Perplexity, Google AI Overviews, Google AI Mode
+- Cited or not, and for which queries (`ai_visibility`, `ai_overview`, `ai_mode`, `ai_mentions`)
+
+**Section 4: What the Models Actually Say**
+- Accuracy and sentiment of how the business is described (`ai_llm_response`)
+- Flag wrong hours, services, or locations — a model misstating the business is a visceral finding
+
+**Section 5: Citation Landscape**
+- Which domains and pages the models cite for these queries (`ai_top_sources`, `ai_top_pages`)
+- The sources that own the answer today
+
+**Section 6: Competitive AI Comparison**
+- This business vs. named competitors across platforms (`ai_compare`)
+
+**Section 7: Entity & Schema Readiness**
+- LocalBusiness markup, NAP consistency, and the entity signals the models rely on
+
+**Section 8: Content Gaps**
+- Topics and formats the cited sources cover that this business doesn't
+
+**Section 9: Findings & Recommendations**
+- Priority 1 (Critical): what's blocking citation now
+- Priority 2 (Important): entity, schema, and content opportunities
+- Priority 3 (Nice to Have): incremental reinforcement
+
+Query the way people actually prompt AI — natural questions with situation and constraints, not keyword strings. Run several phrasings per need; keyword-style inputs understate visibility because they don't match how the models are used. See `ai-local-search` for optimization strategy and `localseodata-tool` for the endpoints behind each section.
+
 ### Audit Formatting Best Practices
 
 - **Lead with the executive summary** — 3-5 sentences covering overall health and top priorities
-- **Use red/yellow/green scoring** for quick visual scanning
+- **Score each area Healthy or Needs Attention** for quick visual scanning, consistent with local-reporting's benchmarks
 - **Include screenshots** — show, don't just tell
 - **Competitor context on every metric** — "Your review count is 47. Top competitor has 312."
 - **End with a clear next step** — either "here's what we recommend" (leading to a proposal) or "here's what to focus on first"
@@ -466,9 +544,12 @@ What do competitors charge?
 | Deliverable Created | Next Action | Skill |
 |---------------------|-------------|-------|
 | Audit report delivered | Client approves → build the optimization plan from audit findings | `gbp-optimization`, `local-citations`, `review-management` |
+| Prospect audit delivered | Follow up with a proposal scoped to the gaps found | (sales follow-up) |
+| AI visibility audit delivered | Build entity, schema, and content signals that earn citation | `ai-local-search`, `local-schema` |
 | Proposal/SOW signed | Begin with the highest-priority items from the audit | `local-seo-audit` priorities |
 | Competitive report delivered | Use gaps identified to set optimization targets | `local-competitor-analysis` |
 | Monthly report shows ranking drops | Diagnose with geogrid analysis before the next report | `geogrid-analysis` |
 | Onboarding doc sent | Collect all client assets (logins, brand guidelines) and start the audit | `local-seo-audit` |
 
 **Default next step:** Every deliverable should end with a clear next step for the client. Audit → "Here's what we recommend." Proposal → "Here's how to get started." Report → "Here's what we're doing next month."
+
