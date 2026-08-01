@@ -44,7 +44,7 @@ Most skill libraries stop at instructions. Local SEO Skills adds the three thing
 - [What's Inside](#whats-inside)
 - [Briefs](#briefs)
 - [Scheduled Tasks](#scheduled-tasks)
-- [Default Data Source: LocalSEOData](#default-data-source-localseodata)
+- [Default Data Source: Local SEO Data](#default-data-source-localseodata)
 - [Why This Exists](#why-this-exists)
 - [How It Works](#how-it-works)
 - [Strategy Skills](#strategy-skills)
@@ -310,7 +310,7 @@ With Local SEO Skills fully configured:
 |-----|-------------|
 | [how-local-search-works](docs/how-local-search-works.md) | The ranking model, how the map pack gets assembled, how citations, reviews, and links affect rankings |
 | [local-seo-glossary](docs/local-seo-glossary.md) | Every acronym and concept: ARP, ATRP, SoLV, NAP, SAB, LSA, and 80+ more |
-| [tool-routing](docs/tool-routing.md) | Which tool to use for which task: LocalSEOData as default, specialists for gaps |
+| [tool-routing](docs/tool-routing.md) | Which tool to use for which task: Local SEO Data as default, specialists for gaps |
 
 ---
 
