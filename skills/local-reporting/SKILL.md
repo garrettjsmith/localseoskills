@@ -390,7 +390,9 @@ Before sending any report:
 - [ ] Action items are specific and achievable
 - [ ] Client-specific context included (seasonal factors, known issues)
 - [ ] Branding correct (right logo, right client name)
-
+- [ ] No metric graded on a single data point — SoLV/ARP reflect a full geogrid scan, not one keyword check
+- [ ] Missing data left blank with the source named, never estimated or back-filled to fill a gap
+      
 ---
 
 ## Difficult Reporting Conversations
