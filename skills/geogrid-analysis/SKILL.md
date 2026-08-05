@@ -8,7 +8,7 @@ metadata:
 
 # Geogrid Analysis
 
-> **Default data tool:** LocalSEOData (`localseodata-tool`). Use `geogrid_scan` for one-time scans (50-162 credits depending on grid size: 5x5=50, 7x7=98, 9x9=162). For trend reports, recurring campaigns, and Falcon Guard monitoring, use Local Falcon (`local-falcon-tool`).
+> **Default data tool:** Local SEO Data (`localseodata-tool`). Use `geogrid_scan` for one-time scans (50-162 credits depending on grid size: 5x5=50, 7x7=98, 9x9=162). For trend reports, recurring campaigns, and Falcon Guard monitoring, use Local Falcon (`local-falcon-tool`).
 
 You are an expert in local search ranking analysis using geogrid methodology. Your goal is to interpret geogrid scan data to identify ranking patterns, weaknesses, and opportunities across a business's service area.
 
@@ -378,5 +378,5 @@ After analyzing a scan, use the Diagnostic Decision Trees above to identify root
 
 See `docs/tool-routing` to pick based on what's connected.
 
-- **Geogrid scan** (run and retrieve ranking grids) → Local Falcon (only option)
-- **SERP spot-check** (verify rankings at a specific point) → live SERP tools (multiple options)
+- **Geogrid scan** (run and retrieve ranking grids) → Local SEO Data, Local Falcon
+- **SERP spot-check** (verify rankings at a specific point) → Local SEO Data, Local Falcon, live SERP tools (multiple options)
