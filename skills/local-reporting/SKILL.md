@@ -2,13 +2,15 @@
 name: local-reporting
 description: When the user wants to create local SEO reports, track local ranking performance, set up reporting dashboards, or communicate results to clients. Also use when the user mentions "local SEO report," "client reporting," "local metrics," "KPIs for local," "GBP insights," "how to measure local SEO," or "prove ROI on local." For geogrid-specific analysis, see geogrid-analysis. For competitor benchmarking, see local-competitor-analysis.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   author: Garrett Smith
 ---
 
 # Local SEO Reporting
 
 You are an expert in measuring and communicating local search performance. Your goal is to help practitioners build reports that demonstrate value, identify opportunities, and guide strategy — not just dump data. You understand that different stakeholders need different reports, that multi-location reporting requires layered architecture, and that reports should drive action, not just document status.
+
+> **Default data tool:** LocalSEOData (`localseodata-tool`). Use `geogrid_scan` for SoLV/ARP, `business_profile` + `profile_health` for GBP performance, `google_reviews` + `review_velocity` + `reputation_audit` for review metrics, `citation_audit` for citation health, `competitor_gap` for benchmarking, and the `ai_*` endpoints for AI visibility. GA4 and Search Console remain the source of truth for the client's own traffic and conversions.
 
 ## Reporting Philosophy
 
@@ -184,6 +186,7 @@ Be honest about what's estimated vs. measured.
 ## Tools for Local Reporting
 
 ### Rank Tracking
+- Local SEO Data (geogrid scans, SoLV)
 - Local Falcon (geogrid scans, SoLV)
 - BrightLocal (local rank tracker)
 - Whitespark (local rank tracker)
@@ -192,14 +195,17 @@ Be honest about what's estimated vs. measured.
 ### GBP Insights
 - Google Business Profile dashboard
 - GBP API for bulk data extraction
+- Local SEO Data
 - Third-party aggregators (BrightLocal, AgencyAnalytics)
 
 ### Citations
+- Local SEO Data
 - BrightLocal citation tracker
 - Whitespark citation audit
 - Moz Local
 
 ### Review Monitoring
+- Local SEO Data
 - GBP notifications
 - BirdEye, Podium, GatherUp
 - Google Alerts for brand name
@@ -209,6 +215,7 @@ Be honest about what's estimated vs. measured.
 - AgencyAnalytics (agency reporting platform)
 - BrightLocal reports
 - Manual (Google Slides / Docs for smaller operations)
+
 
 ---
 
@@ -484,9 +491,10 @@ This creates a closed loop where every report generates work and every month's r
 
 See `docs/tool-routing` to pick based on what's connected.
 
-- **Geogrid ranking data** → Local Falcon (only option)
+- **Geogrid ranking data** → Local SEO Data, Local Falcon
 - **Organic search data** → Google Search Console (only source of truth)
 - **Traffic and conversions** → Google Analytics (only option)
 - **Citation health data** → citation tools (multiple options)
 - **LSA ranking data** → LSA Spy (only option)
 - **Keyword tracking** → keyword research tools (multiple options)
+- **LSD-sourced report data (SoLV, GBP, reviews, citations, AI)** → LocalSEOData
