@@ -2,7 +2,7 @@
 name: local-keyword-research
 description: When the user wants to research keywords for a local business, find local search opportunities, build a keyword map for location pages, or understand local search intent. Also use when the user mentions "local keywords," "keyword research," "service area keywords," "near me keywords," "local search volume," "keyword map," "city keywords," "geo-modified keywords," "implicit local intent," or "local keyword strategy." For content creation from keywords, see local-landing-pages. For competitor keyword analysis, see local-competitor-analysis.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   author: Garrett Smith
 ---
 
@@ -121,6 +121,24 @@ Businesses near national borders or in multilingual markets have a keyword categ
 
 Check: Does the business serve customers who search in another language? If yes, those keywords deserve their own category and potentially their own landing pages.
 
+### 10. Conversational / AI Queries
+How people search when they're talking to an AI assistant (ChatGPT, Gemini, Perplexity, Google AI Mode/Overviews) instead of typing into a search box. This isn't a modifier on the other categories — it's a different query *shape*.
+
+**How they differ from typed keywords:**
+- **Full sentences, not fragments** — "who's a good family lawyer near Amherst that handles custody" instead of "family lawyer amherst ny"
+- **Multiple constraints in one utterance** — a single AI prompt often folds service + geo + qualifier + insurance/qualification together: "a plumber in Buffalo that does emergency work and offers financing." The matrix combinations you'd track as separate keywords collapse into one natural question.
+- **Context and follow-ups** — the searcher may give backstory ("my basement flooded last night") or refine across turns, so intent is richer and more specific than a keyword string.
+- **Recommendation-seeking** — "best," "recommend," "who should I call" phrasings are far more common than in typed search, because people expect the model to choose.
+
+**How to find them:**
+- Rewrite your top service + geo keywords as full questions a person would actually ask an assistant — several phrasings per need, since people ask the same thing many ways
+- Mine the problem/symptom (#4), qualifier (#5), and insurance/qualification (#8) categories into natural-language prompts — these are exactly the constraints people voice to an AI
+- Pull People Also Ask and autocomplete questions (from Step 2.5) as starting phrasings
+
+**A note on volume:** AI query demand is emerging and hard to size — tooling is thin, and for hyperlocal terms measured demand is often near zero even where typed-search demand exists. Treat these as an intent category to cover, not a volume play. Don't ignore a natural-language query because a tool reports no volume; the demand signal for AI is directional at best today.
+
+This category identifies the *queries*. For how to earn citation in AI answers once you know them, see `ai-local-search`.
+
 ---
 
 ## The Keyword Research Process
@@ -164,6 +182,7 @@ When you search for the client's primary keywords, the SERP results contain comp
 3. **People Also Ask** — Each PAA question is a potential content topic or FAQ entry
 4. **Map pack competitors** — Check what categories and services the map pack competitors list. Different category = different keyword opportunity
 5. **Ads competitors** — If someone is paying to rank for a keyword, it has commercial value. Note which keywords have ads running
+6. **Conversational phrasings** — as you read PAA and related searches, rewrite the recurring ones as full questions someone would ask an AI assistant. These feed the Conversational / AI Queries category and are the closest free signal to how models get prompted
 
 This step is often skipped but it's free and produces the highest-quality keyword additions because it's based on actual search behavior, not tool estimates.
 
@@ -253,7 +272,7 @@ Not all keywords produce the same SERP. Check what actually appears:
 | Local pack (3-pack) | Implicit local intent — GBP optimization critical |
 | LSAs at top | Pay-per-lead opportunity, high commercial intent |
 | Ads in map pack | Local search ads opportunity |
-| AI Overview | Content needs to be AI-parseable |
+| AI Overview / AI Mode | Query is answered by synthesis and citation, not ten blue links — the target shifts from ranking a page to being a cited source (see `ai-local-search`) |
 | People Also Ask | FAQ content opportunity |
 | Organic only (no local pack) | Informational intent, blog/guide content |
 
