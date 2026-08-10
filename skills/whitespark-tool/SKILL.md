@@ -2,7 +2,7 @@
 name: whitespark-tool
 description: When the user wants citation gap analysis, managed citation building, review generation campaigns, or local rank tracking. Trigger on "Whitespark," "citation finder," "where are my competitors listed," "citation gap," "build citations," "review generation tool," or "get more reviews." Note that Whitespark does NOT have an MCP server — it's dashboard-driven with limited API.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   author: Garrett Smith
 ---
 
@@ -10,7 +10,7 @@ metadata:
 
 > **Note:** LocalSEOData (`localseodata-tool`) now covers citation audits via `citation_audit`. Use LocalSEOData as default for citation data. Whitespark remains the preferred tool for citation building and review generation campaigns (Reputation Builder).
 
-Whitespark does NOT currently have an MCP server. It's primarily a dashboard tool with managed services. The agent's role is to guide what to do in Whitespark and interpret data the user provides from it.
+Whitespark does NOT have an MCP server. Two of its products now expose REST APIs — the Local Rank Tracker and Local Ranking Grids (geogrids), both in beta — so an agent can pull ranking and grid data directly for those. Its citation products have no API and remain dashboard/managed, so for citations the agent's role is to guide what to do in Whitespark and interpret data the user provides. See the Whitespark APIs section below.
 
 ## When to Use Whitespark vs Other Tools
 
@@ -119,6 +119,43 @@ These two overlap significantly. Here's when to use which:
 - For local businesses, Local Falcon geogrid is far more useful
 - Whitespark rank tracking is fine for organic keyword tracking alongside geogrid
 
+## Whitespark APIs
+
+Two Whitespark products expose REST APIs. Both are **beta** — endpoints and response shapes may change — and neither is an MCP server, so calls are made directly or via a custom integration, not through an agent connector. There is **no citation API**; citation building and audits stay in the dashboard/managed service.
+
+For citation *data*, LocalSEOData (`citation_audit`) is the default. For geogrid depth beyond what the grids API exposes, LocalSEOData (`geogrid_scan`) or Local Falcon give point-level data.
+
+### Local Ranking Grids (Geogrid) API
+
+Reference: https://lrg.whitespark.ca/api-docs
+
+Built for **reporting integration** — pulling grid summaries and embedding grid visuals into reports/dashboards. It does not expose the underlying grid data points.
+
+**Auth:** Bearer token in the `Authorization` header. Generate the token in-app under profile dropdown → API Access.
+
+**Endpoints:**
+- `GET /grids` — paginated list of your ranking grids with summary metrics: visibility score, average rank, and review score. Pagination via `page` (default 1) and `per_page` (default 50, max 100). Response is `data` plus a `meta` object (`current_page`, `last_page`, `per_page`, `total`).
+- `GET /grid/{grid_id}/download-screenshot/{mode}` — returns the most recent screenshot for a grid; `mode` is `with-metrics` or `without-metrics`. `grid_id` is the UUID from the grid's URL. Returns 404 if no screenshot exists. Embeddable via `<img>`. Enable **Automatic screenshots** on the API access page so every completed scan refreshes this URL.
+
+**Not available via the API (dashboard only):** individual data points within a grid, competitor data points, creating grids, and modifying grids or run schedules.
+
+**Use it for:** embedding an always-current geogrid image and pulling visibility score / average rank / review score into a monthly report or portfolio rollup. **Don't reach for it when** you need per-point rankings or competitor grids — use `geogrid_scan` (LocalSEOData) or Local Falcon.
+
+### Local Rank Tracker API
+
+Reference: https://whitespark-api.apidocumentation.com/rank-tracker-api-reference
+
+Beta (v1.0.0, OpenAPI 3.0.0), with separate live and test base URLs. **Auth:** API key passed as a header.
+
+Organized around three resource groups:
+- **campaigns** — list and read rank-tracking campaigns (a campaign is the container for a business's tracked keywords and locations)
+- **campaign** — operate on a single campaign
+- **rankings** — pull ranking results for tracked keywords
+
+The underlying tracker covers Google and Bing across Local Pack, Maps, and organic, desktop and mobile, up to 100 positions, with geo-targeting and a weighted Visibility Score. Verify exact paths, parameters, and response schemas in the API reference above — the beta docs are the source of truth, and the "Download OpenAPI Document" link there provides the full schema. Beta questions go to troy@whitespark.ca.
+
+**Use it for:** automating organic/Local Pack keyword-position and Visibility Score pulls into recurring reports alongside geogrid data. **Don't reach for it when** geographic coverage matters more than single-point positions — that's what the grids API and `geogrid_scan` are for.
+
 ## What to Do Next
 
 | What You Found | Next Action | Skill |
@@ -128,5 +165,7 @@ These two overlap significantly. Here's when to use which:
 | Review generation campaign running | Monitor velocity and adjust messaging if response rate is low | `review-management` |
 | Citation data needs to go in a report | Include in audit or monthly report | `client-deliverables`, `local-reporting` |
 | Need MCP-accessible citation data | Use BrightLocal instead | `brightlocal-tool` |
+| Need grid visuals or summary metrics in a report | Pull via the Local Ranking Grids API | `local-reporting`, `client-deliverables` |
+| Need keyword positions or Visibility Score in a report | Pull via the Local Rank Tracker API | `local-reporting` |
 
 **Default next step:** Whitespark's strength is managed citation services. If you need automated, agent-accessible citation data, use BrightLocal. If you need the highest-quality citation building, use Whitespark's managed service.
