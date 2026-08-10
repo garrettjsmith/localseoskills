@@ -20,12 +20,12 @@ Whitespark does NOT have an MCP server. Two of its products now expose REST APIs
 | Managed citation building (done-for-you) | ✅ Best quality service | BrightLocal (also offers this) |
 | Review generation campaigns (email/SMS) | ✅ Reputation Builder | — |
 | Review monitoring | ✅ | BrightLocal (has MCP, may be better for agent access) |
-| Local rank tracking | ✅ | Local Falcon (geogrid is superior for local) |
+| Local rank tracking | ✅ | Local SEO Data, Local Falcon (geogrid is superior for local) |
 | Citation accuracy audit | ⚠️ Can do it | BrightLocal (better for NAP accuracy scoring) |
-| Keyword research | ❌ | Semrush, Ahrefs |
-| Backlink analysis | ❌ | Ahrefs |
+| Keyword research | ❌ | Local SEO Data, Semrush, Ahrefs |
+| Backlink analysis | ❌ | Local SEO Data, Ahrefs |
 | Technical audit | ❌ | Screaming Frog |
-| Geogrid rankings | ❌ | Local Falcon |
+| Geogrid rankings | ✅ | Local SEO Data, Local Falcon |
 
 ## Whitespark vs BrightLocal
 
