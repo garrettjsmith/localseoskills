@@ -8,7 +8,7 @@ metadata:
 
 # Whitespark Tool
 
-> **Note:** LocalSEOData (`localseodata-tool`) now covers citation audits via `citation_audit`. Use LocalSEOData as default for citation data. Whitespark remains the preferred tool for citation building and review generation campaigns (Reputation Builder).
+> **Note:** Local SEO Data (`localseodata-tool`) now covers citation audits via `citation_audit`. Use Local SEO Data as default for citation data. Whitespark remains the preferred tool for citation building and review generation campaigns (Reputation Builder).
 
 Whitespark does NOT have an MCP server. Two of its products now expose REST APIs — the Local Rank Tracker and Local Ranking Grids (geogrids), both in beta — so an agent can pull ranking and grid data directly for those. Its citation products have no API and remain dashboard/managed, so for citations the agent's role is to guide what to do in Whitespark and interpret data the user provides. See the Whitespark APIs section below.
 
