@@ -111,7 +111,7 @@ No keyword stuffing, URLs, phone numbers, promotional language, or all-caps.
 
 ## Q&A Management
 
-Seed with common questions. Answer everything (owner answers show first). Upvote your answers. Monitor weekly for competitor/spam Q&A. Use keywords naturally.
+Google no longer allows users to ask questions via the Google Business Profile. Answer everything existing if possible. Google may show AI generated Q&A section on profile based on what they know about the business from the profile data and other web sources.
 
 ---
 
