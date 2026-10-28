@@ -253,8 +253,10 @@ function Update-Existing {
 function Test-OurLink($item) {
     # A junction pointing into this install's skills folder. StartsWith, not
     # -like: profile paths can hold [ ] wildcards, and C:\Foo must not match C:\Foobar.
-    ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -and
-        "$($item.Target)".StartsWith((Join-Path $InstallDir "skills") + "\", [System.StringComparison]::OrdinalIgnoreCase)
+    # Both sides go through GetFullPath so C:/x and C:\x compare equal.
+    $root = [System.IO.Path]::GetFullPath((Join-Path $InstallDir "skills")).TrimEnd('\') + '\'
+    ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -and "$($item.Target)" -and
+        [System.IO.Path]::GetFullPath("$($item.Target)").StartsWith($root, [System.StringComparison]::OrdinalIgnoreCase)
 }
 
 function Link-Skills {

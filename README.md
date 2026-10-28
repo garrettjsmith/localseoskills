@@ -105,10 +105,12 @@ Claude handles the import. Takes 60-90 seconds. One time.
 npx skills add garrettjsmith/localseoskills
 ```
 
-Or clone it directly:
+Or clone it and link each skill, since agents look one folder deep:
 
 ```bash
-git clone https://github.com/garrettjsmith/localseoskills.git ~/.agents/skills/localseoskills
+git clone https://github.com/garrettjsmith/localseoskills.git ~/.agents/localseoskills
+mkdir -p ~/.agents/skills
+for d in ~/.agents/localseoskills/skills/*/; do ln -s "${d%/}" ~/.agents/skills/; done
 ```
 
 Skills are platform-agnostic markdown. Any agent that reads the [Agent Skills spec](https://agentskills.io/specification.md) can use them as context.
