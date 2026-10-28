@@ -183,7 +183,7 @@ main() {
 
   # The plugin already provides the skills and the data server; linking them
   # here too would show every skill and tool twice.
-  if command -v claude >/dev/null 2>&1 && claude plugin list 2>/dev/null | grep 'local-seo-skills@' >/dev/null; then
+  if command -v claude >/dev/null 2>&1 && claude plugin list 2>/dev/null | grep -A4 'local-seo-skills@' | grep 'Status:.*enabled' >/dev/null; then
     say "The Local SEO Skills plugin is installed, which already provides the skills and LocalSEOData. Nothing to do."
     say "To use this script instead, uninstall the plugin first (/plugin in Claude Code)."
     exit 0
