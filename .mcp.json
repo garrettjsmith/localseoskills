@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "localseodata": {
+      "type": "http",
+      "url": "https://mcp.localseodata.com/mcp"
+    }
+  }
+}

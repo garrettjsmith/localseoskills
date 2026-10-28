@@ -1,7 +1,9 @@
 # Local SEO Skills installer for Windows (PowerShell).
 #
-# Installs the skills into $HOME\.claude\skills\localseoskills so Claude Code
-# and any agent that reads the Agent Skills spec can discover them. If a
+# Clones the repo to $HOME\.claude\skills\localseoskills, then junctions each
+# skill folder into $HOME\.claude\skills\<name> (the only depth Claude Code
+# scans) so Claude Code and any agent that reads the Agent Skills spec can
+# discover them. If a
 # previous install exists, fetches latest and resets cleanly, preserving any
 # briefs/ directory (client data) by backing it up first.
 #
@@ -245,6 +247,31 @@ function Update-Existing {
     Invoke-Git @("-C", $InstallDir, "reset", "--hard", "origin/$branch")
 }
 
+# Claude Code only discovers <skills dir>\<name>\SKILL.md, one level deep, so
+# junction each skill folder out of the clone. Junctions need no admin rights.
+# Never replaces something that isn't already a junction into this clone.
+function Link-Skills {
+    $skillsDir = if ($env:LSS_SKILLS_DIR) { $env:LSS_SKILLS_DIR } else { Join-Path $HOME ".claude\skills" }
+    if (-not (Test-Path $skillsDir)) { New-Item -ItemType Directory -Path $skillsDir -Force | Out-Null }
+    $linked = 0
+    Get-ChildItem -LiteralPath (Join-Path $InstallDir "skills") -Directory | ForEach-Object {
+        if (-not (Test-Path (Join-Path $_.FullName "SKILL.md"))) { return }
+        $target = Join-Path $skillsDir $_.Name
+        if (Test-Path $target) {
+            $item = Get-Item -LiteralPath $target -Force
+            $ours = ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -and ("$($item.Target)" -like "$InstallDir*")
+            if (-not $ours) {
+                Say "Skipping $($_.Name): $target already exists and is not from this install."
+                return
+            }
+            [System.IO.Directory]::Delete($target)
+        }
+        New-Item -ItemType Junction -Path $target -Target $_.FullName | Out-Null
+        $linked++
+    }
+    Say "Linked $linked skills into $skillsDir"
+}
+
 function Configure-Mcp {
     # Non-interactive contexts (CI, remoting) skip MCP setup silently.
     if ($env:CI -or $env:GITHUB_ACTIONS) { return }
@@ -413,6 +440,8 @@ function Main {
         } else {
             Install-Fresh
         }
+
+        Link-Skills
 
         Say "Local SEO Skills installed."
 

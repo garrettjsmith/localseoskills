@@ -293,6 +293,14 @@ function Main {
         Backup-Briefs $InstallDir
     }
 
+    # Remove the per-skill junctions install.ps1 created (ones into this install only).
+    $skillsDir = if ($env:LSS_SKILLS_DIR) { $env:LSS_SKILLS_DIR } else { Join-Path $HOME ".claude\skills" }
+    if (Test-Path $skillsDir) {
+        Get-ChildItem -LiteralPath $skillsDir -Directory -Force | Where-Object {
+            ($_.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -and ("$($_.Target)" -like "$InstallDir*")
+        } | ForEach-Object { [System.IO.Directory]::Delete($_.FullName) }
+    }
+
     Remove-Path $InstallDir
     Say "Removed $InstallDir"
 }

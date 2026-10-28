@@ -196,6 +196,13 @@ main() {
     cp -a "$INSTALL_DIR/briefs" "$dst"
   fi
 
+  # Remove the per-skill links install.sh created (links into this install only).
+  local skills_dir="${LSS_SKILLS_DIR:-${HOME}/.claude/skills}" link
+  for link in "$skills_dir"/*; do
+    if [ -L "$link" ] && [[ "$(readlink "$link")" == "$INSTALL_DIR/skills/"* ]]; then
+      rm "$link"
+    fi
+  done
   rm -rf "$INSTALL_DIR"
   say "Removed $INSTALL_DIR"
 }

@@ -5,15 +5,15 @@
     "email": "help@localseoskills.com"
   },
   "metadata": {
-    "description": "Local SEO skills and automation for Claude Code.",
-    "version": "1.0.1"
+    "description": "Local SEO skills and automation for AI agents.",
+    "version": "1.1.0"
   },
   "plugins": [
     {
       "name": "local-seo-skills",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "source": "./",
-      "description": "38 skills for local SEO in Claude Code. GBP optimization, map pack visibility, audits, citations, reviews, keywords, geogrid, AI visibility, multi-location SEO, and reporting. Includes a persistent brief system and 15 scheduled task templates.",
+      "description": "39 skills for local SEO, installed as a Claude Code plugin. GBP optimization, map pack visibility, audits, citations, reviews, keywords, geogrid, AI visibility, multi-location SEO, and reporting. Includes a persistent brief system and 15 scheduled task templates.",
       "category": "seo",
       "tags": [
         "local-seo",

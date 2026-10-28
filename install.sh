@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # Local SEO Skills installer for macOS / Linux.
 #
-# Installs the skills into ~/.claude/skills/localseoskills so Claude Code and
-# any agent that reads the Agent Skills spec can discover them. If a previous
+# Clones the repo to ~/.claude/skills/localseoskills, then links each skill
+# folder into ~/.claude/skills/<name> (the only depth Claude Code scans) so
+# Claude Code and any agent that reads the Agent Skills spec can discover
+# them. If a previous
 # install exists, fetches latest and fast-forwards cleanly, preserving any
 # briefs/ directory (client data) by backing it up first.
 #
@@ -19,6 +21,7 @@ set -euo pipefail
 
 REPO_URL="https://github.com/garrettjsmith/localseoskills.git"
 INSTALL_DIR="${LSS_INSTALL_DIR:-${HOME:?HOME is not set}/.claude/skills/localseoskills}"
+SKILLS_DIR="${LSS_SKILLS_DIR:-${HOME}/.claude/skills}"
 
 say() {
   printf '\033[1;32m>\033[0m %s\n' "$1"
@@ -108,6 +111,28 @@ update_existing() {
   if ! git -C "$INSTALL_DIR" reset --hard "origin/$branch"; then
     fail "git reset failed. Remove $INSTALL_DIR manually and rerun."
   fi
+}
+
+# Claude Code only discovers <skills dir>/<name>/SKILL.md, one level deep, so
+# link each skill folder out of the clone. Never replaces something that isn't
+# already a link into this clone (a user's own skill with the same name wins).
+link_skills() {
+  mkdir -p "$SKILLS_DIR"
+  local dir name target linked=0
+  for dir in "$INSTALL_DIR"/skills/*/; do
+    [ -f "${dir}SKILL.md" ] || continue
+    name="$(basename "$dir")"
+    target="$SKILLS_DIR/$name"
+    if [ -L "$target" ] && [[ "$(readlink "$target")" == "$INSTALL_DIR/skills/"* ]]; then
+      rm "$target"
+    elif [ -e "$target" ] || [ -L "$target" ]; then
+      say "Skipping $name: $target already exists and is not from this install."
+      continue
+    fi
+    ln -s "${dir%/}" "$target"
+    linked=$((linked + 1))
+  done
+  say "Linked $linked skills into $SKILLS_DIR"
 }
 
 configure_mcp() {
@@ -276,6 +301,8 @@ main() {
   else
     install_fresh
   fi
+
+  link_skills
 
   say "Local SEO Skills installed."
 

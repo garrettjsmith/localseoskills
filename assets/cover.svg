@@ -58,7 +58,7 @@
        fit each string with consistent inner padding. -->
   <g font-family="JetBrains Mono" font-weight="600" font-size="22">
     <rect x="80" y="470" width="168" height="46" rx="23" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1.5"/>
-    <text x="164" y="501" text-anchor="middle" fill="#15803D">38 skills</text>
+    <text x="164" y="501" text-anchor="middle" fill="#15803D">39 skills</text>
 
     <rect x="264" y="470" width="320" height="46" rx="23" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1.5"/>
     <text x="424" y="501" text-anchor="middle" fill="#15803D">12 tool integrations</text>
