@@ -223,6 +223,8 @@ See [tasks/](tasks/) for individual task files and [specs/](specs/) for the appr
 
 [Local SEO Data](https://localseodata.com) is the default data tool for Local SEO Skills. One MCP connection, 53 tools across SERP data, business intelligence, audits, reviews, citations, keywords, AI visibility, competitor analysis, and geogrid scans.
 
+To connect it outside the plugin, add the MCP server `https://mcp.localseodata.com/mcp` to your agent (Claude Code: `claude mcp add --transport http --scope user localseodata https://mcp.localseodata.com/mcp`; Claude Desktop: Settings → Connectors → Add custom connector). You sign in through the browser the first time a tool runs. New accounts start with a free credit balance.
+
 Other tools (Local Falcon, Ahrefs, Semrush, and the rest) are positioned as specialists for things LocalSEOData doesn't cover: geogrid trend reports, deep backlink analysis, full site crawls, and actual traffic data.
 
 See [docs/tool-routing.md](docs/tool-routing.md) for the full decision tree.

@@ -273,106 +273,27 @@ function Link-Skills {
 }
 
 function Configure-Mcp {
-    # Non-interactive contexts (CI, remoting) skip MCP setup silently.
-    if ($env:CI -or $env:GITHUB_ACTIONS) { return }
-    if (-not [Environment]::UserInteractive) { return }
+    # The server signs people in with OAuth in the browser on first use, so no
+    # API key is asked for or written to any config file.
+    $mcpUrl = "https://mcp.localseodata.com/mcp"
 
-    Write-Host ""
-    $answer = Read-Host "Connect LocalSEOData (free API key at localseodata.com/signup)? [Y/n]"
-    if ($answer -match '^[Nn]') { return }
-
-    $secure = Read-Host "API key" -AsSecureString
-    $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
-    try {
-        $apiKey = [Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
-    } finally {
-        [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr)
-    }
-    if ([string]::IsNullOrWhiteSpace($apiKey)) {
-        Say "Skipped. Configure MCP later per the README."
-        return
-    }
-
-    $mcpUrl = "https://mcp.localseodata.com/mcp?key=$apiKey"
-    $configured = $false
-
-    # Claude Code CLI — check if already configured, then add with correct flags.
     if (Get-Command claude -ErrorAction SilentlyContinue) {
-        $prevEAP = $ErrorActionPreference
-        try {
-            $ErrorActionPreference = 'Continue'
-            $existing = & claude mcp list 2>$null
-            if ($existing -match 'localseodata') {
-                Say "LocalSEOData already configured in Claude Code, skipping."
-                $configured = $true
-            } else {
-                & claude mcp add --transport http --scope user localseodata "$mcpUrl" 2>$null
-                if ($LASTEXITCODE -eq 0) {
-                    Say "LocalSEOData added to Claude Code (all projects)."
-                    $configured = $true
-                }
-            }
-        } catch {} finally {
-            $ErrorActionPreference = $prevEAP
+        $existing = & claude mcp list 2>$null
+        if ($existing -match 'localseodata') {
+            Say "LocalSEOData already configured in Claude Code, skipping."
+            return
+        }
+        & claude mcp add --transport http --scope user localseodata "$mcpUrl" 2>$null
+        if ($LASTEXITCODE -eq 0) {
+            Say "LocalSEOData added to Claude Code (all projects). You'll sign in the first time a tool runs."
+            return
         }
     }
 
-    # Claude Desktop (Windows) — edit the global config JSON directly.
-    # PS 5.1 compatible: avoid -AsHashtable (PS 6+ only). Parse to PSObject,
-    # convert manually to hashtable for safe key manipulation.
-    $desktopConfig = Join-Path $env:APPDATA "Claude\claude_desktop_config.json"
-    if (Test-Path $desktopConfig) {
-        try {
-            $config = @{}
-            $raw = Get-Content -Raw $desktopConfig -ErrorAction SilentlyContinue
-            if ($raw) {
-                try {
-                    $parsed = $raw | ConvertFrom-Json
-                    $parsed.PSObject.Properties | ForEach-Object {
-                        if ($_.Name -eq 'mcpServers' -and $_.Value) {
-                            $servers = @{}
-                            $_.Value.PSObject.Properties | ForEach-Object { $servers[$_.Name] = $_.Value }
-                            $config[$_.Name] = $servers
-                        } else {
-                            $config[$_.Name] = $_.Value
-                        }
-                    }
-                }
-                catch {
-                    $bak = "$desktopConfig.bak"
-                    Copy-Item $desktopConfig $bak -Force
-                    Say "Existing config was unparseable; backed up to $bak"
-                    $config = @{}
-                }
-            }
-            if (-not $config.ContainsKey('mcpServers')) {
-                $config['mcpServers'] = @{}
-            }
-            if ($config['mcpServers'].ContainsKey('localseodata')) {
-                Say "localseodata already in Claude Desktop config, updating."
-            }
-            $config['mcpServers']['localseodata'] = @{ url = $mcpUrl }
-            # Atomic write: temp file then rename, so a kill mid-write can't corrupt.
-            $tmpFile = "$desktopConfig.$([System.Guid]::NewGuid().ToString('N').Substring(0,8)).tmp"
-            $json = $config | ConvertTo-Json -Depth 10
-            [System.IO.File]::WriteAllText($tmpFile, $json, [System.Text.UTF8Encoding]::new($false))
-            Move-Item -Path $tmpFile -Destination $desktopConfig -Force
-            Say "LocalSEOData added to Claude Desktop."
-            $configured = $true
-        } catch {
-            if (Test-Path $tmpFile -ErrorAction SilentlyContinue) {
-                Remove-Item $tmpFile -Force -ErrorAction SilentlyContinue
-            }
-            # Swallow — fall through to manual instructions.
-        }
-    }
-
-    if (-not $configured) {
-        Say "Add LocalSEOData to your MCP config manually:"
-        Write-Host ""
-        Write-Host "  `"localseodata`": { `"url`": `"$mcpUrl`" }"
-        Write-Host ""
-    }
+    Say "To connect LocalSEOData, add this MCP server in your agent (Claude Desktop: Settings > Connectors > Add custom connector):"
+    Write-Host ""
+    Write-Host "  $mcpUrl"
+    Write-Host ""
 }
 
 function Main {

@@ -10,6 +10,7 @@
   "license": "MIT",
   "homepage": "https://localseoskills.com",
   "privacyPolicyUrl": "https://localseodata.com/privacy",
+  "icon": "assets/logo-mark@2x.png",
   "repository": "https://github.com/garrettjsmith/localseoskills",
   "keywords": [
     "local-seo",
