@@ -147,7 +147,7 @@ configure_mcp() {
   local mcp_url="https://mcp.localseodata.com/mcp"
 
   if command -v claude >/dev/null 2>&1; then
-    if claude mcp list 2>/dev/null | grep -q localseodata; then
+    if claude mcp list 2>/dev/null | grep localseodata >/dev/null; then
       say "LocalSEOData already configured in Claude Code, skipping."
       return 0
     elif claude mcp add --transport http --scope user localseodata "$mcp_url" 2>/dev/null; then

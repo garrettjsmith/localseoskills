@@ -250,17 +250,27 @@ function Update-Existing {
 # Claude Code only discovers <skills dir>\<name>\SKILL.md, one level deep, so
 # junction each skill folder out of the clone. Junctions need no admin rights.
 # Never replaces something that isn't already a junction into this clone.
+function Test-OurLink($item) {
+    # A junction pointing into this install's skills folder. StartsWith, not
+    # -like: profile paths can hold [ ] wildcards, and C:\Foo must not match C:\Foobar.
+    ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -and
+        "$($item.Target)".StartsWith((Join-Path $InstallDir "skills") + "\", [System.StringComparison]::OrdinalIgnoreCase)
+}
+
 function Link-Skills {
     $skillsDir = if ($env:LSS_SKILLS_DIR) { $env:LSS_SKILLS_DIR } else { Join-Path $HOME ".claude\skills" }
-    if (-not (Test-Path $skillsDir)) { New-Item -ItemType Directory -Path $skillsDir -Force | Out-Null }
+    if (-not (Test-Path -LiteralPath $skillsDir)) { New-Item -ItemType Directory -Path $skillsDir -Force | Out-Null }
+    # Drop junctions to skills that no longer exist in the clone (removed upstream).
+    Get-ChildItem -LiteralPath $skillsDir -Force | Where-Object { (Test-OurLink $_) -and -not (Test-Path -LiteralPath "$($_.Target)") } |
+        ForEach-Object { [System.IO.Directory]::Delete($_.FullName) }
     $linked = 0
     Get-ChildItem -LiteralPath (Join-Path $InstallDir "skills") -Directory | ForEach-Object {
-        if (-not (Test-Path (Join-Path $_.FullName "SKILL.md"))) { return }
+        if (-not (Test-Path -LiteralPath (Join-Path $_.FullName "SKILL.md"))) { return }
         $target = Join-Path $skillsDir $_.Name
-        if (Test-Path $target) {
-            $item = Get-Item -LiteralPath $target -Force
-            $ours = ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -and ("$($item.Target)" -like "$InstallDir*")
-            if (-not $ours) {
+        # Get-Item, not Test-Path: Test-Path is false for a junction whose target is gone.
+        $item = Get-Item -LiteralPath $target -Force -ErrorAction SilentlyContinue
+        if ($item) {
+            if (-not (Test-OurLink $item)) {
                 Say "Skipping $($_.Name): $target already exists and is not from this install."
                 return
             }
@@ -278,16 +288,20 @@ function Configure-Mcp {
     $mcpUrl = "https://mcp.localseodata.com/mcp"
 
     if (Get-Command claude -ErrorAction SilentlyContinue) {
-        $existing = & claude mcp list 2>$null
-        if ($existing -match 'localseodata') {
-            Say "LocalSEOData already configured in Claude Code, skipping."
-            return
-        }
-        & claude mcp add --transport http --scope user localseodata "$mcpUrl" 2>$null
-        if ($LASTEXITCODE -eq 0) {
-            Say "LocalSEOData added to Claude Code (all projects). You'll sign in the first time a tool runs."
-            return
-        }
+        # A .cmd/.ps1 shim can throw under ErrorActionPreference=Stop; the skills
+        # are already linked, so fall through to the manual step instead.
+        try {
+            $existing = & claude mcp list 2>$null
+            if ($existing -match 'localseodata') {
+                Say "LocalSEOData already configured in Claude Code, skipping."
+                return
+            }
+            & claude mcp add --transport http --scope user localseodata "$mcpUrl" 2>$null
+            if ($LASTEXITCODE -eq 0) {
+                Say "LocalSEOData added to Claude Code (all projects). You'll sign in the first time a tool runs."
+                return
+            }
+        } catch {}
     }
 
     Say "To connect LocalSEOData, add this MCP server in your agent (Claude Desktop: Settings > Connectors > Add custom connector):"
