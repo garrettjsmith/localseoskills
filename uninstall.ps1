@@ -280,8 +280,11 @@ function Remove-SkillLinks {
     $root = [System.IO.Path]::GetFullPath((Join-Path $InstallDir "skills")).TrimEnd('\') + '\'
     if (Test-Path -LiteralPath $skillsDir) {
         Get-ChildItem -LiteralPath $skillsDir -Force | Where-Object {
-            ($_.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -and "$($_.Target)" -and
-                [System.IO.Path]::GetFullPath("$($_.Target)").StartsWith($root, [System.StringComparison]::OrdinalIgnoreCase)
+            # A target GetFullPath can't parse isn't ours.
+            try {
+                ($_.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -and "$($_.Target)" -and
+                    [System.IO.Path]::GetFullPath("$($_.Target)").StartsWith($root, [System.StringComparison]::OrdinalIgnoreCase)
+            } catch { $false }
         } | ForEach-Object { [System.IO.Directory]::Delete($_.FullName) }
     }
 }

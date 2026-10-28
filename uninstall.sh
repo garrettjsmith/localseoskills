@@ -38,9 +38,9 @@ fail() {
 
 # Remove the per-skill links install.sh created (links into this install only).
 remove_skill_links() {
-  local skills_dir="${LSS_SKILLS_DIR:-${HOME}/.claude/skills}" link
+  local skills_dir="${LSS_SKILLS_DIR:-${HOME}/.claude/skills}" link install_dir="${INSTALL_DIR%/}"
   for link in "$skills_dir"/*; do
-    if [ -L "$link" ] && [[ "$(readlink "$link")" == "$INSTALL_DIR/skills/"* ]]; then
+    if [ -L "$link" ] && [[ "$(readlink "$link")" == "$install_dir/skills/"* ]]; then
       rm "$link"
     fi
   done

@@ -149,11 +149,22 @@ configure_mcp() {
   if command -v claude >/dev/null 2>&1; then
     # Earlier installers baked an API key into the URL (?key=), stored in
     # plain text in ~/.claude.json. Swap it for the sign-in URL.
-    if claude mcp get localseodata 2>/dev/null | grep 'key=' >/dev/null; then
-      claude mcp remove localseodata >/dev/null 2>&1 || true
+    local existing=""
+    existing="$(claude mcp get localseodata 2>/dev/null)" || existing=""
+    if printf '%s' "$existing" | grep 'key=' >/dev/null; then
+      local scope
+      for scope in local project user; do
+        claude mcp remove localseodata --scope "$scope" >/dev/null 2>&1 || true
+      done
+      if claude mcp get localseodata >/dev/null 2>&1; then
+        say "Couldn't remove your old LocalSEOData entry, which has an API key in its URL. Run: claude mcp remove localseodata"
+        say "Then revoke that key at localseodata.com/dashboard/keys and rerun this script."
+        return 0
+      fi
       say "Replaced your old key-based LocalSEOData connection with browser sign-in. You can revoke that key at localseodata.com/dashboard/keys."
+      existing=""
     fi
-    if claude mcp get localseodata >/dev/null 2>&1; then
+    if [ -n "$existing" ]; then
       say "LocalSEOData already configured in Claude Code, skipping."
       return 0
     elif claude mcp add --transport http --scope user localseodata "$mcp_url" 2>/dev/null; then

@@ -254,9 +254,12 @@ function Test-OurLink($item) {
     # A junction pointing into this install's skills folder. StartsWith, not
     # -like: profile paths can hold [ ] wildcards, and C:\Foo must not match C:\Foobar.
     # Both sides go through GetFullPath so C:/x and C:\x compare equal.
-    $root = [System.IO.Path]::GetFullPath((Join-Path $InstallDir "skills")).TrimEnd('\') + '\'
-    ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -and "$($item.Target)" -and
-        [System.IO.Path]::GetFullPath("$($item.Target)").StartsWith($root, [System.StringComparison]::OrdinalIgnoreCase)
+    # A target GetFullPath can't parse isn't ours.
+    try {
+        $root = [System.IO.Path]::GetFullPath((Join-Path $InstallDir "skills")).TrimEnd('\') + '\'
+        ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -and "$($item.Target)" -and
+            [System.IO.Path]::GetFullPath("$($item.Target)").StartsWith($root, [System.StringComparison]::OrdinalIgnoreCase)
+    } catch { $false }
 }
 
 function Link-Skills {
@@ -296,12 +299,21 @@ function Configure-Mcp {
             # Earlier installers baked an API key into the URL (?key=), stored in
             # plain text in ~/.claude.json. Swap it for the sign-in URL.
             $existing = & claude mcp get localseodata 2>$null
-            if ($LASTEXITCODE -eq 0 -and ($existing -match 'key=')) {
-                & claude mcp remove localseodata 2>$null | Out-Null
+            $found = $LASTEXITCODE -eq 0
+            if ($found -and ($existing -match 'key=')) {
+                foreach ($scope in "local", "project", "user") {
+                    & claude mcp remove localseodata --scope $scope *> $null
+                }
+                & claude mcp get localseodata *> $null
+                if ($LASTEXITCODE -eq 0) {
+                    Say "Couldn't remove your old LocalSEOData entry, which has an API key in its URL. Run: claude mcp remove localseodata"
+                    Say "Then revoke that key at localseodata.com/dashboard/keys and rerun this script."
+                    return
+                }
                 Say "Replaced your old key-based LocalSEOData connection with browser sign-in. You can revoke that key at localseodata.com/dashboard/keys."
+                $found = $false
             }
-            & claude mcp get localseodata *> $null
-            if ($LASTEXITCODE -eq 0) {
+            if ($found) {
                 Say "LocalSEOData already configured in Claude Code, skipping."
                 return
             }
@@ -331,7 +343,7 @@ function Main {
         if ($plugins -match 'local-seo-skills@[^\n]*(\n[^\n]*){0,4}Status:[^\n]*enabled') {
             Say "The Local SEO Skills plugin is installed, which already provides the skills and LocalSEOData. Nothing to do."
             Say "To use this script instead, uninstall the plugin first (/plugin in Claude Code)."
-            exit 0
+            return
         }
     }
 
