@@ -327,7 +327,7 @@ function Main {
     # The plugin already provides the skills and the data server; linking them
     # here too would show every skill and tool twice.
     if (Get-Command claude -ErrorAction SilentlyContinue) {
-        $plugins = (try { & claude plugin list 2>$null } catch { "" }) -join "`n"
+        $plugins = try { (& claude plugin list 2>$null) -join "`n" } catch { "" }
         if ($plugins -match 'local-seo-skills@[^\n]*(\n[^\n]*){0,4}Status:[^\n]*enabled') {
             Say "The Local SEO Skills plugin is installed, which already provides the skills and LocalSEOData. Nothing to do."
             Say "To use this script instead, uninstall the plugin first (/plugin in Claude Code)."
