@@ -293,8 +293,15 @@ function Configure-Mcp {
         # A .cmd/.ps1 shim can throw under ErrorActionPreference=Stop; the skills
         # are already linked, so fall through to the manual step instead.
         try {
-            $existing = & claude mcp list 2>$null
-            if ($existing -match 'localseodata') {
+            # Earlier installers baked an API key into the URL (?key=), stored in
+            # plain text in ~/.claude.json. Swap it for the sign-in URL.
+            $existing = & claude mcp get localseodata 2>$null
+            if ($LASTEXITCODE -eq 0 -and ($existing -match 'key=')) {
+                & claude mcp remove localseodata 2>$null | Out-Null
+                Say "Replaced your old key-based LocalSEOData connection with browser sign-in. You can revoke that key at localseodata.com/dashboard/keys."
+            }
+            & claude mcp get localseodata *> $null
+            if ($LASTEXITCODE -eq 0) {
                 Say "LocalSEOData already configured in Claude Code, skipping."
                 return
             }
@@ -315,6 +322,17 @@ function Configure-Mcp {
 function Main {
     if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
         Fail "git is required but not found. Install git for Windows and try again."
+    }
+
+    # The plugin already provides the skills and the data server; linking them
+    # here too would show every skill and tool twice.
+    if (Get-Command claude -ErrorAction SilentlyContinue) {
+        $plugins = try { & claude plugin list 2>$null } catch { "" }
+        if ($plugins -match 'local-seo-skills@') {
+            Say "The Local SEO Skills plugin is installed, which already provides the skills and LocalSEOData. Nothing to do."
+            Say "To use this script instead, uninstall the plugin first (/plugin in Claude Code)."
+            exit 0
+        }
     }
 
     # Refuse system paths, UNC/device forms, 8.3 short names, and paths with

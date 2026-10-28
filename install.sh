@@ -147,7 +147,13 @@ configure_mcp() {
   local mcp_url="https://mcp.localseodata.com/mcp"
 
   if command -v claude >/dev/null 2>&1; then
-    if claude mcp list 2>/dev/null | grep localseodata >/dev/null; then
+    # Earlier installers baked an API key into the URL (?key=), stored in
+    # plain text in ~/.claude.json. Swap it for the sign-in URL.
+    if claude mcp get localseodata 2>/dev/null | grep 'key=' >/dev/null; then
+      claude mcp remove localseodata >/dev/null 2>&1 || true
+      say "Replaced your old key-based LocalSEOData connection with browser sign-in. You can revoke that key at localseodata.com/dashboard/keys."
+    fi
+    if claude mcp get localseodata >/dev/null 2>&1; then
       say "LocalSEOData already configured in Claude Code, skipping."
       return 0
     elif claude mcp add --transport http --scope user localseodata "$mcp_url" 2>/dev/null; then
@@ -174,6 +180,14 @@ cleanup() {
 
 main() {
   command -v git >/dev/null 2>&1 || fail "git is required but not found. Install git and try again."
+
+  # The plugin already provides the skills and the data server; linking them
+  # here too would show every skill and tool twice.
+  if command -v claude >/dev/null 2>&1 && claude plugin list 2>/dev/null | grep 'local-seo-skills@' >/dev/null; then
+    say "The Local SEO Skills plugin is installed, which already provides the skills and LocalSEOData. Nothing to do."
+    say "To use this script instead, uninstall the plugin first (/plugin in Claude Code)."
+    exit 0
+  fi
 
   # Pre-install path guard. Install is not destructive like uninstall, but
   # an admin running `install.sh` with LSS_INSTALL_DIR pointing at a system

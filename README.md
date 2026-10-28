@@ -102,15 +102,17 @@ Claude handles the import. Takes 60-90 seconds. One time.
 ### Cursor, Codex, OpenClaw, or any Agent Skills-compatible agent
 
 ```bash
-npx skills add garrettjsmith/localseoskills
+npx skills add garrettjsmith/localseoskills -g
 ```
+
+It asks which agents to install for; `-g` installs for your user rather than the current project.
 
 Or clone it and link each skill, since agents look one folder deep:
 
 ```bash
 git clone https://github.com/garrettjsmith/localseoskills.git ~/.agents/localseoskills
 mkdir -p ~/.agents/skills
-for d in ~/.agents/localseoskills/skills/*/; do ln -s "${d%/}" ~/.agents/skills/; done
+for d in ~/.agents/localseoskills/skills/*/; do ln -sfn "${d%/}" ~/.agents/skills/; done
 ```
 
 Skills are platform-agnostic markdown. Any agent that reads the [Agent Skills spec](https://agentskills.io/specification.md) can use them as context.
@@ -225,7 +227,9 @@ See [tasks/](tasks/) for individual task files and [specs/](specs/) for the appr
 
 [Local SEO Data](https://localseodata.com) is the default data tool for Local SEO Skills. One MCP connection, 53 tools across SERP data, business intelligence, audits, reviews, citations, keywords, AI visibility, competitor analysis, and geogrid scans.
 
-To connect it outside the plugin, add the MCP server `https://mcp.localseodata.com/mcp` to your agent (Claude Code: `claude mcp add --transport http --scope user localseodata https://mcp.localseodata.com/mcp`; Claude Desktop: Settings → Connectors → Add custom connector). You sign in through the browser the first time a tool runs. New accounts start with a free credit balance.
+To connect it outside the plugin, add the MCP server `https://mcp.localseodata.com/mcp` to your agent (Claude Code: `claude mcp add --transport http --scope user localseodata https://mcp.localseodata.com/mcp`; Claude Desktop: Settings → Connectors → Add custom connector). You sign in through the browser the first time a tool runs. New accounts start with a free credit balance. Cursor, Codex and other MCP clients: add it as a remote (streamable HTTP) server with the same URL.
+
+Upgrading from 1.0.x? The old installer wrote your API key into the server URL. `install.sh` now replaces that entry in Claude Code. For Claude Desktop, delete the `localseodata` entry from `claude_desktop_config.json` and add the connector instead.
 
 Other tools (Local Falcon, Ahrefs, Semrush, and the rest) are positioned as specialists for things LocalSEOData doesn't cover: geogrid trend reports, deep backlink analysis, full site crawls, and actual traffic data.
 
