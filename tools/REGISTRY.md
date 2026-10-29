@@ -17,7 +17,7 @@ Index of tools used across local SEO workflows. Each tool has a full skill with 
 
 | Tool | Category | Integration | Skill |
 |------|----------|-------------|-------|
-| **LocalSEOData** | **Default data source** — SERP, audits, reviews, citations, keywords, AI visibility, geogrid, competitor analysis (36 endpoints) | **MCP** (connected) | `localseodata-tool` |
+| **LocalSEOData** | **Default data source** — SERP, audits, reviews, citations, keywords, AI visibility, geogrid, competitor analysis (54 tools) | **MCP** (connected) | `localseodata-tool` |
 | Local Falcon | Geogrid trends, recurring campaigns, GBP monitoring, AI platform scans | **MCP** (connected) | `local-falcon-tool` |
 | LSA Spy | LSA market-level ranking tracking and competitive intelligence | **MCP** (connected) | `lsa-spy-tool` |
 | SerpAPI | Live SERP data (fallback if LocalSEOData not connected, or non-Google engines) | **MCP** (connected) | `serpapi-tool` |
@@ -39,7 +39,7 @@ Index of tools used across local SEO workflows. Each tool has a full skill with 
 **MCP Server:** `https://mcp.localseodata.com/mcp`
 **Docs:** `https://localseodata.com/docs`
 
-LocalSEOData is the default data tool for LocalSEOSkills. Check here first before routing to other tools. It covers 36 endpoints across:
+LocalSEOData is the default data tool for LocalSEOSkills. Check here first before routing to other tools. It covers 54 tools across:
 
 - **SERP Data:** Local pack rankings, full organic SERP, Google Maps, Local Finder, Local Services Ads
 - **Business Intelligence:** Complete GBP profile data, Google reviews, Q&A, business listings by category, multi-platform reviews, brand mentions

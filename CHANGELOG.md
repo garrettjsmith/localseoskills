@@ -4,7 +4,17 @@ All notable changes to Local SEO Skills are documented here. Format follows [Kee
 
 Individual skill versions are tracked in [VERSIONS.md](VERSIONS.md).
 
-## [Unreleased]
+## [1.1.0] — Unreleased
+
+### Added
+- The plugin connects the Local SEO Data MCP server on install (`.mcp.json`, `https://mcp.localseodata.com/mcp`). Claude Code opens a browser sign-in the first time a tool is used; no API key goes in any file.
+- Plugin icon and privacy policy link for the plugin directory.
+
+### Changed
+- `install.sh` and `install.ps1` link each skill into `~/.claude/skills/<name>`, the only depth Claude Code scans. Skills used to land two folders deep, where Claude Code never found them. Links to skills removed upstream are pruned on the next run.
+- The installers connect the data server with sign-in instead of asking for an API key. An older install with a key in the server URL has it replaced.
+- With the plugin installed, the installers stop and say so, and tell anyone who ran them before to uninstall, so skills don't show up twice.
+- Counts updated: 39 skills, 54 Local SEO Data tools.
 
 ### Fixed
 - `claude mcp add` syntax: `-s http` was parsed as `--scope http`, not `--transport http`. Fixed to `--transport http --scope user`.
@@ -13,7 +23,6 @@ Individual skill versions are tracked in [VERSIONS.md](VERSIONS.md).
 - Silent backup-then-overwrite on JSON parse failure now prints a message telling the user their config was backed up.
 - Linux Claude Desktop path (`~/.config/Claude/`) now handled in install.sh alongside macOS path.
 - Re-install idempotency: both installers now skip `claude mcp add` and note existing Desktop config entries instead of erroring or duplicating.
-- API key input masked during entry (`read -s` on bash, `-AsSecureString` on PowerShell) to reduce exposure on shared terminals.
 
 ### Security
 - v1.0.1 shipped `curl | bash` and `irm | iex` one-liners in the README, reversing a prior explicit stance against piped-execution installers. This was a deliberate UX decision for install friction parity across platforms, but was not documented as a policy change. Now acknowledged here and in SECURITY.md.

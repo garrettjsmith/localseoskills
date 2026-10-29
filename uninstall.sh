@@ -36,6 +36,16 @@ fail() {
   exit 1
 }
 
+# Remove the per-skill links install.sh created (links into this install only).
+remove_skill_links() {
+  local skills_dir="${LSS_SKILLS_DIR:-${HOME}/.claude/skills}" link install_dir="${INSTALL_DIR%/}"
+  for link in "$skills_dir"/*; do
+    if [ -L "$link" ] && [[ "$(readlink "$link")" == "$install_dir/skills/"* ]]; then
+      rm "$link"
+    fi
+  done
+}
+
 main() {
   # Refuse to operate on catastrophically short paths, system roots, or
   # anything that resolves to the user's home directory. Protects against
@@ -164,6 +174,8 @@ main() {
   fi
 
   if [ ! -e "$INSTALL_DIR" ]; then
+    # A clone deleted by hand leaves its skill links dangling; clear those too.
+    remove_skill_links
     say "Nothing to uninstall at $INSTALL_DIR"
     exit 0
   fi
@@ -196,6 +208,7 @@ main() {
     cp -a "$INSTALL_DIR/briefs" "$dst"
   fi
 
+  remove_skill_links
   rm -rf "$INSTALL_DIR"
   say "Removed $INSTALL_DIR"
 }

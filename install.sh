@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 # Local SEO Skills installer for macOS / Linux.
 #
-# Installs the skills into ~/.claude/skills/localseoskills so Claude Code and
-# any agent that reads the Agent Skills spec can discover them. If a previous
-# install exists, fetches latest and fast-forwards cleanly, preserving any
-# briefs/ directory (client data) by backing it up first.
+# Clones the repo to ~/.claude/skills/localseoskills, then links each skill
+# folder into ~/.claude/skills/<name> (the only depth Claude Code scans) so
+# Claude Code and any agent that reads the Agent Skills spec can discover
+# them. If a previous install exists, fetches latest and fast-forwards
+# cleanly, preserving any briefs/ directory (client data) by backing it up
+# first.
 #
 # Usage (curl one-liner, pipes to bash):
 #   curl -fsSL https://raw.githubusercontent.com/garrettjsmith/localseoskills/main/install.sh | bash
@@ -19,6 +21,7 @@ set -euo pipefail
 
 REPO_URL="https://github.com/garrettjsmith/localseoskills.git"
 INSTALL_DIR="${LSS_INSTALL_DIR:-${HOME:?HOME is not set}/.claude/skills/localseoskills}"
+SKILLS_DIR="${LSS_SKILLS_DIR:-${HOME}/.claude/skills}"
 
 say() {
   printf '\033[1;32m>\033[0m %s\n' "$1"
@@ -110,101 +113,68 @@ update_existing() {
   fi
 }
 
+# Claude Code only discovers <skills dir>/<name>/SKILL.md, one level deep, so
+# link each skill folder out of the clone. Never replaces something that isn't
+# already a link into this clone (a user's own skill with the same name wins).
+link_skills() {
+  mkdir -p "$SKILLS_DIR"
+  local dir name target linked=0
+  # Drop links to skills that no longer exist in the clone (removed upstream).
+  for target in "$SKILLS_DIR"/*; do
+    if [ -L "$target" ] && [[ "$(readlink "$target")" == "$INSTALL_DIR/skills/"* ]] && [ ! -e "$target" ]; then
+      rm "$target"
+    fi
+  done
+  for dir in "$INSTALL_DIR"/skills/*/; do
+    [ -f "${dir}SKILL.md" ] || continue
+    name="$(basename "$dir")"
+    target="$SKILLS_DIR/$name"
+    if [ -L "$target" ] && [[ "$(readlink "$target")" == "$INSTALL_DIR/skills/"* ]]; then
+      rm "$target"
+    elif [ -e "$target" ] || [ -L "$target" ]; then
+      say "Skipping $name: $target already exists and is not from this install."
+      continue
+    fi
+    ln -s "${dir%/}" "$target"
+    linked=$((linked + 1))
+  done
+  say "Linked $linked skills into $SKILLS_DIR"
+}
+
 configure_mcp() {
-  # Interactive prompts need a real terminal. In CI or headless environments,
-  # /dev/tty may exist as a device node but fail to open. Skip gracefully.
-  [ -n "${CI:-}" ] && return 0
-  if [ -t 0 ]; then
-    exec 3<&0
-  elif exec 3</dev/tty 2>/dev/null; then
-    true
-  else
-    return 0
-  fi
+  # The server signs people in with OAuth in the browser on first use, so no
+  # API key is asked for or written to any config file.
+  local mcp_url="https://mcp.localseodata.com/mcp"
 
-  printf '\nConnect LocalSEOData (free API key at localseodata.com/signup)? [Y/n] ' >&2
-  read -r answer <&3
-  case "$answer" in
-    [Nn]*) exec 3<&-; return 0 ;;
-  esac
-
-  printf 'API key: ' >&2
-  read -rs api_key <&3
-  printf '\n' >&2
-  exec 3<&-
-
-  if [ -z "$api_key" ]; then
-    exec 3<&-
-    say "Skipped. Configure MCP later per the README."
-    return 0
-  fi
-
-  local mcp_url="https://mcp.localseodata.com/mcp?key=${api_key}"
-  local configured=0
-
-  # Claude Code CLI — check if already configured, then add with correct flags.
   if command -v claude >/dev/null 2>&1; then
-    if claude mcp list 2>/dev/null | grep -q localseodata; then
+    # Earlier installers baked an API key into the URL (?key=), stored in
+    # plain text in ~/.claude.json. Swap it for the sign-in URL.
+    local existing=""
+    existing="$(claude mcp get localseodata 2>/dev/null)" || existing=""
+    if printf '%s' "$existing" | grep 'key=' >/dev/null; then
+      local scope
+      for scope in local project user; do
+        claude mcp remove localseodata --scope "$scope" >/dev/null 2>&1 || true
+      done
+      if claude mcp get localseodata >/dev/null 2>&1; then
+        say "Couldn't remove your old LocalSEOData entry, which has an API key in its URL. Run: claude mcp remove localseodata"
+        say "Then revoke that key at localseodata.com/dashboard/keys and rerun this script."
+        return 0
+      fi
+      say "Replaced your old key-based LocalSEOData connection with browser sign-in. You can revoke that key at localseodata.com/dashboard/keys."
+      existing=""
+    fi
+    if [ -n "$existing" ]; then
       say "LocalSEOData already configured in Claude Code, skipping."
-      configured=1
+      return 0
     elif claude mcp add --transport http --scope user localseodata "$mcp_url" 2>/dev/null; then
-      say "LocalSEOData added to Claude Code (all projects)."
-      configured=1
+      say "LocalSEOData added to Claude Code (all projects). You'll sign in the first time a tool runs."
+      return 0
     fi
   fi
 
-  # Claude Desktop (macOS / Linux) — edit the global config JSON directly.
-  local desktop_mac="${HOME}/Library/Application Support/Claude/claude_desktop_config.json"
-  local desktop_linux="${HOME}/.config/Claude/claude_desktop_config.json"
-  local desktop_config=""
-  if [ -f "$desktop_mac" ]; then
-    desktop_config="$desktop_mac"
-  elif [ -f "$desktop_linux" ]; then
-    desktop_config="$desktop_linux"
-  fi
-  if [ -n "$desktop_config" ] && command -v python3 >/dev/null 2>&1; then
-    if python3 - "$desktop_config" "$mcp_url" <<'PYEOF'
-import json, sys, os, shutil, tempfile
-config_path, mcp_url = sys.argv[1], sys.argv[2]
-config = {}
-if os.path.exists(config_path):
-    with open(config_path) as f:
-        raw = f.read()
-    if raw.strip():
-        try:
-            config = json.loads(raw)
-        except json.JSONDecodeError:
-            bak = config_path + ".bak"
-            shutil.copy2(config_path, bak)
-            print(f"  Existing config was unparseable; backed up to {bak}")
-if "mcpServers" not in config:
-    config["mcpServers"] = {}
-if "localseodata" in config.get("mcpServers", {}):
-    print("  localseodata already in Claude Desktop config, updating.")
-config["mcpServers"]["localseodata"] = {"url": mcp_url}
-dir_name = os.path.dirname(config_path)
-orig_mode = os.stat(config_path).st_mode if os.path.exists(config_path) else None
-fd, tmp = tempfile.mkstemp(dir=dir_name, suffix=".tmp")
-try:
-    with os.fdopen(fd, "w") as f:
-        json.dump(config, f, indent=2); f.write("\n")
-    if orig_mode is not None:
-        os.chmod(tmp, orig_mode)
-    os.replace(tmp, config_path)
-except Exception:
-    os.unlink(tmp)
-    raise
-PYEOF
-    then
-      say "LocalSEOData added to Claude Desktop."
-      configured=1
-    fi
-  fi
-
-  if [ "$configured" -eq 0 ]; then
-    say "Add LocalSEOData to your MCP config manually:"
-    printf '\n  "localseodata": { "url": "%s" }\n\n' "$mcp_url"
-  fi
+  say "To connect LocalSEOData, add this MCP server in your agent (Claude Desktop: Settings > Connectors > Add custom connector):"
+  printf '\n  %s\n\n' "$mcp_url"
 }
 
 _LSS_TMP=""
@@ -221,6 +191,16 @@ cleanup() {
 
 main() {
   command -v git >/dev/null 2>&1 || fail "git is required but not found. Install git and try again."
+
+  # The plugin already provides the skills and the data server; linking them
+  # here too would show every skill twice. (Claude Code keeps one copy of the
+  # data server, so only the skills would repeat.)
+  if command -v claude >/dev/null 2>&1 && claude plugin list 2>/dev/null | grep -A4 'local-seo-skills@' | grep 'Status:.*enabled' >/dev/null; then
+    say "The Local SEO Skills plugin is installed, which already provides the skills and LocalSEOData. Nothing to do."
+    say "To use this script instead, uninstall the plugin first (/plugin in Claude Code)."
+    say "If you ran this script before installing the plugin, run uninstall.sh to remove its copies, or each skill shows up twice."
+    exit 0
+  fi
 
   # Pre-install path guard. Install is not destructive like uninstall, but
   # an admin running `install.sh` with LSS_INSTALL_DIR pointing at a system
@@ -276,6 +256,8 @@ main() {
   else
     install_fresh
   fi
+
+  link_skills
 
   say "Local SEO Skills installed."
 

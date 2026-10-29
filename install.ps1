@@ -1,9 +1,11 @@
 # Local SEO Skills installer for Windows (PowerShell).
 #
-# Installs the skills into $HOME\.claude\skills\localseoskills so Claude Code
-# and any agent that reads the Agent Skills spec can discover them. If a
-# previous install exists, fetches latest and resets cleanly, preserving any
-# briefs/ directory (client data) by backing it up first.
+# Clones the repo to $HOME\.claude\skills\localseoskills, then junctions each
+# skill folder into $HOME\.claude\skills\<name> (the only depth Claude Code
+# scans) so Claude Code and any agent that reads the Agent Skills spec can
+# discover them. If a previous install exists, fetches latest and resets
+# cleanly, preserving any briefs/ directory (client data) by backing it up
+# first.
 #
 # Compatible with PowerShell 5.1 (built in to Windows 10/11) and PowerShell 7+.
 #
@@ -245,112 +247,106 @@ function Update-Existing {
     Invoke-Git @("-C", $InstallDir, "reset", "--hard", "origin/$branch")
 }
 
-function Configure-Mcp {
-    # Non-interactive contexts (CI, remoting) skip MCP setup silently.
-    if ($env:CI -or $env:GITHUB_ACTIONS) { return }
-    if (-not [Environment]::UserInteractive) { return }
-
-    Write-Host ""
-    $answer = Read-Host "Connect LocalSEOData (free API key at localseodata.com/signup)? [Y/n]"
-    if ($answer -match '^[Nn]') { return }
-
-    $secure = Read-Host "API key" -AsSecureString
-    $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
+# Claude Code only discovers <skills dir>\<name>\SKILL.md, one level deep, so
+# junction each skill folder out of the clone. Junctions need no admin rights.
+# Never replaces something that isn't already a junction into this clone.
+function Test-OurLink($item) {
+    # A junction pointing into this install's skills folder. StartsWith, not
+    # -like: profile paths can hold [ ] wildcards, and C:\Foo must not match C:\Foobar.
+    # Both sides go through GetFullPath so C:/x and C:\x compare equal.
+    # A target GetFullPath can't parse isn't ours.
     try {
-        $apiKey = [Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
-    } finally {
-        [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr)
-    }
-    if ([string]::IsNullOrWhiteSpace($apiKey)) {
-        Say "Skipped. Configure MCP later per the README."
-        return
-    }
+        $root = [System.IO.Path]::GetFullPath((Join-Path $InstallDir "skills")).TrimEnd('\') + '\'
+        ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -and "$($item.Target)" -and
+            [System.IO.Path]::GetFullPath("$($item.Target)").StartsWith($root, [System.StringComparison]::OrdinalIgnoreCase)
+    } catch { $false }
+}
 
-    $mcpUrl = "https://mcp.localseodata.com/mcp?key=$apiKey"
-    $configured = $false
+function Link-Skills {
+    $skillsDir = if ($env:LSS_SKILLS_DIR) { $env:LSS_SKILLS_DIR } else { Join-Path $HOME ".claude\skills" }
+    if (-not (Test-Path -LiteralPath $skillsDir)) { New-Item -ItemType Directory -Path $skillsDir -Force | Out-Null }
+    # Drop junctions to skills that no longer exist in the clone (removed upstream).
+    Get-ChildItem -LiteralPath $skillsDir -Force | Where-Object { (Test-OurLink $_) -and -not (Test-Path -LiteralPath "$($_.Target)") } |
+        ForEach-Object { [System.IO.Directory]::Delete($_.FullName) }
+    $linked = 0
+    Get-ChildItem -LiteralPath (Join-Path $InstallDir "skills") -Directory | ForEach-Object {
+        if (-not (Test-Path -LiteralPath (Join-Path $_.FullName "SKILL.md"))) { return }
+        $target = Join-Path $skillsDir $_.Name
+        # Get-Item, not Test-Path: Test-Path is false for a junction whose target is gone.
+        $item = Get-Item -LiteralPath $target -Force -ErrorAction SilentlyContinue
+        if ($item) {
+            if (-not (Test-OurLink $item)) {
+                Say "Skipping $($_.Name): $target already exists and is not from this install."
+                return
+            }
+            [System.IO.Directory]::Delete($target)
+        }
+        New-Item -ItemType Junction -Path $target -Target $_.FullName | Out-Null
+        $linked++
+    }
+    Say "Linked $linked skills into $skillsDir"
+}
 
-    # Claude Code CLI — check if already configured, then add with correct flags.
+function Configure-Mcp {
+    # The server signs people in with OAuth in the browser on first use, so no
+    # API key is asked for or written to any config file.
+    $mcpUrl = "https://mcp.localseodata.com/mcp"
+
     if (Get-Command claude -ErrorAction SilentlyContinue) {
-        $prevEAP = $ErrorActionPreference
+        # A .cmd/.ps1 shim can throw under ErrorActionPreference=Stop; the skills
+        # are already linked, so fall through to the manual step instead.
         try {
-            $ErrorActionPreference = 'Continue'
-            $existing = & claude mcp list 2>$null
-            if ($existing -match 'localseodata') {
-                Say "LocalSEOData already configured in Claude Code, skipping."
-                $configured = $true
-            } else {
-                & claude mcp add --transport http --scope user localseodata "$mcpUrl" 2>$null
+            # Earlier installers baked an API key into the URL (?key=), stored in
+            # plain text in ~/.claude.json. Swap it for the sign-in URL.
+            $existing = & claude mcp get localseodata 2>$null
+            $found = $LASTEXITCODE -eq 0
+            if ($found -and ($existing -match 'key=')) {
+                foreach ($scope in "local", "project", "user") {
+                    & claude mcp remove localseodata --scope $scope *> $null
+                }
+                & claude mcp get localseodata *> $null
                 if ($LASTEXITCODE -eq 0) {
-                    Say "LocalSEOData added to Claude Code (all projects)."
-                    $configured = $true
+                    Say "Couldn't remove your old LocalSEOData entry, which has an API key in its URL. Run: claude mcp remove localseodata"
+                    Say "Then revoke that key at localseodata.com/dashboard/keys and rerun this script."
+                    return
                 }
+                Say "Replaced your old key-based LocalSEOData connection with browser sign-in. You can revoke that key at localseodata.com/dashboard/keys."
+                $found = $false
             }
-        } catch {} finally {
-            $ErrorActionPreference = $prevEAP
-        }
+            if ($found) {
+                Say "LocalSEOData already configured in Claude Code, skipping."
+                return
+            }
+            & claude mcp add --transport http --scope user localseodata "$mcpUrl" 2>$null
+            if ($LASTEXITCODE -eq 0) {
+                Say "LocalSEOData added to Claude Code (all projects). You'll sign in the first time a tool runs."
+                return
+            }
+        } catch {}
     }
 
-    # Claude Desktop (Windows) — edit the global config JSON directly.
-    # PS 5.1 compatible: avoid -AsHashtable (PS 6+ only). Parse to PSObject,
-    # convert manually to hashtable for safe key manipulation.
-    $desktopConfig = Join-Path $env:APPDATA "Claude\claude_desktop_config.json"
-    if (Test-Path $desktopConfig) {
-        try {
-            $config = @{}
-            $raw = Get-Content -Raw $desktopConfig -ErrorAction SilentlyContinue
-            if ($raw) {
-                try {
-                    $parsed = $raw | ConvertFrom-Json
-                    $parsed.PSObject.Properties | ForEach-Object {
-                        if ($_.Name -eq 'mcpServers' -and $_.Value) {
-                            $servers = @{}
-                            $_.Value.PSObject.Properties | ForEach-Object { $servers[$_.Name] = $_.Value }
-                            $config[$_.Name] = $servers
-                        } else {
-                            $config[$_.Name] = $_.Value
-                        }
-                    }
-                }
-                catch {
-                    $bak = "$desktopConfig.bak"
-                    Copy-Item $desktopConfig $bak -Force
-                    Say "Existing config was unparseable; backed up to $bak"
-                    $config = @{}
-                }
-            }
-            if (-not $config.ContainsKey('mcpServers')) {
-                $config['mcpServers'] = @{}
-            }
-            if ($config['mcpServers'].ContainsKey('localseodata')) {
-                Say "localseodata already in Claude Desktop config, updating."
-            }
-            $config['mcpServers']['localseodata'] = @{ url = $mcpUrl }
-            # Atomic write: temp file then rename, so a kill mid-write can't corrupt.
-            $tmpFile = "$desktopConfig.$([System.Guid]::NewGuid().ToString('N').Substring(0,8)).tmp"
-            $json = $config | ConvertTo-Json -Depth 10
-            [System.IO.File]::WriteAllText($tmpFile, $json, [System.Text.UTF8Encoding]::new($false))
-            Move-Item -Path $tmpFile -Destination $desktopConfig -Force
-            Say "LocalSEOData added to Claude Desktop."
-            $configured = $true
-        } catch {
-            if (Test-Path $tmpFile -ErrorAction SilentlyContinue) {
-                Remove-Item $tmpFile -Force -ErrorAction SilentlyContinue
-            }
-            # Swallow — fall through to manual instructions.
-        }
-    }
-
-    if (-not $configured) {
-        Say "Add LocalSEOData to your MCP config manually:"
-        Write-Host ""
-        Write-Host "  `"localseodata`": { `"url`": `"$mcpUrl`" }"
-        Write-Host ""
-    }
+    Say "To connect LocalSEOData, add this MCP server in your agent (Claude Desktop: Settings > Connectors > Add custom connector):"
+    Write-Host ""
+    Write-Host "  $mcpUrl"
+    Write-Host ""
 }
 
 function Main {
     if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
         Fail "git is required but not found. Install git for Windows and try again."
+    }
+
+    # The plugin already provides the skills and the data server; linking them
+    # here too would show every skill twice. (Claude Code keeps one copy of the
+    # data server, so only the skills would repeat.)
+    if (Get-Command claude -ErrorAction SilentlyContinue) {
+        $plugins = try { (& claude plugin list 2>$null) -join "`n" } catch { "" }
+        if ($plugins -match 'local-seo-skills@[^\n]*(\n[^\n]*){0,4}Status:[^\n]*enabled') {
+            Say "The Local SEO Skills plugin is installed, which already provides the skills and LocalSEOData. Nothing to do."
+            Say "To use this script instead, uninstall the plugin first (/plugin in Claude Code)."
+            Say "If you ran this script before installing the plugin, run uninstall.ps1 to remove its copies, or each skill shows up twice."
+            return
+        }
     }
 
     # Refuse system paths, UNC/device forms, 8.3 short names, and paths with
@@ -413,6 +409,8 @@ function Main {
         } else {
             Install-Fresh
         }
+
+        Link-Skills
 
         Say "Local SEO Skills installed."
 

@@ -274,10 +274,27 @@ function Test-SafePath {
     }
 }
 
+function Remove-SkillLinks {
+    # The per-skill junctions install.ps1 created (ones into this install only).
+    $skillsDir = if ($env:LSS_SKILLS_DIR) { $env:LSS_SKILLS_DIR } else { Join-Path $HOME ".claude\skills" }
+    $root = [System.IO.Path]::GetFullPath((Join-Path $InstallDir "skills")).TrimEnd('\') + '\'
+    if (Test-Path -LiteralPath $skillsDir) {
+        Get-ChildItem -LiteralPath $skillsDir -Force | Where-Object {
+            # A target GetFullPath can't parse isn't ours.
+            try {
+                ($_.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -and "$($_.Target)" -and
+                    [System.IO.Path]::GetFullPath("$($_.Target)").StartsWith($root, [System.StringComparison]::OrdinalIgnoreCase)
+            } catch { $false }
+        } | ForEach-Object { [System.IO.Directory]::Delete($_.FullName) }
+    }
+}
+
 function Main {
     Test-SafePath $InstallDir
 
-    if (-not (Test-Path $InstallDir)) {
+    if (-not (Test-Path -LiteralPath $InstallDir)) {
+        # A clone deleted by hand leaves its junctions dangling; clear those too.
+        Remove-SkillLinks
         Say "Nothing to uninstall at $InstallDir"
         exit 0
     }
@@ -293,6 +310,7 @@ function Main {
         Backup-Briefs $InstallDir
     }
 
+    Remove-SkillLinks
     Remove-Path $InstallDir
     Say "Removed $InstallDir"
 }

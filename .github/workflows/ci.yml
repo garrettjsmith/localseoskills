@@ -121,18 +121,28 @@ jobs:
         run: |
           set -euo pipefail
           export LSS_INSTALL_DIR="$RUNNER_TEMP/lss-happy/install"
+          export LSS_SKILLS_DIR="$RUNNER_TEMP/lss-happy/skills"
+          # A skill the user wrote themselves, with the same name as one of ours.
+          mkdir -p "$LSS_SKILLS_DIR/gbp-posts" && echo "mine" > "$LSS_SKILLS_DIR/gbp-posts/SKILL.md"
           bash install.sh
           test -f "$LSS_INSTALL_DIR/AGENTS.md" || {
             echo "FAIL: install did not produce AGENTS.md"
             exit 1
           }
-          echo "Install OK at $LSS_INSTALL_DIR"
+          expected=$(( $(ls -d "$LSS_INSTALL_DIR"/skills/*/ | wc -l) - 1 ))
+          linked=$(find "$LSS_SKILLS_DIR" -maxdepth 1 -type l | wc -l)
+          [ "$linked" -eq "$expected" ] || { echo "FAIL: linked $linked skills, expected $expected"; exit 1; }
+          [ "$(cat "$LSS_SKILLS_DIR/gbp-posts/SKILL.md")" = "mine" ] || { echo "FAIL: user skill overwritten"; exit 1; }
+          bash install.sh
+          [ "$(find "$LSS_SKILLS_DIR" -maxdepth 1 -type l | wc -l)" -eq "$expected" ] || { echo "FAIL: re-run changed the links"; exit 1; }
+          echo "Install OK at $LSS_INSTALL_DIR, $linked skills linked"
 
       - name: Uninstall and confirm briefs backup
         shell: bash
         run: |
           set -euo pipefail
           export LSS_INSTALL_DIR="$RUNNER_TEMP/lss-happy/install"
+          export LSS_SKILLS_DIR="$RUNNER_TEMP/lss-happy/skills"
 
           # Seed a fake brief so the backup path is exercised.
           mkdir -p "$LSS_INSTALL_DIR/briefs/_ci-test"
@@ -144,6 +154,11 @@ jobs:
             echo "FAIL: install dir still exists after uninstall"
             exit 1
           fi
+          if [ -n "$(find "$LSS_SKILLS_DIR" -maxdepth 1 -type l)" ]; then
+            echo "FAIL: skill links left after uninstall"
+            exit 1
+          fi
+          [ -f "$LSS_SKILLS_DIR/gbp-posts/SKILL.md" ] || { echo "FAIL: uninstall removed the user's own skill"; exit 1; }
 
           # Backup dir lives at $HOME/.claude/lss-briefs-backup-*
           if ! ls "$HOME/.claude/lss-briefs-backup-"* >/dev/null 2>&1; then
