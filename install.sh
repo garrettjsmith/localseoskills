@@ -4,9 +4,9 @@
 # Clones the repo to ~/.claude/skills/localseoskills, then links each skill
 # folder into ~/.claude/skills/<name> (the only depth Claude Code scans) so
 # Claude Code and any agent that reads the Agent Skills spec can discover
-# them. If a previous
-# install exists, fetches latest and fast-forwards cleanly, preserving any
-# briefs/ directory (client data) by backing it up first.
+# them. If a previous install exists, fetches latest and fast-forwards
+# cleanly, preserving any briefs/ directory (client data) by backing it up
+# first.
 #
 # Usage (curl one-liner, pipes to bash):
 #   curl -fsSL https://raw.githubusercontent.com/garrettjsmith/localseoskills/main/install.sh | bash
@@ -193,10 +193,12 @@ main() {
   command -v git >/dev/null 2>&1 || fail "git is required but not found. Install git and try again."
 
   # The plugin already provides the skills and the data server; linking them
-  # here too would show every skill and tool twice.
+  # here too would show every skill twice. (Claude Code keeps one copy of the
+  # data server, so only the skills would repeat.)
   if command -v claude >/dev/null 2>&1 && claude plugin list 2>/dev/null | grep -A4 'local-seo-skills@' | grep 'Status:.*enabled' >/dev/null; then
     say "The Local SEO Skills plugin is installed, which already provides the skills and LocalSEOData. Nothing to do."
     say "To use this script instead, uninstall the plugin first (/plugin in Claude Code)."
+    say "If you ran this script before installing the plugin, run uninstall.sh to remove its copies, or each skill shows up twice."
     exit 0
   fi
 

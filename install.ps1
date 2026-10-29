@@ -3,9 +3,9 @@
 # Clones the repo to $HOME\.claude\skills\localseoskills, then junctions each
 # skill folder into $HOME\.claude\skills\<name> (the only depth Claude Code
 # scans) so Claude Code and any agent that reads the Agent Skills spec can
-# discover them. If a
-# previous install exists, fetches latest and resets cleanly, preserving any
-# briefs/ directory (client data) by backing it up first.
+# discover them. If a previous install exists, fetches latest and resets
+# cleanly, preserving any briefs/ directory (client data) by backing it up
+# first.
 #
 # Compatible with PowerShell 5.1 (built in to Windows 10/11) and PowerShell 7+.
 #
@@ -337,12 +337,14 @@ function Main {
     }
 
     # The plugin already provides the skills and the data server; linking them
-    # here too would show every skill and tool twice.
+    # here too would show every skill twice. (Claude Code keeps one copy of the
+    # data server, so only the skills would repeat.)
     if (Get-Command claude -ErrorAction SilentlyContinue) {
         $plugins = try { (& claude plugin list 2>$null) -join "`n" } catch { "" }
         if ($plugins -match 'local-seo-skills@[^\n]*(\n[^\n]*){0,4}Status:[^\n]*enabled') {
             Say "The Local SEO Skills plugin is installed, which already provides the skills and LocalSEOData. Nothing to do."
             Say "To use this script instead, uninstall the plugin first (/plugin in Claude Code)."
+            Say "If you ran this script before installing the plugin, run uninstall.ps1 to remove its copies, or each skill shows up twice."
             return
         }
     }

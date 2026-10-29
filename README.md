@@ -68,7 +68,7 @@ Pick the path for your setup. However you install, the 39 skills end up where yo
 
 Full brief experience. Claude reads and writes `briefs/` on your filesystem, so history compounds automatically across sessions.
 
-Installing the plugin also connects the Local SEO Data MCP server (`https://mcp.localseodata.com/mcp`). Claude Code opens a browser sign-in the first time a tool is used; no API key goes in any file. Use either the plugin or `install.sh`, not both: each installs the skills and registers the server, so you'd see everything twice.
+Installing the plugin also connects the Local SEO Data MCP server (`https://mcp.localseodata.com/mcp`). Claude Code opens a browser sign-in the first time a tool is used; no API key goes in any file. Use either the plugin or `install.sh`, not both: each installs the skills, so every skill would show up twice. If you used `install.sh` before, run `uninstall.sh` (or `uninstall.ps1`) after installing the plugin.
 
 ### Claude Desktop or Claude.ai in Chrome
 
