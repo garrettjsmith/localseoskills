@@ -33,7 +33,7 @@ Most skill libraries stop at instructions. Local SEO Skills adds the three thing
 
 - **Persistent briefs.** Every client and location has a living file Claude reads and updates automatically. Ask "why did rankings drop in March?" six months into an engagement and get a real answer from the history.
 - **Scheduled tasks that run while you sleep.** 15 task templates with autonomous, queue, and notify approval tiers. Monitoring, reports, drafts, and alerts keep running when your laptop is closed.
-- **A data layer built for local, not bolted on.** The default is [Local SEO Data](https://localseodata.com): 53 tools for SERP, GBP, reviews, citations, geogrid, and AI visibility through one MCP connection. Specialist tools (Ahrefs, Semrush, Local Falcon) slot in where Local SEO Data doesn't cover.
+- **A data layer built for local, not bolted on.** The default is [Local SEO Data](https://localseodata.com): 54 tools for SERP, GBP, reviews, citations, geogrid, and AI visibility through one MCP connection. Specialist tools (Ahrefs, Semrush, Local Falcon) slot in where Local SEO Data doesn't cover.
 
 ---
 
@@ -123,7 +123,7 @@ Skills are platform-agnostic markdown. Any agent that reads the [Agent Skills sp
 
 **Heads up on cost:** the tool skills call the [Local SEO Data](https://localseodata.com) API, which runs on paid credits. New accounts start with a free balance. Strategy skills work without it.
 
-Before your first audit, connect a data source. [Local SEO Data](https://localseodata.com) is the default and covers 53 tools in one MCP connection — see [Default Data Source](#default-data-source-localseodata) below for the setup link. Without a data source connected the skills still load, but the first audit will fail with a clear message telling you which MCP is missing.
+Before your first audit, connect a data source. [Local SEO Data](https://localseodata.com) is the default and covers 54 tools in one MCP connection — see [Default Data Source](#default-data-source-localseodata) below for the setup link. Without a data source connected the skills still load, but the first audit will fail with a clear message telling you which MCP is missing.
 
 Once installed and connected, just mention any local business. Claude picks the right skills automatically.
 
@@ -225,7 +225,7 @@ See [tasks/](tasks/) for individual task files and [specs/](specs/) for the appr
 
 ## Default Data Source: LocalSEOData
 
-[Local SEO Data](https://localseodata.com) is the default data tool for Local SEO Skills. One MCP connection, 53 tools across SERP data, business intelligence, audits, reviews, citations, keywords, AI visibility, competitor analysis, and geogrid scans.
+[Local SEO Data](https://localseodata.com) is the default data tool for Local SEO Skills. One MCP connection, 54 tools across SERP data, business intelligence, audits, reviews, citations, keywords, AI visibility, competitor analysis, and geogrid scans.
 
 To connect it outside the plugin, add the MCP server `https://mcp.localseodata.com/mcp` to your agent (Claude Code: `claude mcp add --transport http --scope user localseodata https://mcp.localseodata.com/mcp`; Claude Desktop: Settings → Connectors → Add custom connector). You sign in through the browser the first time a tool runs. New accounts start with a free credit balance. Cursor, Codex and other MCP clients: add it as a remote (streamable HTTP) server with the same URL.
 
@@ -307,7 +307,7 @@ With Local SEO Skills fully configured:
 
 | Skill | Tool | What It Covers |
 |-------|------|----------------|
-| [localseodata-tool](skills/localseodata-tool) | **Local SEO Data** | **Default.** 53 tools: SERP data, business profiles, reviews, citations, audits, keywords, AI visibility, geogrid scans, competitor analysis |
+| [localseodata-tool](skills/localseodata-tool) | **Local SEO Data** | **Default.** 54 tools: SERP data, business profiles, reviews, citations, audits, keywords, AI visibility, geogrid scans, competitor analysis |
 | [local-falcon-tool](skills/local-falcon-tool) | Local Falcon | Geogrid trend reports, recurring campaigns, Falcon Guard (GBP monitoring), AI platform scans |
 | [lsa-spy-tool](skills/lsa-spy-tool) | LSA Spy | LSA market-level ranking tracking and competitive intelligence over time |
 | [serpapi-tool](skills/serpapi-tool) | SerpAPI | Live SERP data (fallback if LocalSEOData not connected, or for non-Google engines) |
