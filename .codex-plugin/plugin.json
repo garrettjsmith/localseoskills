@@ -55,7 +55,7 @@
     "brandColor": "#16A34A",
     "brandColorDark": "#22C55E",
     "composerIcon": "./assets/app-icon-256.png",
-    "logo": "./assets/app-icon-512.png"
+    "logo": "./assets/app-icon-400.png"
   },
   "extensions": {
     "com.openai": {

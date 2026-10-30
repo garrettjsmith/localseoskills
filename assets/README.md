@@ -10,8 +10,7 @@ Source files for the Local SEO Skills visual identity. The main README pulls `co
 | `logo-mark.png` / `@2x.png` | 512 / 1024 | App icons, GitHub avatar |
 | `logo-mark-256.png` / `-128.png` | 256 / 128 | Smaller avatars, UI placements |
 | `favicon-64.png` / `-32.png` | 64 / 32 | Site favicon |
-| `app-icon.svg` | vector | localseoskills.com favicon (white `L` on green), source for app icons |
-| `app-icon-512.png` / `-256.png` | 512 / 256 | ChatGPT / Codex plugin logo and composer icon |
+| `app-icon-400.png` / `-256.png` | 400 / 256 | App icon (map pin + magnifier, matches the X profile image). ChatGPT / Codex plugin logo and composer icon |
 | `wordmark.svg` | vector | Master `Local SEO Skills` wordmark lockup |
 | `wordmark.png` / `@2x.png` | 1200x260 / 2400x520 | Banners, slides, email headers |
 | `cover.svg` | vector | Master GitHub cover / README hero |
