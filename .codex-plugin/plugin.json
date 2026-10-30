@@ -1,0 +1,67 @@
+{
+  "name": "local-seo-skills",
+  "version": "1.0.1",
+  "description": "Open-source local SEO skills: GBP optimization, map pack visibility, audits, citations, reviews, keywords, geogrid analysis, AI visibility, multi-location SEO, reporting, and 15 scheduled task templates.",
+  "author": {
+    "name": "Garrett Smith",
+    "email": "help@localseoskills.com",
+    "url": "https://localseoskills.com"
+  },
+  "homepage": "https://localseoskills.com",
+  "repository": "https://github.com/garrettjsmith/localseoskills",
+  "license": "MIT",
+  "keywords": [
+    "local-seo",
+    "seo",
+    "google-business-profile",
+    "map-pack",
+    "geogrid",
+    "reviews",
+    "citations",
+    "ai-visibility",
+    "agency"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Local SEO Skills",
+    "shortDescription": "GBP, rankings, AI visibility",
+    "longDescription": "Local SEO Skills turns ChatGPT into a local SEO specialist. 38 skills cover Google Business Profile optimization, map pack visibility, local SEO audits, citations and NAP consistency, review management, local keyword research, location and service-area pages, LocalBusiness schema, geogrid analysis, competitor analysis, AI search visibility, Apple and Bing listings, local PPC and Local Services Ads, multi-location SEO, and client reporting. 15 task skills set up recurring work as scheduled tasks: ranking and review monitoring, GBP change alerts, GBP post and review response drafts, citation and page audits, competitor snapshots, and weekly, monthly, and quarterly reports.\n\nSkills give strategy and step-by-step workflows on their own. For live rankings, reviews, and audit data, connect a data plugin such as Local SEO Data, Ahrefs, Semrush, Local Falcon, or BrightLocal; tool skills explain how to use each one.\n\nBuilt for agencies, consultants, and in-house marketers. Open source under the MIT license.",
+    "developerName": "Garrett Smith",
+    "category": "Productivity",
+    "capabilities": [
+      "Local SEO audits",
+      "Google Business Profile optimization",
+      "Map pack strategy",
+      "Review management",
+      "Citation audits",
+      "Local keyword research",
+      "Location page briefs",
+      "LocalBusiness schema",
+      "Geogrid analysis",
+      "Competitor analysis",
+      "AI search visibility",
+      "Client reporting",
+      "Scheduled monitoring tasks"
+    ],
+    "websiteURL": "https://localseoskills.com",
+    "supportURL": "https://github.com/garrettjsmith/localseoskills/issues",
+    "privacyPolicyURL": "https://github.com/garrettjsmith/localseoskills/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/garrettjsmith/localseoskills/blob/main/LICENSE",
+    "defaultPrompt": [
+      "Run a local SEO audit for my business.",
+      "Why am I not showing up in the Google map pack?",
+      "Set up a weekly rankings monitor for my location."
+    ],
+    "brandColor": "#16A34A",
+    "brandColorDark": "#22C55E",
+    "composerIcon": "./assets/logo-mark-256.png",
+    "logo": "./assets/logo-mark.png"
+  },
+  "extensions": {
+    "com.openai": {
+      "publication": {
+        "release_notes": "Local SEO Skills 1.0.1: 38 skills and 15 scheduled task skills."
+      }
+    }
+  }
+}

@@ -1,15 +1,15 @@
 ---
 name: local-content-briefs
-description: Generate complete semantic content briefs for local SEO content — location pages, service pages, blog posts, FAQ content, and pillar pages. Use this skill when the user needs a content brief for any piece of local SEO content, has a concept cluster from local-content-strategy and needs to brief the content, asks "what should this page cover", "brief me on [topic] for local SEO", "what concepts should my location page cover", or needs to know what depth to cover each topic at. Also trigger when producing briefs in bulk for a content production run. This skill combines semantic content brief methodology (concept coverage, entity requirements, depth assignments, question mapping) with local SEO specificity (geo-modified entities, local intent signals, GBP-to-page consistency, local schema requirements, AI visibility considerations). Output is a complete brief that a writer or Claude CLI generation loop can execute directly.
+description: Generate complete semantic content briefs for local SEO content — location pages, service pages, blog posts, FAQ content, and pillar pages. Use this skill when the user needs a content brief for any piece of local SEO content, has a concept cluster from local-content-strategy and needs to brief the content, asks "what should this page cover", "brief me on [topic] for local SEO", "what concepts should my location page cover", or needs to know what depth to cover each topic at. Also trigger when producing briefs in bulk for a content production run. This skill combines semantic content brief methodology (concept coverage, entity requirements, depth assignments, question mapping) with local SEO specificity (geo-modified entities, local intent signals, GBP-to-page consistency, local schema requirements, AI visibility considerations). Output is a complete brief that a writer or AI generation loop can execute directly.
 metadata:
-  version: 1.0.0
+  version: 1.0.1
   author: Garrett Smith
 ---
 
 # Local Content Briefs Skill
 
 ## Purpose
-Produce complete, execution-ready semantic content briefs for local SEO content — briefs that tell a writer (or Claude) exactly what concepts to cover, at what depth, with which entities, answering which questions, in which structure. Local-SEO-aware throughout: every brief accounts for local intent signals, geographic entities, GBP consistency requirements, schema needs, and AI visibility considerations.
+Produce complete, execution-ready semantic content briefs for local SEO content — briefs that tell a writer (or an AI model) exactly what concepts to cover, at what depth, with which entities, answering which questions, in which structure. Local-SEO-aware throughout: every brief accounts for local intent signals, geographic entities, GBP consistency requirements, schema needs, and AI visibility considerations.
 
 ## Position in the Workflow
 ```

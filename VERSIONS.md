@@ -6,7 +6,7 @@ Pulled from each `skills/*/SKILL.md` frontmatter. Bumped per skill as its SKILL.
 
 | Skill | Version |
 |-------|---------|
-| brief | 3.0.0 |
+| brief | 3.0.1 |
 
 ## Strategy Skills (26)
 
@@ -24,7 +24,7 @@ Pulled from each `skills/*/SKILL.md` frontmatter. Bumped per skill as its SKILL.
 | geogrid-analysis | 1.1.0 |
 | local-citations | 1.0.0 |
 | local-competitor-analysis | 1.0.0 |
-| local-content-briefs | 1.0.0 |
+| local-content-briefs | 1.0.1 |
 | local-content-strategy | 1.0.0 |
 | local-keyword-research | 1.1.0 |
 | local-landing-pages | 1.1.0 |

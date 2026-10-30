@@ -6,6 +6,13 @@ Individual skill versions are tracked in [VERSIONS.md](VERSIONS.md).
 
 ## [Unreleased]
 
+### Added
+- ChatGPT and Codex plugin support. `.codex-plugin/plugin.json` holds the plugin manifest and directory listing; `.agents/plugins/marketplace.json` lets Codex install from this repo.
+- `scripts/build-chatgpt-plugin.py` builds the plugin directory ZIP: skills as-is, the 15 tasks converted to scheduled-task skills, and shared docs bundled into each skill that cites them.
+
+### Changed
+- Host-specific wording in `brief`, `local-content-briefs`, `briefs/README.md`, and the approval and notification specs now covers Claude, ChatGPT, and Codex instead of Claude only.
+
 ### Fixed
 - `claude mcp add` syntax: `-s http` was parsed as `--scope http`, not `--transport http`. Fixed to `--transport http --scope user`.
 - PowerShell `ConvertFrom-Json -AsHashtable` replaced with PS 5.1-compatible PSObject-to-hashtable conversion. The previous code would fail on stock Windows 10/11 PowerShell (5.1) and could silently overwrite existing MCP server configs.

@@ -104,7 +104,7 @@ approval:
 
 ## Platform Notes
 
-**Claude (native):** Approval notifications via Gmail MCP or Slack MCP. Approval confirmed by replying to the Slack message or email, or by updating the `Approval Required` field in the draft file and triggering a follow-up task.
+**Claude / ChatGPT / Codex:** Approval notifications via the Gmail or Slack connector (plugin in ChatGPT). Approval confirmed by replying to the Slack message or email, or by updating the `Approval Required` field in the draft file and triggering a follow-up task.
 
 **LSEOAgent / OpenClaw / custom:** Implement the same three tiers using whatever notification and confirmation mechanism fits your stack. The draft file schema and approval status fields are platform-agnostic — your system reads the `Status: PENDING` field and manages the approval UI.
 

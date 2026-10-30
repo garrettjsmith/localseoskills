@@ -18,7 +18,7 @@
 
 <p align="center">
   <strong>Works with:</strong>
-  Claude Code · Claude Desktop · Claude.ai · Cursor · Codex · OpenClaw · Antigravity · any Agent Skills-compatible agent
+  Claude Code · Claude Desktop · Claude.ai · ChatGPT · Codex · Cursor · OpenClaw · Antigravity · any Agent Skills-compatible agent
 </p>
 
 <p align="center">
@@ -97,7 +97,19 @@ add them to my Claude Skills or a new Project called "Local SEO Skills".
 
 Claude handles the import. Takes 60-90 seconds. One time.
 
-### Cursor, Codex, OpenClaw, or any Agent Skills-compatible agent
+### ChatGPT
+
+Open the Plugins directory in ChatGPT, search **Local SEO Skills**, and install. You get all 38 skills plus the 15 task templates as skills, which set up recurring work as ChatGPT scheduled tasks.
+
+### Codex
+
+```bash
+codex plugin marketplace add garrettjsmith/localseoskills
+```
+
+Then install **local-seo-skills** from the Plugins directory. Codex reads and writes `briefs/` on your filesystem, same as Claude Code.
+
+### Cursor, OpenClaw, or any Agent Skills-compatible agent
 
 ```bash
 git clone https://github.com/garrettjsmith/localseoskills.git ~/.agents/skills/localseoskills

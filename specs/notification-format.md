@@ -82,7 +82,7 @@ Retry or run manually.
 
 ## Email Format (client-facing)
 
-Client emails are professional and stripped of internal language. No mention of Claude, AI, or internal tooling unless the client relationship explicitly includes that context.
+Client emails are professional and stripped of internal language. No mention of AI or internal tooling unless the client relationship explicitly includes that context.
 
 **Subject line format:**
 ```
@@ -149,6 +149,6 @@ arp_degradation_positions: 3
 
 ## Platform Notes
 
-**Claude native:** Gmail MCP for email, Slack MCP for Slack. Both configured as connectors in Claude account settings.
+**Claude / ChatGPT / Codex:** Gmail for email, Slack for Slack. Connect both as connectors in Claude settings or as plugins in ChatGPT settings.
 
 **LSEOAgent / custom:** Notification content and format is platform-agnostic. Implement delivery using whatever transport fits your stack. The alert thresholds and message formats above are the spec — your system handles the send.

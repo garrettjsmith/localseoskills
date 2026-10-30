@@ -93,6 +93,11 @@ localseoskills/
 │   └── p2-competitor-monitor/TASK.md
 ├── tools/
 │   └── REGISTRY.md                  # Tool index and overlap guide
+├── scripts/
+│   └── build-chatgpt-plugin.py      # Builds the ChatGPT / Codex plugin directory ZIP
+├── .agents/plugins/marketplace.json # Codex marketplace (install from this repo)
+├── .claude-plugin/                  # Claude plugin + marketplace manifests
+├── .codex-plugin/plugin.json        # ChatGPT / Codex plugin manifest and directory listing
 ├── .gitignore
 ├── AGENTS.md
 ├── CLAUDE.md
@@ -172,7 +177,7 @@ These specs are **platform-agnostic**. Claude-native execution uses scheduled ta
 
 ## Briefs
 
-Briefs are persistent work state — not part of the skills, but generated during engagements. They live in `briefs/` on disk (Claude Code) or in a Claude Project knowledge base (browser/desktop).
+Briefs are persistent work state — not part of the skills, but generated during engagements. They live in `briefs/` on disk (Claude Code, Codex, Cursor) or in a project's knowledge base or files (Claude Projects, ChatGPT projects).
 
 **Never commit brief files to this repo.** The `.gitignore` handles this:
 ```

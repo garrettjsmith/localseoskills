@@ -2,7 +2,7 @@
 name: brief
 description: Manages persistent work state (briefs) for local SEO engagements. Automatically load this skill when starting work on a specific business or location, when a user says "resume," "continue," "pick up where we left off," or references a specific client or location by name. Also load when any tool call is about to be made for a business, that's the trigger to create or update a brief. Load when receiving output from a scheduled task.
 metadata:
-  version: 3.0.0
+  version: 3.0.1
   author: Garrett Smith
 ---
 
@@ -36,8 +36,8 @@ briefs/
 ### Detection
 
 Before doing any work for a specific business, check for an existing brief:
-- Claude Code: look for `briefs/{brand-slug}/{location-slug}/location.brief.md`
-- Claude Project: check Project knowledge base for a brief file for this business
+- With filesystem access (Claude Code, Cowork, Codex, Cursor): look for `briefs/{brand-slug}/{location-slug}/location.brief.md`
+- Without filesystem access (Claude Projects, ChatGPT projects): check the project's knowledge base or files for a brief file for this business
 - If found: go to **Resuming from a Brief**
 - If not found: go to **First Run Setup**
 
@@ -100,11 +100,11 @@ That's it. Don't ask for more than these unless something is genuinely ambiguous
 8. Then return to what the user originally asked for:
    > "Now let me [original request]..."
 
-### For Claude Project / Browser Users
+### Without Filesystem Access
 
-If no filesystem access: run the same conversation and audit, then output the brief as formatted text at the end of setup:
+In Claude Projects, ChatGPT projects, or other browser chats: run the same conversation and audit, then output the brief as formatted text at the end of setup:
 
-> "Here's your brief. Add this to your Project knowledge base so I'll have it next time:"
+> "Here's your brief. Add this to your project's files so I'll have it next time:"
 > [brief content]
 
 ---
@@ -124,13 +124,13 @@ Do not create briefs for:
 
 ## Brief Location
 
-**Claude Code / Cowork:**
+**With filesystem access (Claude Code, Cowork, Codex, Cursor):**
 ```
 briefs/{brand-slug}/{location-slug}/location.brief.md
 ```
 
-**Claude Project:**
-Upload brief file to Project knowledge base after creation. Tell user to do this if they haven't.
+**Without filesystem access (Claude Projects, ChatGPT projects):**
+Upload the brief file to the project's knowledge base or files after creation. Tell user to do this if they haven't.
 
 ---
 

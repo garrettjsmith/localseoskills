@@ -16,3 +16,6 @@ briefs/*/
 
 # Private lessons
 meta/lessons-private.md
+
+# Build output (scripts/build-chatgpt-plugin.py)
+dist/
