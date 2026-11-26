@@ -1,0 +1,506 @@
+<meta charset="utf-8">
+<title>Caso 6 · Escritório profissional</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #f6f8f7;
+    --grid: rgba(30, 60, 50, 0.06);
+    --card: #ffffff;
+    --ink: #1d2a26;
+    --muted: #55645f;
+    --line: #d9e1de;
+    --shadow: 0 2px 10px rgba(20, 40, 35, 0.08), 0 1px 2px rgba(20, 40, 35, 0.06);
+    --diag: #7a5af8;
+    --impl: #1f5da3;
+    --acomp: #2e7d3c;
+    --melh: #c2410c;
+    --extra: #0e7490;
+    --warn-bg: #fff6e5;
+    --warn-ink: #7a4a00;
+    --warn-line: #f2c46d;
+    --hand: "Marker Felt", "Chalkboard SE", "Segoe Print", "Bradley Hand", cursive;
+    --pill-free-bg: #e3f4e6; --pill-free-ink: #1f6b2c;
+    --pill-cred-bg: #fdf1d6; --pill-cred-ink: #7c5a00;
+    --pill-paid-bg: #fde4e4; --pill-paid-ink: #9b1c1c;
+    --pill-key-bg: #e6ecfb; --pill-key-ink: #23408e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141a18;
+      --grid: rgba(200, 230, 220, 0.05);
+      --card: #1e2623;
+      --ink: #e7eeeb;
+      --muted: #a9b7b2;
+      --line: #33403b;
+      --shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+      --diag: #a48bff;
+      --impl: #6aa6ec;
+      --acomp: #6cc77c;
+      --melh: #f08a55;
+      --extra: #3fb8cf;
+      --warn-bg: #2e2513;
+      --warn-ink: #f5d48f;
+      --warn-line: #6b5420;
+      --pill-free-bg: #1d3a24; --pill-free-ink: #9fe0ab;
+      --pill-cred-bg: #3a3118; --pill-cred-ink: #f1d27a;
+      --pill-paid-bg: #3e1f1f; --pill-paid-ink: #f5a8a8;
+      --pill-key-bg: #1f2a47; --pill-key-ink: #a9bff5;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 24px 24px;
+    color: var(--ink);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 20px 16px 48px; }
+  a { color: var(--impl); }
+  .back { display: inline-block; font-size: 14px; text-decoration: none; margin-bottom: 14px; }
+  .back:hover { text-decoration: underline; }
+  h1, h2, h3 { font-family: var(--hand); font-weight: normal; line-height: 1.2; margin: 0; }
+  code {
+    font: 600 13px/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px;
+  }
+
+  /* Cabeçalho */
+  .hero {
+    background: var(--card); border-radius: 16px; box-shadow: var(--shadow);
+    padding: 22px 22px 18px; display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: center;
+  }
+  .hero .num { font-family: var(--hand); color: var(--impl); font-size: 18px; }
+  .hero h1 { font-size: clamp(26px, 4vw, 38px); margin: 2px 0 10px; }
+  .hero p { margin: 4px 0; max-width: 70ch; }
+  .hero p b { color: var(--muted); font-weight: 600; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .chip {
+    border: 1.5px dashed var(--line); border-radius: 999px; padding: 3px 12px; font-size: 14px; background: var(--bg);
+  }
+  .hero svg { width: 150px; height: auto; }
+  @media (max-width: 640px) { .hero { grid-template-columns: 1fr; } .hero svg { display: none; } }
+
+  .legend-top { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 4px; font-size: 13px; color: var(--muted); align-items: center; }
+
+  /* Selos */
+  .pill { display: inline-block; font-size: 12px; font-weight: 600; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+  .p-free { background: var(--pill-free-bg); color: var(--pill-free-ink); }
+  .p-cred { background: var(--pill-cred-bg); color: var(--pill-cred-ink); }
+  .p-paid { background: var(--pill-paid-bg); color: var(--pill-paid-ink); }
+  .p-key  { background: var(--pill-key-bg);  color: var(--pill-key-ink); }
+
+  /* Timeline */
+  .timeline { margin-top: 26px; }
+  .track { overflow-x: auto; padding-bottom: 8px; }
+  .cols {
+    display: grid; grid-template-columns: repeat(4, minmax(285px, 1fr)); gap: 18px;
+    position: relative; padding-top: 70px;
+  }
+  .cols::before {
+    content: ""; position: absolute; top: 28px; left: 8%; right: 8%; height: 8px; border-radius: 8px;
+    background: linear-gradient(90deg, var(--diag) 0 25%, var(--impl) 25% 50%, var(--acomp) 50% 75%, var(--melh) 75% 100%);
+    opacity: .85;
+  }
+  .phase { position: relative; }
+  .dot {
+    position: absolute; top: -70px; left: 50%; transform: translateX(-50%);
+    width: 56px; height: 56px; border-radius: 50%; background: var(--c); color: #fff;
+    display: grid; place-items: center; font: 26px var(--hand); border: 5px solid var(--card);
+    box-shadow: var(--shadow); z-index: 1;
+  }
+  .card {
+    background: var(--card); border-radius: 14px; box-shadow: var(--shadow); border-top: 6px solid var(--c);
+    padding: 16px 16px 18px; height: 100%;
+  }
+  .phase-head { display: flex; gap: 12px; align-items: center; }
+  .phase-head svg { width: 58px; height: 58px; flex: none; }
+  .phase-head h2 { font-size: 23px; color: var(--c); }
+  .when { font-size: 13px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+  .goal { margin: 12px 0 10px; font-size: 15px; }
+  h3 { font-size: 17px; margin: 16px 0 8px; color: var(--c); }
+  .skill {
+    border: 1px solid var(--line); border-left: 4px solid var(--c); border-radius: 10px;
+    padding: 8px 10px; margin-bottom: 8px; background: var(--card);
+  }
+  .skill .top { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; }
+  .skill .pills { display: flex; gap: 4px; flex-wrap: wrap; }
+  .skill p { margin: 5px 0 0; font-size: 14px; color: var(--muted); }
+  ul.list { margin: 0; padding-left: 20px; font-size: 14px; }
+  ul.list li { margin: 3px 0; }
+  .warn {
+    margin-top: 14px; background: var(--warn-bg); color: var(--warn-ink); border: 1px dashed var(--warn-line);
+    border-radius: 10px; padding: 10px 12px; font-size: 14px;
+  }
+  .warn b { display: block; margin-bottom: 2px; }
+
+  /* Marcos */
+  .milestones {
+    margin-top: 30px; background: var(--card); border-radius: 14px; box-shadow: var(--shadow); padding: 18px 16px;
+  }
+  .milestones h2 { font-size: 24px; margin-bottom: 14px; }
+  .ms-track { overflow-x: auto; }
+  .ms {
+    list-style: none; margin: 0; padding: 26px 0 0; display: grid; grid-template-columns: repeat(8, minmax(130px, 1fr));
+    gap: 10px; position: relative; min-width: 1050px;
+  }
+  .ms::before {
+    content: ""; position: absolute; top: 34px; left: 4%; right: 4%; border-top: 3px dashed var(--line);
+  }
+  .ms li { text-align: center; position: relative; font-size: 14px; }
+  .ms li::before {
+    content: "✓"; display: grid; place-items: center; width: 22px; height: 22px; margin: -2px auto 8px;
+    border-radius: 50%; background: var(--c); color: #fff; font-size: 13px; font-weight: 700; position: relative; z-index: 1;
+    border: 3px solid var(--card);
+  }
+  .ms li small { display: block; color: var(--muted); font-weight: 600; }
+
+  /* Rodapé */
+  footer { margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  footer section { background: var(--card); border-radius: 14px; box-shadow: var(--shadow); padding: 16px; font-size: 14px; }
+  footer h2 { font-size: 21px; margin-bottom: 8px; }
+  footer p { margin: 6px 0; }
+  .leg { display: grid; gap: 6px; }
+  @media (max-width: 899px) {
+    footer { grid-template-columns: 1fr; }
+  }
+
+  /* Celular: vertical */
+  @media (max-width: 899px) {
+    .track { overflow: visible; }
+    .cols { grid-template-columns: 1fr; padding-top: 0; padding-left: 46px; gap: 22px; }
+    .cols::before {
+      top: 0; bottom: 0; left: 15px; right: auto; width: 8px; height: auto;
+      background: linear-gradient(180deg, var(--diag) 0 25%, var(--impl) 25% 50%, var(--acomp) 50% 75%, var(--melh) 75% 100%);
+    }
+    .dot { top: 6px; left: -31px; transform: translateX(-50%); width: 46px; height: 46px; font-size: 22px; border-width: 4px; }
+    .ms { grid-template-columns: 1fr; min-width: 0; padding: 0 0 0 34px; gap: 14px; }
+    .ms::before { top: 0; bottom: 0; left: 10px; right: auto; border-top: 0; border-left: 3px dashed var(--line); }
+    .ms li { text-align: left; }
+    .ms li::before { position: absolute; left: -35px; top: 0; margin: 0; }
+  }
+</style>
+
+<div class="wrap">
+  <a class="back" href="index.html">← Todos os casos</a>
+
+  <header class="hero">
+    <div>
+      <div class="num">Caso 6</div>
+      <h1>Escritório profissional<br>(advocacia, contabilidade, arquitetura)</h1>
+      <p><b>Situação:</b> um serviço de confiança e de ticket alto, em que o cliente pesquisa muito antes de ligar.</p>
+      <p><b>Objetivo:</b> aparecer nas buscas por área de atuação + cidade e mostrar autoridade com conteúdo e avaliações, sem ferir as regras do conselho profissional.</p>
+      <div class="chips">
+        <span class="chip">⚖️ Advogado trabalhista</span>
+        <span class="chip">🧾 Contabilidade para MEI</span>
+        <span class="chip">🚗 Despachante</span>
+        <span class="chip">📐 Arquiteto</span>
+        <span class="chip">🛡️ Corretor de seguros</span>
+      </div>
+    </div>
+    <svg viewBox="0 0 160 140" aria-hidden="true">
+      <rect x="20" y="40" width="120" height="86" rx="10" fill="none" stroke="#1f5da3" stroke-width="5"/>
+      <path d="M58 40 V28 a8 8 0 0 1 8 -8 h28 a8 8 0 0 1 8 8 V40" fill="none" stroke="#1f5da3" stroke-width="5"/>
+      <line x1="20" y1="74" x2="140" y2="74" stroke="#1f5da3" stroke-width="4"/>
+      <rect x="70" y="66" width="20" height="16" rx="3" fill="#c2410c"/>
+      <path d="M118 8 l5 10 11 2 -8 8 2 11 -10 -5 -10 5 2 -11 -8 -8 11 -2z" fill="#2e7d3c"/>
+    </svg>
+  </header>
+
+  <div class="legend-top">
+    Selos de custo:
+    <span class="pill p-free">✅ grátis</span>
+    <span class="pill p-cred">🪙 créditos</span>
+    <span class="pill p-paid">💳 ferramenta paga</span>
+    <span class="pill p-key">🔑 precisa de conta/acesso</span>
+  </div>
+
+  <main class="timeline" aria-label="Linha do tempo do trabalho">
+    <div class="track">
+      <div class="cols">
+
+        <!-- Fase 0 -->
+        <article class="phase" style="--c: var(--diag)">
+          <div class="dot">0</div>
+          <div class="card">
+            <div class="phase-head">
+              <svg viewBox="0 0 60 60" aria-hidden="true">
+                <circle cx="25" cy="25" r="15" fill="none" stroke="currentColor" stroke-width="4" style="color:var(--diag)"/>
+                <line x1="36" y1="36" x2="52" y2="52" stroke="currentColor" stroke-width="6" stroke-linecap="round" style="color:var(--diag)"/>
+                <path d="M18 27 l5 5 9 -11" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--diag)"/>
+              </svg>
+              <div>
+                <h2>Diagnóstico inicial</h2>
+                <div class="when">Semanas 1–2</div>
+              </div>
+            </div>
+            <p class="goal">Entender o ponto de partida: como o escritório aparece hoje no Google, nos mapas e nas IAs, quem lidera a área e o que o conselho permite.</p>
+
+            <h3>Skills necessárias</h3>
+            <div class="skill">
+              <div class="top"><code>brief</code><span class="pills"><span class="pill p-free">✅ grátis</span><span class="pill p-cred">🪙 créditos</span></span></div>
+              <p>Registra áreas de atuação, cidades, diferenciais e as restrições da OAB/CFC/CAU.</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>local-seo-audit</code><span class="pills"><span class="pill p-cred">🪙 créditos</span></span></div>
+              <p>Revisa perfil, site, citações, avaliações e links e aponta o que corrigir primeiro.</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>local-competitor-analysis</code><span class="pills"><span class="pill p-cred">🪙 créditos</span></span></div>
+              <p>Mostra quais escritórios lideram o mapa e por quê (categorias, avaliações, links).</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>ai-local-search</code><span class="pills"><span class="pill p-cred">🪙 créditos</span></span></div>
+              <p>Faz o diagnóstico nas IAs: o escritório é citado quando perguntam "bom contador em…"?</p>
+            </div>
+
+            <h3>Entregáveis</h3>
+            <ul class="list">
+              <li>Brief do escritório preenchido</li>
+              <li>Auditoria com lista de prioridades</li>
+              <li>Quadro dos 3 a 5 concorrentes principais</li>
+              <li>Diagnóstico inicial nas IAs (ponto de partida)</li>
+            </ul>
+
+            <h3>Indicadores (linha de base)</h3>
+            <ul class="list">
+              <li>Posição no mapa por área + cidade</li>
+              <li>Nº de avaliações e nota média</li>
+              <li>% de respostas de IA que citam o escritório</li>
+            </ul>
+
+            <div class="warn"><b>⚠️ Cuidado no Brasil</b>Confira se o material atual (site, perfil, redes) já respeita o Provimento 205/2021 da OAB ou as regras do CFC. Corrigir isso vem antes de qualquer divulgação.</div>
+          </div>
+        </article>
+
+        <!-- Fase 1 -->
+        <article class="phase" style="--c: var(--impl)">
+          <div class="dot">1</div>
+          <div class="card">
+            <div class="phase-head">
+              <svg viewBox="0 0 60 60" aria-hidden="true" style="color:var(--impl)">
+                <rect x="8" y="18" width="44" height="34" rx="5" fill="none" stroke="currentColor" stroke-width="4"/>
+                <path d="M22 18 v-6 a4 4 0 0 1 4 -4 h8 a4 4 0 0 1 4 4 v6" fill="none" stroke="currentColor" stroke-width="4"/>
+                <line x1="8" y1="32" x2="52" y2="32" stroke="currentColor" stroke-width="3"/>
+                <rect x="25" y="28" width="10" height="8" rx="2" fill="currentColor"/>
+              </svg>
+              <div>
+                <h2>Implementação</h2>
+                <div class="when">Semanas 3–12</div>
+              </div>
+            </div>
+            <p class="goal">Montar a base: perfil com categorias precisas, páginas por área de atuação, conteúdo que responde às dúvidas reais e primeiras menções locais.</p>
+
+            <h3>Skills necessárias</h3>
+            <div class="skill">
+              <div class="top"><code>gbp-optimization</code><span class="pills"><span class="pill p-free">✅ grátis</span><span class="pill p-key">🔑 acesso</span></span></div>
+              <p>Escolhe categorias específicas ("Advogado trabalhista", não só "Advogado") e cadastra os serviços.</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>local-keyword-research</code><span class="pills"><span class="pill p-cred">🪙 créditos</span></span></div>
+              <p>Levanta buscas como "advogado previdenciário em Campinas" e "contador para abrir empresa".</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>local-content-strategy</code><span class="pills"><span class="pill p-free">✅ grátis</span></span></div>
+              <p>Agrupa as buscas e decide o que vira página de área, artigo ou FAQ.</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>local-content-briefs</code><span class="pills"><span class="pill p-free">✅ grátis</span></span></div>
+              <p>Roteiros de artigos como "quanto custa abrir um MEI" ou "como funciona a rescisão".</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>local-landing-pages</code><span class="pills"><span class="pill p-free">✅ grátis</span></span></div>
+              <p>Cria uma página única por área de atuação (ex.: trabalhista, previdenciário, família).</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>local-schema</code><span class="pills"><span class="pill p-free">✅ grátis</span></span></div>
+              <p>Coloca o código que diz ao Google e às IAs quem é o escritório (tipo, endereço, áreas).</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>review-management</code><span class="pills"><span class="pill p-free">✅ grátis</span><span class="pill p-cred">🪙 créditos</span></span></div>
+              <p>Cria a rotina de pedir avaliações a clientes satisfeitos, de forma discreta e honesta.</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>local-link-building</code><span class="pills"><span class="pill p-cred">🪙 créditos</span></span></div>
+              <p>Busca menções em associações comerciais, sindicatos, portais da cidade, palestras e parcerias.</p>
+            </div>
+
+            <h3>Entregáveis</h3>
+            <ul class="list">
+              <li>Perfil com categorias e serviços precisos</li>
+              <li>Mapa de palavras-chave por área + cidade</li>
+              <li>Plano de conteúdo e primeiros roteiros</li>
+              <li>Páginas por área de atuação no ar, com schema</li>
+              <li>Lista de oportunidades de links locais</li>
+            </ul>
+
+            <div class="warn"><b>⚠️ Cuidado no Brasil</b>Na advocacia, textos e perfil devem ser <b>informativos</b>: nada de promessa de resultado, "ganhe sua causa" ou preço como chamariz. Na contabilidade, evite "o mais barato da cidade" (regras do CFC).</div>
+          </div>
+        </article>
+
+        <!-- Fase 2 -->
+        <article class="phase" style="--c: var(--acomp)">
+          <div class="dot">2</div>
+          <div class="card">
+            <div class="phase-head">
+              <svg viewBox="0 0 60 60" aria-hidden="true" style="color:var(--acomp)">
+                <line x1="8" y1="52" x2="54" y2="52" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                <line x1="8" y1="52" x2="8" y2="8" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                <polyline points="14,42 24,32 33,37 48,16" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="48" cy="16" r="4" fill="currentColor"/>
+              </svg>
+              <div>
+                <h2>Acompanhamento e gestão dos resultados</h2>
+                <div class="when">Mês 3 em diante · ciclo mensal</div>
+              </div>
+            </div>
+            <p class="goal">Medir todo mês se o escritório sobe no mapa e na busca, se o conteúdo gera contatos e manter perfil e avaliações vivos.</p>
+
+            <h3>Skills necessárias</h3>
+            <div class="skill">
+              <div class="top"><code>local-reporting</code><span class="pills"><span class="pill p-cred">🪙 créditos</span></span></div>
+              <p>Monta o relatório mensal: estamos melhorando, o que funcionou, o que fazer agora.</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>geogrid-analysis</code><span class="pills"><span class="pill p-cred">🪙 créditos</span></span></div>
+              <p>Mapa de calor das posições por área de atuação em cada região da cidade.</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>google-search-console-tool</code><span class="pills"><span class="pill p-free">✅ grátis</span><span class="pill p-key">🔑 acesso</span></span></div>
+              <p>Mostra quais buscas trazem gente aos artigos e às páginas de área.</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>google-analytics-tool</code><span class="pills"><span class="pill p-free">✅ grátis</span><span class="pill p-key">🔑 acesso</span></span></div>
+              <p>Mede contatos: formulários, cliques no WhatsApp e no telefone.</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>review-management</code><span class="pills"><span class="pill p-free">✅ grátis</span><span class="pill p-cred">🪙 créditos</span></span></div>
+              <p>Acompanha o ritmo de avaliações e orienta respostas sóbrias, sem expor o cliente.</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>gbp-posts</code><span class="pills"><span class="pill p-free">✅ grátis</span></span></div>
+              <p>Calendário de posts informativos (mudança na lei, prazo do IR, dica de reforma).</p>
+            </div>
+
+            <h3>Entregáveis</h3>
+            <ul class="list">
+              <li>Relatório mensal em linguagem simples</li>
+              <li>Geogrid comparado com o mês anterior</li>
+              <li>Posts publicados e avaliações respondidas</li>
+            </ul>
+
+            <h3>Indicadores (KPIs)</h3>
+            <ul class="list">
+              <li>Posição média e SoLV no geogrid</li>
+              <li>Cliques e impressões das páginas de área</li>
+              <li>Contatos vindos do site e do perfil</li>
+              <li>Novas avaliações por mês</li>
+            </ul>
+
+            <div class="warn"><b>⚠️ Cuidado no Brasil</b>Ao responder avaliações, mantenha o sigilo profissional: não confirme que a pessoa é cliente nem comente o caso. Isso vale também para avaliações negativas.</div>
+          </div>
+        </article>
+
+        <!-- Fase 3 -->
+        <article class="phase" style="--c: var(--melh)">
+          <div class="dot">3</div>
+          <div class="card">
+            <div class="phase-head">
+              <svg viewBox="0 0 60 60" aria-hidden="true" style="color:var(--melh)">
+                <path d="M30 6 a16 16 0 0 1 10 28 v6 h-20 v-6 a16 16 0 0 1 10 -28z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+                <line x1="22" y1="47" x2="38" y2="47" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                <line x1="25" y1="54" x2="35" y2="54" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                <path d="M30 14 v14 M24 20 l6 -6 6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div>
+                <h2>Proposição de melhorias</h2>
+                <div class="when">A cada trimestre</div>
+              </div>
+            </div>
+            <p class="goal">Usar os números para decidir o próximo passo: novas áreas, conteúdo que falta, mais autoridade e mais presença nas IAs.</p>
+
+            <h3>Skills necessárias</h3>
+            <div class="skill">
+              <div class="top"><code>local-content-strategy</code><span class="pills"><span class="pill p-free">✅ grátis</span></span></div>
+              <p>Acha lacunas: dúvidas sem resposta, páginas fracas ou áreas novas a cobrir.</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>local-competitor-analysis</code><span class="pills"><span class="pill p-cred">🪙 créditos</span></span></div>
+              <p>Refaz a comparação para ver onde ainda dá para ultrapassar os rivais.</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>local-link-building</code><span class="pills"><span class="pill p-cred">🪙 créditos</span></span></div>
+              <p>Propõe novas fontes de autoridade: palestras, artigos na imprensa, parcerias.</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>ai-local-search</code><span class="pills"><span class="pill p-cred">🪙 créditos</span></span></div>
+              <p>Mede de novo as IAs e sugere ajustes (FAQ, dados claros, avaliações citáveis).</p>
+            </div>
+            <div class="skill">
+              <div class="top"><code>client-deliverables</code><span class="pills"><span class="pill p-free">✅ grátis</span></span></div>
+              <p>Transforma as melhorias numa proposta clara para o sócio aprovar.</p>
+            </div>
+
+            <h3>Entregáveis</h3>
+            <ul class="list">
+              <li>Revisão trimestral com o que funcionou</li>
+              <li>Lista priorizada de melhorias para o próximo ciclo</li>
+              <li>Novo diagnóstico nas IAs, comparado ao inicial</li>
+            </ul>
+
+            <h3>Indicadores (KPIs)</h3>
+            <ul class="list">
+              <li>Evolução do trimestre vs. linha de base</li>
+              <li>% de respostas de IA que citam o escritório</li>
+              <li>Novos links e menções locais conquistados</li>
+            </ul>
+
+            <div class="warn"><b>⚠️ Cuidado no Brasil</b>Patrocínio e parcerias são bem-vindos, mas na advocacia não podem virar captação de clientela. Antes de ações novas, confira de novo as regras do conselho.</div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </main>
+
+  <section class="milestones" aria-label="Marcos do trabalho">
+    <h2>📍 Marcos ao longo do caminho</h2>
+    <div class="ms-track">
+      <ol class="ms">
+        <li style="--c: var(--diag)">Brief e regras do conselho registrados<small>Semana 1</small></li>
+        <li style="--c: var(--diag)">Diagnóstico e concorrentes prontos<small>Semana 2</small></li>
+        <li style="--c: var(--impl)">Perfil com categorias precisas<small>Semana 4</small></li>
+        <li style="--c: var(--impl)">Páginas por área no ar<small>Semana 8</small></li>
+        <li style="--c: var(--impl)">Primeiros artigos e links locais<small>Semana 12</small></li>
+        <li style="--c: var(--acomp)">1º relatório mensal<small>Mês 3</small></li>
+        <li style="--c: var(--acomp)">20 avaliações novas<small>Mês 5–6</small></li>
+        <li style="--c: var(--melh)">1ª revisão trimestral e novo teste nas IAs<small>Mês 6</small></li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <section>
+      <h2>Fases extras incluídas e por quê</h2>
+      <p><b>0 · Diagnóstico inicial.</b> Escritórios em geral já têm site e perfil, e o cliente compara muito antes de ligar. Sem medir o ponto de partida (mapa, concorrentes e IAs) e sem conferir se o material atual respeita a OAB/CFC, não dá para provar resultado depois.</p>
+      <p>Não foram incluídas fases de escala ou manutenção: o caso é de uma unidade só, e a rotina contínua já está na fase 2.</p>
+    </section>
+    <section>
+      <h2>Legenda dos selos</h2>
+      <div class="leg">
+        <span><span class="pill p-free">✅ grátis</span> não exige pagamento</span>
+        <span><span class="pill p-cred">🪙 créditos</span> usa créditos de dados (ex.: LocalSEOData)</span>
+        <span><span class="pill p-paid">💳 ferramenta paga</span> exige assinatura de ferramenta</span>
+        <span><span class="pill p-key">🔑 conta/acesso</span> precisa de login no perfil, Search Console ou Analytics</span>
+      </div>
+    </section>
+    <section>
+      <h2>Lembretes</h2>
+      <p><code>brief</code> guarda o histórico do escritório: o que foi feito, os números de cada mês e o próximo passo.</p>
+      <p><code>dispatch</code> escolhe quais skills carregar para cada pedido, sem abrir todas de uma vez.</p>
+    </section>
+  </footer>
+</div>

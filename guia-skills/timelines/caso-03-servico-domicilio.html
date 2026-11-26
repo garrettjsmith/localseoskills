@@ -1,0 +1,296 @@
+<meta charset="utf-8">
+<title>Caso 3 · Serviço em Domicílio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --bg:#f6f8f7; --grid:rgba(40,80,110,.08); --ink:#1d2830; --muted:#4f5d68; --paper:#ffffff;
+  --shadow:rgba(30,40,50,.14); --track:#c9d3d8;
+  --c0:#7a5af8; --c1:#1f5da3; --c2:#2e7d3c; --c3:#c2410c;
+  --c0-soft:#efeafe; --c1-soft:#e3edf9; --c2-soft:#e3f2e5; --c3-soft:#fdeadf;
+  --t-free-bg:#dff3e2; --t-free-fg:#1f6a2e;
+  --t-cred-bg:#fff0c7; --t-cred-fg:#7a5300;
+  --t-paid-bg:#ffe0dc; --t-paid-fg:#9c2a1e;
+  --t-acct-bg:#dde9fb; --t-acct-fg:#1c4f8c;
+  --warn-bg:#fff6dc; --warn-line:#e0b23a;
+  --code-bg:#eef2f4;
+  --hand:"Marker Felt","Chalkboard SE","Segoe Print","Bradley Hand",cursive;
+  --text:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#1b2023; --grid:rgba(200,220,235,.06); --ink:#e9edf0; --muted:#aab6bf; --paper:#262c30;
+  --shadow:rgba(0,0,0,.45); --track:#3c464c;
+  --c0:#a996ff; --c1:#7fb3ee; --c2:#8fd39a; --c3:#f59a68;
+  --c0-soft:#2e2748; --c1-soft:#1f3048; --c2-soft:#21372a; --c3-soft:#40291c;
+  --t-free-bg:#1f3a26; --t-free-fg:#9ee0a9;
+  --t-cred-bg:#433618; --t-cred-fg:#f3d27a;
+  --t-paid-bg:#4a2620; --t-paid-fg:#ffaa9c;
+  --t-acct-bg:#1f3350; --t-acct-fg:#a9c9f5;
+  --warn-bg:#3d3420; --warn-line:#b48a2a;
+  --code-bg:#323a3f;
+}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background-color:var(--bg);color:var(--ink);font:16px/1.5 var(--text);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px}
+.wrap{max-width:1380px;margin:0 auto;padding:20px 16px 48px}
+a{color:var(--c1)}
+.back{display:inline-block;font-size:14px;text-decoration:none;margin-bottom:12px}
+.back:hover{text-decoration:underline}
+h1,h2,h3{font-family:var(--hand);font-weight:normal;margin:0}
+code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);padding:1px 6px;border-radius:5px}
+
+/* Cabeçalho */
+.hero{display:flex;gap:24px;align-items:center;background:var(--paper);border-radius:16px;
+  box-shadow:0 4px 18px var(--shadow);padding:22px 24px;margin-bottom:28px}
+.hero svg{flex:0 0 200px;width:200px;height:auto}
+.hero .num{font-family:var(--hand);color:var(--c3);font-size:18px}
+.hero h1{font-size:clamp(26px,4vw,38px);line-height:1.15;margin:2px 0 10px}
+.hero p{margin:4px 0;max-width:72ch}
+.hero b{color:var(--c1)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{font-size:13px;padding:4px 11px;border-radius:999px;background:var(--c1-soft);color:var(--ink)}
+
+/* Linha do tempo */
+.timeline{position:relative}
+.track{display:none}
+.phases{display:grid;gap:22px}
+.phase{position:relative;background:var(--paper);border-radius:16px;box-shadow:0 4px 18px var(--shadow);
+  padding:18px 18px 20px;border-top:6px solid var(--pc)}
+.p0{--pc:var(--c0);--ps:var(--c0-soft)} .p1{--pc:var(--c1);--ps:var(--c1-soft)}
+.p2{--pc:var(--c2);--ps:var(--c2-soft)} .p3{--pc:var(--c3);--ps:var(--c3-soft)}
+.dot{width:46px;height:46px;border-radius:50%;background:var(--pc);color:#fff;display:flex;align-items:center;
+  justify-content:center;font-family:var(--hand);font-size:22px;box-shadow:0 0 0 6px var(--bg);position:absolute}
+@media (prefers-color-scheme: dark){.dot{color:#14181a}}
+.phead{display:flex;gap:12px;align-items:center;margin-bottom:8px}
+.phead svg{flex:0 0 64px;width:64px;height:64px}
+.phead h2{font-size:23px;color:var(--pc);line-height:1.15}
+.when{display:inline-block;font-size:13px;font-weight:600;background:var(--ps);color:var(--ink);padding:2px 10px;border-radius:999px;margin-top:4px}
+.goal{margin:6px 0 12px;font-size:15px}
+.phase h3{font-size:17px;margin:14px 0 6px;color:var(--pc)}
+.skills{display:grid;gap:8px}
+.skill{background:var(--ps);border-radius:10px;padding:8px 10px;font-size:14px}
+.skill .top{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:2px}
+.skill code{background:var(--paper);font-weight:600}
+.seal{font-size:11.5px;padding:1px 8px;border-radius:999px;white-space:nowrap}
+.free{background:var(--t-free-bg);color:var(--t-free-fg)}
+.cred{background:var(--t-cred-bg);color:var(--t-cred-fg)}
+.paid{background:var(--t-paid-bg);color:var(--t-paid-fg)}
+.acct{background:var(--t-acct-bg);color:var(--t-acct-fg)}
+ul{margin:0;padding-left:20px;font-size:14px}
+li{margin:2px 0}
+.warn{margin-top:14px;background:var(--warn-bg);border-left:4px solid var(--warn-line);border-radius:8px;padding:8px 10px;font-size:14px}
+
+/* Marcos */
+.milestones{margin:34px 0 0;background:var(--paper);border-radius:16px;box-shadow:0 4px 18px var(--shadow);padding:18px 20px}
+.milestones h2{font-size:24px;margin-bottom:12px}
+.mrow{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;position:relative}
+.mrow li{display:flex;gap:10px;align-items:flex-start;font-size:14px;margin:0}
+.flag{flex:0 0 auto;width:28px;height:28px;border-radius:50%;background:var(--mc);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px}
+@media (prefers-color-scheme: dark){.flag{color:#14181a}}
+.mrow b{display:block}
+.mrow small{color:var(--muted)}
+
+/* Rodapé */
+footer{margin-top:28px;display:grid;gap:18px}
+.box{background:var(--paper);border-radius:16px;box-shadow:0 4px 18px var(--shadow);padding:16px 20px}
+.box h2{font-size:21px;margin-bottom:8px}
+.box p{margin:6px 0;font-size:14.5px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:14px}
+
+/* Celular: linha vertical à esquerda */
+@media (max-width:899px){
+  .hero{flex-direction:column;align-items:flex-start}
+  .hero svg{width:160px;flex-basis:auto}
+  .timeline{padding-left:40px}
+  .timeline::before{content:"";position:absolute;left:17px;top:10px;bottom:10px;width:6px;border-radius:3px;
+    background:linear-gradient(var(--c0),var(--c1) 30%,var(--c2) 65%,var(--c3))}
+  .dot{left:-46px;top:12px;width:40px;height:40px;font-size:19px}
+  .mrow::before{content:"";position:absolute;left:12px;top:6px;bottom:6px;width:4px;border-radius:2px;background:var(--track)}
+  .flag{position:relative}
+}
+/* Desktop: linha horizontal com círculos e fases em colunas */
+@media (min-width:900px){
+  .timeline{padding-top:70px}
+  .track{display:block;position:absolute;top:22px;left:12.5%;right:12.5%;height:8px;border-radius:4px;
+    background:linear-gradient(90deg,var(--c0),var(--c1) 33%,var(--c2) 66%,var(--c3))}
+  .phases{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+  .dot{top:-72px;left:50%;transform:translateX(-50%)}
+  .phase::before{content:"";position:absolute;top:-26px;left:50%;width:2px;height:20px;background:var(--pc);opacity:.6}
+  .mrow{flex-direction:row;justify-content:space-between;gap:8px;padding-top:4px}
+  .mrow::before{content:"";position:absolute;left:14px;right:14px;top:17px;height:4px;border-radius:2px;background:var(--track)}
+  .mrow li{flex-direction:column;align-items:center;text-align:center;flex:1 1 0;position:relative}
+  footer{grid-template-columns:1.4fr 1fr}
+}
+</style>
+
+<div class="wrap">
+<a class="back" href="index.html">← Todos os casos</a>
+
+<header class="hero">
+  <svg viewBox="0 0 220 150" role="img" aria-label="Van de serviço saindo da base em direção às casas dos clientes">
+    <path d="M18 120 C 60 70, 120 140, 200 60" fill="none" stroke="var(--c1)" stroke-width="3" stroke-dasharray="7 7" stroke-linecap="round"/>
+    <g transform="translate(150 22)"><path d="M0 22 L22 4 L44 22 V48 H0Z" fill="var(--c3-soft)" stroke="var(--c3)" stroke-width="3" stroke-linejoin="round"/><rect x="16" y="30" width="12" height="18" fill="var(--c3)"/></g>
+    <g transform="translate(96 82)"><path d="M0 16 L16 3 L32 16 V36 H0Z" fill="var(--c2-soft)" stroke="var(--c2)" stroke-width="3" stroke-linejoin="round"/></g>
+    <g transform="translate(10 88)">
+      <rect x="0" y="8" width="62" height="30" rx="6" fill="var(--c1-soft)" stroke="var(--c1)" stroke-width="3"/>
+      <path d="M62 16 H78 L88 28 V38 H62Z" fill="var(--c1-soft)" stroke="var(--c1)" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="18" cy="40" r="7" fill="var(--paper)" stroke="var(--ink)" stroke-width="3"/>
+      <circle cx="72" cy="40" r="7" fill="var(--paper)" stroke="var(--ink)" stroke-width="3"/>
+      <path d="M14 22 l8 -8 m-4 4 l10 10" stroke="var(--c3)" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <g transform="translate(40 18)"><path d="M14 0 C 4 0 0 8 0 14 C 0 24 14 36 14 36 C 14 36 28 24 28 14 C 28 8 24 0 14 0Z" fill="none" stroke="var(--muted)" stroke-width="3" stroke-dasharray="4 4"/><path d="M6 6 L22 22" stroke="var(--muted)" stroke-width="3" stroke-linecap="round"/></g>
+  </svg>
+  <div>
+    <div class="num">Caso 3</div>
+    <h1>Prestador de serviço que vai até o cliente (sem loja aberta ao público)</h1>
+    <p><b>Situação:</b> o profissional atende na casa ou na empresa do cliente e não recebe ninguém no próprio endereço, então o Google tem menos pistas de onde ele trabalha.</p>
+    <p><b>Objetivo:</b> aparecer nos bairros e cidades atendidos, mesmo com o endereço oculto, e transformar cada busca em ligação ou WhatsApp.</p>
+    <div class="chips">
+      <span class="chip">🔧 Encanador</span><span class="chip">💡 Eletricista</span><span class="chip">❄️ Técnico de ar-condicionado</span>
+      <span class="chip">🐜 Dedetizadora</span><span class="chip">🔑 Chaveiro</span><span class="chip">🧹 Diarista</span>
+      <span class="chip">🪛 Montador de móveis</span><span class="chip">🚿 Desentupidora</span>
+    </div>
+  </div>
+</header>
+
+<section class="timeline" aria-label="Linha do tempo do trabalho">
+  <div class="track"></div>
+  <div class="phases">
+
+  <!-- FASE 0 -->
+  <article class="phase p0">
+    <div class="dot">0</div>
+    <div class="phead">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="4" y="8" width="44" height="44" rx="6" fill="var(--ps)" stroke="var(--pc)" stroke-width="3"/>
+        <path d="M4 24 H48 M4 38 H48 M18 8 V52 M33 8 V52" stroke="var(--pc)" stroke-width="1.5" opacity=".5"/>
+        <circle cx="40" cy="40" r="12" fill="var(--paper)" stroke="var(--pc)" stroke-width="4"/><path d="M49 49 L60 60" stroke="var(--pc)" stroke-width="5" stroke-linecap="round"/></svg>
+      <div><h2>Diagnóstico inicial</h2><span class="when">Semana 1</span></div>
+    </div>
+    <p class="goal">Registrar a área atendida e medir, antes de mexer em qualquer coisa, onde o negócio aparece hoje no mapa.</p>
+    <h3>Skills necessárias</h3>
+    <div class="skills">
+      <div class="skill"><div class="top"><code>brief</code><span class="seal free">✅ grátis</span><span class="seal cred">🪙 créditos (auditoria inicial)</span></div>Abre a ficha com bairros, cidades e serviços principais.</div>
+      <div class="skill"><div class="top"><code>local-keyword-research</code><span class="seal free">✅ grátis</span><span class="seal cred">🪙 créditos</span></div>Levanta buscas como "desentupidora 24 horas Guarulhos".</div>
+      <div class="skill"><div class="top"><code>geogrid-analysis</code><span class="seal cred">🪙 créditos</span></div>Lê o mapa de calor base, com grade larga, típica de quem atende fora.</div>
+      <div class="skill"><div class="top"><code>local-competitor-analysis</code><span class="seal cred">🪙 créditos</span></div>Mostra quem domina cada região e se há rival com endereço falso.</div>
+    </div>
+    <h3>Entregáveis</h3>
+    <ul><li>Ficha do cliente com a área de atendimento</li><li>Lista de palavras por serviço e por cidade</li><li>Mapa de calor "antes" (linha de base)</li><li>Quadro dos 3 a 5 concorrentes</li></ul>
+    <h3>Indicadores</h3>
+    <ul><li>SoLV e ARP de partida</li><li>Avaliações atuais × concorrentes</li></ul>
+    <div class="warn">⚠️ <b>Cuidado no Brasil:</b> o volume de busca de cidades pequenas costuma vir zerado nas ferramentas. Isso não significa que ninguém procura.</div>
+  </article>
+
+  <!-- FASE 1 -->
+  <article class="phase p1">
+    <div class="dot">1</div>
+    <div class="phead">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="24" width="52" height="32" rx="5" fill="var(--ps)" stroke="var(--pc)" stroke-width="3"/>
+        <path d="M22 24 V16 a4 4 0 0 1 4 -4 H38 a4 4 0 0 1 4 4 V24" fill="none" stroke="var(--pc)" stroke-width="3"/>
+        <path d="M6 38 H58" stroke="var(--pc)" stroke-width="3"/><rect x="27" y="34" width="10" height="8" rx="2" fill="var(--pc)"/></svg>
+      <div><h2>Implementação</h2><span class="when">Semanas 2–8</span></div>
+    </div>
+    <p class="goal">Montar o perfil de área de serviço, o site por serviço e cidade, o roteiro de avaliações e os anúncios de chamada.</p>
+    <h3>Skills necessárias</h3>
+    <div class="skills">
+      <div class="skill"><div class="top"><code>service-area-seo</code><span class="seal free">✅ grátis</span></div>Configura o perfil com endereço oculto e de 3 a 5 cidades no início.</div>
+      <div class="skill"><div class="top"><code>gbp-optimization</code><span class="seal free">✅ grátis</span><span class="seal acct">🔑 conta no perfil</span></div>Escolhe as categorias e lista cada serviço com descrição.</div>
+      <div class="skill"><div class="top"><code>local-landing-pages</code><span class="seal free">✅ grátis</span></div>Cria uma página por serviço e, quando fizer sentido, por cidade, sem copiar e colar.</div>
+      <div class="skill"><div class="top"><code>local-schema</code><span class="seal free">✅ grátis</span></div>Põe no site o código com a área atendida (<code>areaServed</code>) e sem endereço.</div>
+      <div class="skill"><div class="top"><code>local-citations</code><span class="seal free">✅ grátis</span><span class="seal paid">💳 envio em lote (opcional)</span></div>Repete nome e telefone iguais no Apple Mapas, Bing, Facebook e guias, sem endereço.</div>
+      <div class="skill"><div class="top"><code>review-management</code><span class="seal free">✅ grátis</span></div>Roteiro de WhatsApp logo após o serviço, pedindo para citar o serviço e o bairro.</div>
+      <div class="skill"><div class="top"><code>local-ppc-ads</code><span class="seal acct">🔑 conta Google Ads + verba</span></div>Campanha com chamada e WhatsApp para urgências ("24h", "hoje"), mirando só quem está na área.</div>
+      <div class="skill"><div class="top"><code>local-search-ads</code><span class="seal acct">🔑 conta Google Ads + verba</span></div>Anúncio dentro do mapa, com o perfil vinculado ao Google Ads.</div>
+    </div>
+    <h3>Entregáveis</h3>
+    <ul><li>Perfil de área de serviço verificado e completo</li><li>Mapa das regiões atendidas</li><li>Páginas de serviço/cidade no ar</li><li>Kit de avaliações (mensagem, link, respostas)</li><li>Campanhas com rastreio de ligações e WhatsApp</li></ul>
+    <h3>Indicadores</h3>
+    <ul><li>Perfil verificado e sem endereço visível</li><li>Nº de páginas publicadas</li><li>Ligações e cliques no WhatsApp</li></ul>
+    <div class="warn">⚠️ <b>Cuidado no Brasil:</b> usar endereço de parente, coworking ou caixa postal como se fosse loja leva à suspensão (veja o caso 10).</div>
+  </article>
+
+  <!-- FASE 2 -->
+  <article class="phase p2">
+    <div class="dot">2</div>
+    <div class="phead">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="6" width="52" height="52" rx="6" fill="var(--ps)" stroke="var(--pc)" stroke-width="3"/>
+        <rect x="14" y="36" width="8" height="14" fill="var(--pc)"/><rect x="28" y="28" width="8" height="22" fill="var(--pc)"/><rect x="42" y="18" width="8" height="32" fill="var(--pc)"/>
+        <path d="M12 30 L26 22 L36 24 L52 12" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><h2>Acompanhamento e gestão dos resultados</h2><span class="when">Mês 2 em diante · todo mês</span></div>
+    </div>
+    <p class="goal">Ver, cidade por cidade, se o negócio aparece mais e se isso vira ligação, e manter o perfil vivo.</p>
+    <h3>Skills necessárias</h3>
+    <div class="skills">
+      <div class="skill"><div class="top"><code>geogrid-analysis</code><span class="seal cred">🪙 créditos</span></div>Repete o mapa de calor e compara com a linha de base.</div>
+      <div class="skill"><div class="top"><code>local-falcon-tool</code><span class="seal paid">💳 ferramenta paga</span><span class="seal acct">🔑 conta</span></div>Varreduras mensais automáticas e alerta de edições indevidas no perfil.</div>
+      <div class="skill"><div class="top"><code>review-management</code><span class="seal free">✅ grátis</span></div>Acompanha o ritmo de avaliações por mês e responde a todas.</div>
+      <div class="skill"><div class="top"><code>gbp-posts</code><span class="seal free">✅ grátis</span></div>1 a 3 posts por semana com fotos reais de serviços feitos.</div>
+      <div class="skill"><div class="top"><code>google-search-console-tool</code><span class="seal free">✅ grátis</span><span class="seal acct">🔑 acesso</span></div>Mostra quais páginas de serviço/cidade recebem cliques.</div>
+      <div class="skill"><div class="top"><code>google-analytics-tool</code><span class="seal free">✅ grátis</span><span class="seal acct">🔑 acesso</span></div>Conta os contatos que vieram do site e do perfil (com UTM).</div>
+      <div class="skill"><div class="top"><code>local-reporting</code><span class="seal free">✅ grátis</span></div>Relatório mensal simples para o dono: aparecemos mais? Veio cliente?</div>
+    </div>
+    <h3>Entregáveis</h3>
+    <ul><li>Mapa de calor mensal comparado</li><li>Relatório mensal em linguagem simples</li><li>Calendário de posts e respostas às avaliações</li></ul>
+    <h3>Indicadores</h3>
+    <ul><li>SoLV e ARP por cidade atendida</li><li>Avaliações novas por mês (com bairro citado)</li><li>Ligações, WhatsApp e custo por contato nos anúncios</li><li>Cliques das páginas de cidade</li></ul>
+    <div class="warn">⚠️ <b>Cuidado no Brasil:</b> pedir avaliação pelo WhatsApp só a quem já foi cliente, sem brinde, e com contato obtido legalmente (LGPD).</div>
+  </article>
+
+  <!-- FASE 3 -->
+  <article class="phase p3">
+    <div class="dot">3</div>
+    <div class="phead">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 6 C 19 6 12 16 12 26 C 12 35 19 39 22 45 H42 C45 39 52 35 52 26 C 52 16 45 6 32 6Z" fill="var(--ps)" stroke="var(--pc)" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M23 51 H41 M26 57 H38" stroke="var(--pc)" stroke-width="3" stroke-linecap="round"/><path d="M27 30 L32 20 L37 30" fill="none" stroke="var(--pc)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><h2>Proposição de melhorias</h2><span class="when">A cada 3 meses (a partir do mês 3)</span></div>
+    </div>
+    <p class="goal">Usar os números para decidir onde crescer: mais cidades, novas páginas ou mais verba de anúncio.</p>
+    <h3>Skills necessárias</h3>
+    <div class="skills">
+      <div class="skill"><div class="top"><code>service-area-seo</code><span class="seal free">✅ grátis</span></div>Reavalia as áreas: adiciona cidades onde já há tração e tira as que só dispersam.</div>
+      <div class="skill"><div class="top"><code>local-competitor-analysis</code><span class="seal cred">🪙 créditos</span></div>Descobre por que um rival vence em certa zona e o que copiar ou superar.</div>
+      <div class="skill"><div class="top"><code>local-landing-pages</code><span class="seal free">✅ grátis</span></div>Cria páginas para cidades e serviços que ainda não têm página e já geram busca.</div>
+      <div class="skill"><div class="top"><code>local-content-strategy</code><span class="seal free">✅ grátis</span></div>Planeja textos úteis ("quanto custa desentupir", "ar pingando") que trazem contato.</div>
+      <div class="skill"><div class="top"><code>local-ppc-ads</code><span class="seal acct">🔑 conta Google Ads + verba</span></div>Leva verba para as cidades distantes, onde o mapa não alcança.</div>
+      <div class="skill"><div class="top"><code>client-deliverables</code><span class="seal free">✅ grátis</span></div>Monta a proposta do próximo trimestre para o cliente aprovar.</div>
+    </div>
+    <h3>Entregáveis</h3>
+    <ul><li>Lista priorizada de melhorias</li><li>Novo desenho da área de atendimento</li><li>Plano de páginas e conteúdos do trimestre</li><li>Proposta de ajuste de verba</li></ul>
+    <h3>Indicadores</h3>
+    <ul><li>SoLV nas cidades novas × antigas</li><li>Contatos por cidade e por serviço</li></ul>
+    <div class="warn">⚠️ <b>Cuidado no Brasil:</b> o Google mostra mais quem está perto de quem busca. Cidades longe da base dependem mais de site e anúncio do que do mapa.</div>
+  </article>
+
+  </div>
+</section>
+
+<section class="milestones" aria-label="Marcos do trabalho">
+  <h2>🚩 Marcos no caminho</h2>
+  <ol class="mrow">
+    <li style="--mc:var(--c0)"><span class="flag">✓</span><div><b>Ficha e mapa "antes"</b><small>Semana 1</small></div></li>
+    <li style="--mc:var(--c1)"><span class="flag">✓</span><div><b>Perfil de área de serviço verificado</b><small>Semanas 2–3</small></div></li>
+    <li style="--mc:var(--c1)"><span class="flag">✓</span><div><b>Páginas de serviço no ar</b><small>Semanas 4–6</small></div></li>
+    <li style="--mc:var(--c1)"><span class="flag">✓</span><div><b>1ª campanha de chamada ativa</b><small>Semanas 6–8</small></div></li>
+    <li style="--mc:var(--c2)"><span class="flag">✓</span><div><b>1º relatório mensal</b><small>Mês 2</small></div></li>
+    <li style="--mc:var(--c2)"><span class="flag">✓</span><div><b>20 avaliações citando bairro</b><small>Meses 2–4</small></div></li>
+    <li style="--mc:var(--c3)"><span class="flag">✓</span><div><b>1ª revisão trimestral</b><small>Mês 3</small></div></li>
+  </ol>
+</section>
+
+<footer>
+  <div class="box">
+    <h2>Fases extras incluídas e por quê</h2>
+    <p><b>0 · Diagnóstico inicial.</b> Com o endereço oculto, não dá para saber "a olho" onde o negócio aparece. É preciso medir o mapa em toda a área atendida antes de mudar o perfil. Sem essa linha de base, a fase de acompanhamento não tem com o que comparar.</p>
+    <p>Nenhuma outra fase extra é necessária: é um negócio de uma unidade só, sem escala para várias lojas.</p>
+  </div>
+  <div class="box">
+    <h2>Legenda dos selos</h2>
+    <div class="legend">
+      <span class="seal free">✅ grátis</span><span class="seal cred">🪙 créditos</span><span class="seal paid">💳 ferramenta paga</span><span class="seal acct">🔑 precisa de conta/acesso</span>
+    </div>
+    <p style="margin-top:12px">💡 <code>brief</code> guarda o histórico do cliente de uma fase para a outra. <code>dispatch</code> escolhe as skills certas quando você não souber por onde começar.</p>
+  </div>
+</footer>
+</div>

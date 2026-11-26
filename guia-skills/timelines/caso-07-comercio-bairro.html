@@ -1,0 +1,424 @@
+<meta charset="utf-8">
+<title>Caso 7 · Comércio de bairro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #f6f8f7;
+    --grid: rgba(30, 60, 50, 0.07);
+    --card: #ffffff;
+    --ink: #1d2523;
+    --muted: #55615d;
+    --line: #d9e0dd;
+    --shadow: 0 2px 6px rgba(20, 40, 30, 0.07), 0 8px 24px rgba(20, 40, 30, 0.06);
+    --impl: #1f5da3;
+    --acomp: #2e7d3c;
+    --melh: #c2410c;
+    --impl-soft: #e6eef8;
+    --acomp-soft: #e5f3e8;
+    --melh-soft: #fbece4;
+    --free-bg: #dff3e3; --free-ink: #1e5e2b;
+    --cred-bg: #fdf1cf; --cred-ink: #6b4d00;
+    --paid-bg: #f9dede; --paid-ink: #8a1f1f;
+    --key-bg: #e4e7fb; --key-ink: #2f3a8f;
+    --warn-bg: #fff6e0; --warn-line: #e3b341;
+    --hand: "Marker Felt", "Chalkboard SE", "Segoe Print", "Bradley Hand", cursive;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121816;
+      --grid: rgba(200, 230, 215, 0.05);
+      --card: #1c2422;
+      --ink: #e8efec;
+      --muted: #a7b4af;
+      --line: #33403c;
+      --shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+      --impl: #6ea6e8;
+      --acomp: #6cc47c;
+      --melh: #f08a55;
+      --impl-soft: #1b2b3f;
+      --acomp-soft: #1a2f20;
+      --melh-soft: #36231a;
+      --free-bg: #1d3a24; --free-ink: #9fe0ad;
+      --cred-bg: #3a3014; --cred-ink: #f3d27a;
+      --paid-bg: #3f1e1e; --paid-ink: #f2a7a7;
+      --key-bg: #23284a; --key-ink: #b9c1f5;
+      --warn-bg: #33290f; --warn-line: #b8892a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 24px 24px;
+    color: var(--ink);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 20px 16px 48px; }
+  a { color: var(--impl); }
+  .back { display: inline-block; margin-bottom: 14px; text-decoration: none; font-weight: 600; }
+  .back:hover { text-decoration: underline; }
+  h1, h2, h3 { font-family: var(--hand); font-weight: 700; line-height: 1.2; margin: 0; }
+  code {
+    font: 600 0.92em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px;
+  }
+
+  /* Cabeçalho */
+  header.hero {
+    background: var(--card); border-radius: 16px; box-shadow: var(--shadow);
+    padding: 22px 22px 18px; display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: center;
+  }
+  .hero .num { font-family: var(--hand); color: var(--muted); font-size: 1.05rem; }
+  .hero h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); margin: 2px 0 10px; }
+  .hero p { margin: 4px 0; }
+  .hero b { color: var(--ink); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .chip {
+    background: var(--bg); border: 1.5px dashed var(--line); border-radius: 999px;
+    padding: 3px 12px; font-size: 0.9rem;
+  }
+  .hero svg { width: 150px; height: auto; }
+
+  /* Timeline */
+  .timeline { margin-top: 28px; }
+  .track {
+    position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    margin-bottom: 6px;
+  }
+  .track::before {
+    content: ""; position: absolute; left: 16%; right: 16%; top: 27px; height: 8px; border-radius: 8px;
+    background: linear-gradient(90deg, var(--impl), var(--acomp), var(--melh));
+  }
+  .node { position: relative; text-align: center; }
+  .dot {
+    width: 62px; height: 62px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center;
+    color: #fff; font: 700 1.6rem var(--hand); border: 5px solid var(--card); box-shadow: var(--shadow);
+  }
+  .node .lbl { font-family: var(--hand); font-size: 1.05rem; margin-top: 4px; }
+  .node .when { color: var(--muted); font-size: 0.88rem; }
+
+  /* Marcos */
+  .milestones {
+    display: flex; flex-wrap: wrap; gap: 8px 10px; justify-content: center;
+    background: var(--card); border-radius: 12px; box-shadow: var(--shadow); padding: 12px 14px; margin: 18px 0 22px;
+  }
+  .milestones h3 { width: 100%; text-align: center; font-size: 1.1rem; margin-bottom: 4px; }
+  .ms {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; border-radius: 999px;
+    padding: 4px 12px; border: 1.5px solid currentColor; background: var(--card);
+  }
+  .ms .flag { font-size: 1rem; }
+  .ms.i { color: var(--impl); } .ms.a { color: var(--acomp); } .ms.m { color: var(--melh); }
+  .ms span.t { color: var(--ink); }
+
+  .phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; }
+  .phase {
+    background: var(--card); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden;
+    border-top: 8px solid var(--c);
+  }
+  .phase.impl { --c: var(--impl); --soft: var(--impl-soft); }
+  .phase.acomp { --c: var(--acomp); --soft: var(--acomp-soft); }
+  .phase.melh { --c: var(--melh); --soft: var(--melh-soft); }
+  .phase-head { background: var(--soft); padding: 14px 16px; display: flex; gap: 12px; align-items: center; }
+  .phase-head svg { width: 58px; height: 58px; flex: none; }
+  .phase-head h2 { font-size: 1.35rem; color: var(--c); }
+  .phase-head .when { font-size: 0.9rem; color: var(--muted); font-weight: 600; }
+  .phase-body { padding: 14px 16px 18px; }
+  .goal { margin: 0 0 12px; }
+  .goal b { color: var(--c); }
+  h4 {
+    margin: 16px 0 8px; font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+  }
+  .skill {
+    border: 1px solid var(--line); border-left: 4px solid var(--c); border-radius: 10px;
+    padding: 9px 11px; margin-bottom: 9px; background: var(--card);
+  }
+  .skill .top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; justify-content: space-between; }
+  .skill p { margin: 5px 0 0; font-size: 0.93rem; color: var(--muted); }
+  .badges { display: inline-flex; gap: 4px; flex-wrap: wrap; }
+  .b { font-size: 0.76rem; font-weight: 600; border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
+  .b.free { background: var(--free-bg); color: var(--free-ink); }
+  .b.cred { background: var(--cred-bg); color: var(--cred-ink); }
+  .b.paid { background: var(--paid-bg); color: var(--paid-ink); }
+  .b.key { background: var(--key-bg); color: var(--key-ink); }
+  ul { margin: 0; padding-left: 1.15rem; }
+  li { margin: 3px 0; font-size: 0.95rem; }
+  .kpis { display: flex; flex-wrap: wrap; gap: 6px; }
+  .kpi { background: var(--soft); color: var(--ink); border-radius: 8px; padding: 3px 9px; font-size: 0.86rem; }
+  .warn {
+    margin-top: 14px; background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 10px;
+    padding: 9px 11px; font-size: 0.92rem;
+  }
+
+  footer { margin-top: 28px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  footer section { background: var(--card); border-radius: 14px; box-shadow: var(--shadow); padding: 14px 16px; }
+  footer h3 { font-size: 1.15rem; margin-bottom: 8px; }
+  footer p { margin: 4px 0; font-size: 0.95rem; }
+  .legend { display: grid; gap: 6px; }
+
+  /* Celular: linha vertical à esquerda */
+  @media (max-width: 899px) {
+    header.hero { grid-template-columns: 1fr; }
+    .hero svg { display: none; }
+    .track { display: none; }
+    .phases { grid-template-columns: 1fr; gap: 22px; position: relative; padding-left: 40px; }
+    .phases::before {
+      content: ""; position: absolute; left: 13px; top: 10px; bottom: 10px; width: 6px; border-radius: 6px;
+      background: linear-gradient(180deg, var(--impl), var(--acomp), var(--melh));
+    }
+    .phase { position: relative; overflow: visible; }
+    .phase::before {
+      content: attr(data-n); position: absolute; left: -42px; top: 12px; width: 32px; height: 32px; border-radius: 50%;
+      background: var(--c); color: #fff; display: grid; place-items: center; font: 700 1rem var(--hand);
+      border: 3px solid var(--bg);
+    }
+    .phase-head { border-radius: 8px 8px 0 0; }
+    .milestones { justify-content: flex-start; }
+    .milestones h3 { text-align: left; }
+    footer { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="wrap">
+  <a class="back" href="index.html">← Todos os casos</a>
+
+  <header class="hero">
+    <div>
+      <div class="num">Caso 7</div>
+      <h1>Comércio de bairro (varejo com loja física)</h1>
+      <p><b>Situação:</b> uma loja física que disputa clientes com shopping, atacarejo e lojas on-line.</p>
+      <p><b>Objetivo:</b> aparecer nas buscas "perto de mim" e "tem [produto] em [bairro]?" e trazer mais gente até o balcão.</p>
+      <div class="chips">
+        <span class="chip">🐾 Pet shop</span>
+        <span class="chip">🧱 Material de construção</span>
+        <span class="chip">💊 Farmácia independente</span>
+        <span class="chip">✏️ Papelaria</span>
+        <span class="chip">👕 Loja de roupas</span>
+        <span class="chip">🔧 Autopeças</span>
+      </div>
+    </div>
+    <!-- Ilustração: fachada de loja com toldo e pino de mapa -->
+    <svg viewBox="0 0 160 140" role="img" aria-label="Fachada de loja de bairro com pino de mapa">
+      <rect x="18" y="52" width="110" height="78" rx="4" fill="none" stroke="currentColor" stroke-width="3"/>
+      <path d="M12 52 L24 30 H122 L134 52 Z" fill="#c2410c" opacity="0.85"/>
+      <path d="M24 52 v8 M46 52 v8 M68 52 v8 M90 52 v8 M112 52 v8" stroke="#c2410c" stroke-width="6" stroke-linecap="round"/>
+      <rect x="30" y="72" width="40" height="30" rx="3" fill="#1f5da3" opacity="0.25" stroke="currentColor" stroke-width="2.5"/>
+      <rect x="84" y="78" width="30" height="52" rx="2" fill="none" stroke="currentColor" stroke-width="2.5"/>
+      <circle cx="108" cy="104" r="2.5" fill="currentColor"/>
+      <path d="M140 8 c-10 0 -16 7 -16 15 c0 11 16 26 16 26 s16 -15 16 -26 c0 -8 -6 -15 -16 -15 z" fill="#2e7d3c"/>
+      <circle cx="140" cy="23" r="5.5" fill="#fff"/>
+      <path d="M6 130 H154" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+  </header>
+
+  <div class="timeline">
+    <div class="track" aria-hidden="true">
+      <div class="node"><div class="dot" style="background:var(--impl)">1</div><div class="lbl">Implementação</div><div class="when">Semanas 1–4</div></div>
+      <div class="node"><div class="dot" style="background:var(--acomp)">2</div><div class="lbl">Acompanhamento</div><div class="when">Mês 2 em diante (mensal)</div></div>
+      <div class="node"><div class="dot" style="background:var(--melh)">3</div><div class="lbl">Melhorias</div><div class="when">A cada trimestre</div></div>
+    </div>
+
+    <div class="milestones">
+      <h3>🚩 Marcos no caminho</h3>
+      <span class="ms i"><span class="flag">📝</span><span class="t">Brief da loja criado</span></span>
+      <span class="ms i"><span class="flag">🛍️</span><span class="t">Aba Produtos com os 20 itens mais procurados</span></span>
+      <span class="ms i"><span class="flag">📷</span><span class="t">Fotos reais das prateleiras no perfil</span></span>
+      <span class="ms i"><span class="flag">🔳</span><span class="t">QR Code de avaliação no caixa</span></span>
+      <span class="ms a"><span class="flag">📅</span><span class="t">Calendário comercial do trimestre</span></span>
+      <span class="ms a"><span class="flag">⭐</span><span class="t">+20 avaliações novas</span></span>
+      <span class="ms a"><span class="flag">📊</span><span class="t">1º relatório mensal</span></span>
+      <span class="ms m"><span class="flag">🔍</span><span class="t">1º comparativo com concorrentes</span></span>
+      <span class="ms m"><span class="flag">🛒</span><span class="t">Plano para a próxima data forte</span></span>
+    </div>
+
+    <div class="phases">
+      <!-- FASE 1 -->
+      <article class="phase impl" data-n="1">
+        <div class="phase-head">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="8" y="22" width="48" height="34" rx="4" fill="none" stroke="var(--impl)" stroke-width="3"/>
+            <path d="M5 22 L12 10 H52 L59 22 Z" fill="var(--impl)" opacity="0.8"/>
+            <rect x="14" y="30" width="10" height="8" rx="1.5" fill="var(--impl)" opacity="0.45"/>
+            <rect x="27" y="30" width="10" height="8" rx="1.5" fill="var(--impl)" opacity="0.45"/>
+            <rect x="40" y="30" width="10" height="8" rx="1.5" fill="var(--impl)" opacity="0.45"/>
+            <path d="M14 44 H50" stroke="var(--impl)" stroke-width="2.5"/>
+            <circle cx="50" cy="50" r="9" fill="var(--card)" stroke="var(--impl)" stroke-width="3"/>
+            <path d="M46 50 l3 3 l5 -6" fill="none" stroke="var(--impl)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>
+            <h2>1 · Implementação</h2>
+            <div class="when">Semanas 1–4</div>
+          </div>
+        </div>
+        <div class="phase-body">
+          <p class="goal"><b>Objetivo:</b> transformar o perfil no Google numa vitrine da loja, com os produtos que o bairro procura.</p>
+
+          <h4>Skills necessárias</h4>
+          <div class="skill">
+            <div class="top"><code>brief</code><span class="badges"><span class="b cred">🪙 créditos</span><span class="b key">🔑 conta</span></span></div>
+            <p>Registra produtos e marcas principais, formas de pagamento, entrega ou retirada, e faz a auditoria inicial.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>local-keyword-research</code><span class="badges"><span class="b cred">🪙 créditos</span><span class="b key">🔑 conta</span></span></div>
+            <p>Descobre buscas de produto + bairro, como "ração Golden Tatuapé" ou "cimento entrega Osasco".</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>gbp-optimization</code><span class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 acesso ao perfil</span></span></div>
+            <p>Acerta categorias, preenche a aba Produtos, os atributos ("retirada na loja", "entrega no mesmo dia") e as fotos.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>review-management</code><span class="badges"><span class="b cred">🪙 créditos</span></span></div>
+            <p>Monta o pedido de avaliação no caixa, com QR Code, e os modelos de resposta.</p>
+          </div>
+
+          <h4>Entregáveis</h4>
+          <ul>
+            <li>Brief da loja preenchido</li>
+            <li>Lista de buscas por produto + bairro</li>
+            <li>Perfil com vitrine de produtos, atributos e fotos reais</li>
+            <li>Plaquinha com QR Code e roteiro para o caixa</li>
+          </ul>
+
+          <h4>Indicadores</h4>
+          <div class="kpis">
+            <span class="kpi">Perfil 100% preenchido</span>
+            <span class="kpi">Nº de produtos cadastrados</span>
+            <span class="kpi">Nº de fotos</span>
+          </div>
+
+          <div class="warn">⚠️ <b>Cuidado no Brasil:</b> o preço mostrado no Google precisa ser o mesmo da loja. É regra do Código de Defesa do Consumidor. Se não der para manter atualizado, cadastre o produto sem preço.</div>
+        </div>
+      </article>
+
+      <!-- FASE 2 -->
+      <article class="phase acomp" data-n="2">
+        <div class="phase-head">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="8" y="10" width="48" height="46" rx="5" fill="none" stroke="var(--acomp)" stroke-width="3"/>
+            <path d="M8 22 H56" stroke="var(--acomp)" stroke-width="3"/>
+            <path d="M20 5 v10 M44 5 v10" stroke="var(--acomp)" stroke-width="3" stroke-linecap="round"/>
+            <rect x="15" y="40" width="6" height="10" fill="var(--acomp)" opacity="0.5"/>
+            <rect x="25" y="34" width="6" height="16" fill="var(--acomp)" opacity="0.65"/>
+            <rect x="35" y="30" width="6" height="20" fill="var(--acomp)" opacity="0.8"/>
+            <path d="M45 30 l2.2 4.4 l4.8 0.7 l-3.5 3.4 l0.8 4.8 l-4.3 -2.3 l-4.3 2.3 l0.8 -4.8 l-3.5 -3.4 l4.8 -0.7 z" fill="#e3b341" transform="translate(4 -2)"/>
+          </svg>
+          <div>
+            <h2>2 · Acompanhamento e gestão dos resultados</h2>
+            <div class="when">Mês 2 em diante · posts semanais, relatório mensal</div>
+          </div>
+        </div>
+        <div class="phase-body">
+          <p class="goal"><b>Objetivo:</b> manter o perfil vivo toda semana e medir quanta gente liga, pede rota ou chama no WhatsApp.</p>
+
+          <h4>Skills necessárias</h4>
+          <div class="skill">
+            <div class="top"><code>gbp-posts</code><span class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 acesso ao perfil</span></span></div>
+            <p>Calendário comercial: ofertas da semana, chegada de produtos e datas fortes (Dia das Mães, volta às aulas, Black Friday).</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>review-management</code><span class="badges"><span class="b cred">🪙 créditos</span></span></div>
+            <p>Acompanha o ritmo de avaliações e orienta a resposta a cada uma, inclusive às negativas.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>local-reporting</code><span class="badges"><span class="b cred">🪙 créditos</span><span class="b key">🔑 acesso aos dados</span></span></div>
+            <p>Relatório mensal simples: ligações, rotas pedidas, cliques no WhatsApp e visitas.</p>
+          </div>
+
+          <h4>Entregáveis</h4>
+          <ul>
+            <li>Calendário de posts de 4 semanas, renovado todo mês</li>
+            <li>Rotina de avaliações, com responsável definido</li>
+            <li>Relatório mensal em linguagem simples</li>
+          </ul>
+
+          <h4>Indicadores</h4>
+          <div class="kpis">
+            <span class="kpi">Ligações</span>
+            <span class="kpi">Rotas pedidas</span>
+            <span class="kpi">Cliques no WhatsApp</span>
+            <span class="kpi">Avaliações novas por mês</span>
+            <span class="kpi">Nota média</span>
+            <span class="kpi">Posts por semana (meta 2–3)</span>
+          </div>
+
+          <div class="warn">⚠️ <b>Cuidado no Brasil:</b> na Black Friday, nada de "até 70% off" sem lastro. Promoção inflada gera reclamação e avaliação negativa.</div>
+        </div>
+      </article>
+
+      <!-- FASE 3 -->
+      <article class="phase melh" data-n="3">
+        <div class="phase-head">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="26" cy="26" r="15" fill="none" stroke="var(--melh)" stroke-width="3.5"/>
+            <path d="M37 37 L54 54" stroke="var(--melh)" stroke-width="5" stroke-linecap="round"/>
+            <rect x="17" y="27" width="4" height="7" fill="var(--melh)" opacity="0.5"/>
+            <rect x="24" y="22" width="4" height="12" fill="var(--melh)" opacity="0.7"/>
+            <rect x="31" y="17" width="4" height="17" fill="var(--melh)"/>
+            <path d="M48 8 v12 M42 14 h12" stroke="var(--melh)" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <div>
+            <h2>3 · Proposição de melhorias</h2>
+            <div class="when">A cada trimestre · antes de cada data forte</div>
+          </div>
+        </div>
+        <div class="phase-body">
+          <p class="goal"><b>Objetivo:</b> descobrir por que as lojas acima no mapa ganham e escolher as 2 ou 3 próximas ações.</p>
+
+          <h4>Skills necessárias</h4>
+          <div class="skill">
+            <div class="top"><code>local-competitor-analysis</code><span class="badges"><span class="b cred">🪙 créditos</span></span></div>
+            <p>Compara perfil, produtos, avaliações e fotos com as lojas que aparecem acima no mapa, e aponta spam para denunciar.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>local-keyword-research</code><span class="badges"><span class="b cred">🪙 créditos</span><span class="b key">🔑 conta</span></span></div>
+            <p>Revisa a lista de buscas e acrescenta produtos novos ou sazonais para a vitrine.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>gbp-optimization</code><span class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 acesso ao perfil</span></span></div>
+            <p>Aplica as correções: categorias, produtos, atributos e fotos que faltam frente aos concorrentes.</p>
+          </div>
+
+          <h4>Entregáveis</h4>
+          <ul>
+            <li>Comparativo com 3 a 5 lojas concorrentes</li>
+            <li>Lista priorizada das maiores lacunas</li>
+            <li>Plano de ação para o próximo trimestre e a próxima data forte</li>
+          </ul>
+
+          <h4>Indicadores</h4>
+          <div class="kpis">
+            <span class="kpi">Posição no mapa nas buscas-chave</span>
+            <span class="kpi">Avaliações vs. concorrentes</span>
+            <span class="kpi">Lacunas fechadas</span>
+          </div>
+
+          <div class="warn">⚠️ <b>Cuidado no Brasil:</b> concorrente com nome cheio de palavras-chave ("Pet Shop Barato Ração Tatuapé") pode ser denunciado no Google, mas sem retaliação e sem avaliações falsas.</div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <footer>
+    <section>
+      <h3>Fases extras incluídas e por quê</h3>
+      <p><b>Nenhuma fase extra necessária.</b> A loja tem um endereço só e o perfil já pode ser verificado. O diagnóstico inicial acontece dentro da Implementação, pela auditoria que o <code>brief</code> roda ao começar.</p>
+    </section>
+    <section>
+      <h3>Legenda dos selos</h3>
+      <div class="legend">
+        <span><span class="b free">✅ grátis</span> não exige ferramenta paga</span>
+        <span><span class="b cred">🪙 créditos</span> consome créditos da LocalSEOData</span>
+        <span><span class="b paid">💳 ferramenta paga</span> precisa de assinatura</span>
+        <span><span class="b key">🔑 conta/acesso</span> precisa de login ou acesso aos dados</span>
+      </div>
+    </section>
+    <section>
+      <h3>Lembrete</h3>
+      <p>📝 <code>brief</code> guarda o histórico da loja: o que foi feito, os resultados e o próximo passo.</p>
+      <p>🧭 <code>dispatch</code> escolhe quais skills usar em cada pedido.</p>
+    </section>
+  </footer>
+</div>

@@ -1,0 +1,284 @@
+<meta charset="utf-8">
+<title>Caso 9 · Rede ou franquia</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --bg:#f6f8f7; --grid:rgba(30,60,50,.07); --card:#ffffff; --ink:#1d2523; --muted:#56615d;
+    --line:#d4dcd8; --shadow:0 2px 10px rgba(20,40,30,.08);
+    --diag:#7a5af8; --impl:#1f5da3; --acomp:#2e7d3c; --melh:#c2410c; --escala:#0e7490;
+    --free-bg:#e3f4e6; --free-ink:#1f6a2c;
+    --cred-bg:#fdf3d6; --cred-ink:#7a5a00;
+    --paid-bg:#fde4e4; --paid-ink:#9b1c1c;
+    --key-bg:#e5ecfb; --key-ink:#1f3f8a;
+    --warn-bg:#fff4e5; --warn-line:#f0b868;
+    --code-bg:#eef2f0;
+    --hand:"Marker Felt","Chalkboard SE","Segoe Print","Bradley Hand",cursive;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#121715; --grid:rgba(200,230,215,.05); --card:#1c2320; --ink:#e7eeeb; --muted:#a6b3ae;
+      --line:#34403b; --shadow:0 2px 12px rgba(0,0,0,.45);
+      --diag:#a48cff; --impl:#6aa4e8; --acomp:#6cc27a; --melh:#f08a5a; --escala:#4cc3dc;
+      --free-bg:#1f3a25; --free-ink:#9fe0ab;
+      --cred-bg:#3a3118; --cred-ink:#f3d57a;
+      --paid-bg:#3e1f1f; --paid-ink:#f5a9a9;
+      --key-bg:#1f2b48; --key-ink:#a9c2f7;
+      --warn-bg:#33281a; --warn-line:#a7783a;
+      --code-bg:#26302c;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background-color:var(--bg);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:24px 24px;color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:1280px;margin:0 auto;padding:20px 16px 48px}
+  a{color:var(--impl)}
+  .back{display:inline-block;margin-bottom:12px;text-decoration:none;font-weight:600}
+  h1,h2,h3{font-family:var(--hand);font-weight:normal;margin:0}
+  h1{font-size:2.1rem;line-height:1.2}
+  h2{font-size:1.6rem;margin-bottom:10px}
+  code{font:600 .9em ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--code-bg);padding:1px 6px;border-radius:5px}
+  .card{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:18px}
+  header.card{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+  .num{font-family:var(--hand);font-size:2.4rem;width:78px;height:78px;border-radius:50%;display:grid;place-items:center;
+    border:3px dashed var(--impl);color:var(--impl)}
+  .lead{margin:8px 0 0}
+  .lead b{color:var(--impl)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .chip{background:var(--code-bg);border-radius:999px;padding:3px 11px;font-size:.88rem}
+
+  /* timeline */
+  .tl-title{margin:28px 0 8px}
+  .scroller{overflow-x:auto;padding-bottom:10px;-webkit-overflow-scrolling:touch}
+  .track{display:grid;grid-template-columns:repeat(5,minmax(290px,1fr));gap:18px;position:relative;min-width:1520px}
+  .track::before{content:"";position:absolute;top:31px;left:30px;right:30px;height:8px;border-radius:4px;
+    background:linear-gradient(90deg,var(--diag) 0 20%,var(--impl) 20% 40%,var(--acomp) 40% 60%,var(--melh) 60% 80%,var(--escala) 80% 100%)}
+  .phase{--c:var(--impl);position:relative}
+  .phase.diag{--c:var(--diag)} .phase.acomp{--c:var(--acomp)} .phase.melh{--c:var(--melh)} .phase.escala{--c:var(--escala)}
+  .dot{position:relative;z-index:1;width:70px;height:70px;border-radius:50%;background:var(--card);border:6px solid var(--c);
+    display:grid;place-items:center;font-family:var(--hand);font-size:1.7rem;color:var(--c);margin:0 auto 14px;box-shadow:var(--shadow)}
+  .phase .card{border-top:6px solid var(--c)}
+  .ph-head{display:flex;gap:12px;align-items:center}
+  .ph-head svg{flex:0 0 58px;width:58px;height:58px}
+  .ph-head h3{font-size:1.35rem;color:var(--c);line-height:1.2}
+  .when{display:inline-block;margin-top:3px;font-size:.82rem;font-weight:700;color:var(--c);border:1.5px solid var(--c);border-radius:999px;padding:0 9px}
+  .extra{font-size:.75rem;font-weight:700;background:var(--c);color:var(--card);border-radius:999px;padding:1px 8px;margin-left:4px;vertical-align:middle}
+  .goal{margin:10px 0 12px;font-style:italic;color:var(--muted)}
+  .lbl{font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+  .skill{border:1px solid var(--line);border-left:4px solid var(--c);border-radius:10px;padding:8px 10px;margin-bottom:7px}
+  .skill p{margin:3px 0 4px;font-size:.92rem}
+  .badges{display:flex;flex-wrap:wrap;gap:4px}
+  .b{font-size:.74rem;font-weight:700;border-radius:999px;padding:1px 8px;white-space:nowrap}
+  .free{background:var(--free-bg);color:var(--free-ink)} .cred{background:var(--cred-bg);color:var(--cred-ink)}
+  .paid{background:var(--paid-bg);color:var(--paid-ink)} .key{background:var(--key-bg);color:var(--key-ink)}
+  ul{margin:0;padding-left:20px} li{margin:2px 0;font-size:.93rem}
+  .warn{background:var(--warn-bg);border:1px dashed var(--warn-line);border-radius:10px;padding:8px 10px;margin-top:12px;font-size:.92rem}
+
+  /* marcos */
+  .marcos{margin-top:26px}
+  .mk-row{display:flex;gap:10px;overflow-x:auto;padding:6px 2px 10px;position:relative}
+  .mk{flex:0 0 auto;min-width:150px;max-width:190px;background:var(--card);box-shadow:var(--shadow);border-radius:12px;padding:10px 12px;border-left:5px solid var(--c)}
+  .mk .w{font-size:.78rem;font-weight:800;color:var(--c)}
+  .mk .t{font-size:.92rem}
+  .mk.diag{--c:var(--diag)} .mk.impl{--c:var(--impl)} .mk.acomp{--c:var(--acomp)} .mk.melh{--c:var(--melh)} .mk.escala{--c:var(--escala)}
+
+  footer{margin-top:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  footer h3{font-size:1.2rem;margin-bottom:6px}
+  footer p{margin:4px 0;font-size:.93rem}
+  .legend .b{display:inline-block;margin:2px 0}
+
+  @media (max-width:899px){
+    h1{font-size:1.7rem}
+    header.card{grid-template-columns:1fr}
+    .num{width:62px;height:62px;font-size:2rem}
+    .scroller{overflow:visible}
+    .track{display:block;min-width:0;padding-left:46px}
+    .track::before{top:0;bottom:0;left:17px;right:auto;width:8px;height:auto;
+      background:linear-gradient(180deg,var(--diag) 0 20%,var(--impl) 20% 40%,var(--acomp) 40% 60%,var(--melh) 60% 80%,var(--escala) 80% 100%)}
+    .phase{margin-bottom:22px}
+    .dot{position:absolute;left:-46px;top:0;width:42px;height:42px;border-width:4px;font-size:1.2rem;margin:0}
+    footer{grid-template-columns:1fr}
+  }
+</style>
+
+<div class="wrap">
+  <a class="back" href="index.html">← Todos os casos</a>
+
+  <header class="card">
+    <div class="num">9</div>
+    <div>
+      <h1>Rede ou franquia com várias unidades</h1>
+      <p class="lead"><b>Situação:</b> a empresa tem 3, 30 ou 300 pontos, próprios ou franqueados, e cada unidade cuida do seu perfil de um jeito.</p>
+      <p class="lead"><b>Objetivo:</b> padronizar todos os perfis, acabar com duplicidade e bagunça e medir cada unidade em um só painel.</p>
+      <div class="chips">
+        <span class="chip">💊 Rede de farmácias</span><span class="chip">🗣️ Escola de idiomas</span>
+        <span class="chip">🧺 Lavanderias</span><span class="chip">🦷 Clínicas odontológicas</span><span class="chip">🛍️ Lojas de franquia</span>
+      </div>
+    </div>
+  </header>
+
+  <h2 class="tl-title">A linha do tempo</h2>
+  <div class="scroller">
+  <div class="track">
+
+    <!-- FASE 0 -->
+    <section class="phase diag">
+      <div class="dot">0</div>
+      <div class="card">
+        <div class="ph-head">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="10" width="34" height="44" rx="4" fill="none" stroke="var(--c)" stroke-width="3"/><path d="M15 22h20M15 31h20M15 40h12" stroke="var(--c)" stroke-width="3" stroke-linecap="round"/><circle cx="44" cy="40" r="10" fill="var(--card)" stroke="var(--c)" stroke-width="3"/><path d="M51 47l7 7" stroke="var(--c)" stroke-width="4" stroke-linecap="round"/></svg>
+          <div><h3>Diagnóstico e inventário da rede <span class="extra">extra</span></h3><span class="when">Semanas 1–2</span></div>
+        </div>
+        <p class="goal">Saber quantas unidades existem de verdade, quais perfis estão duplicados ou abandonados e quem tem o acesso de cada um.</p>
+        <div class="lbl">Skills necessárias</div>
+        <div class="skill"><code>brief</code><p>Cria a ficha da rede e uma ficha por unidade, para guardar todo o histórico.</p><div class="badges"><span class="b free">✅ grátis</span><span class="b cred">🪙 auditoria inicial</span></div></div>
+        <div class="skill"><code>multi-location-seo</code><p>Levanta a planilha mestre de unidades e acha perfis duplicados, abandonados ou desatualizados.</p><div class="badges"><span class="b free">✅ grátis</span><span class="b cred">🪙 dados</span></div></div>
+        <div class="skill"><code>localseodata-tool</code><p>Puxa os dados do Google de cada unidade (perfil, avaliações, citações) sem abrir tela por tela.</p><div class="badges"><span class="b cred">🪙 créditos</span><span class="b key">🔑 conexão</span></div></div>
+        <div class="skill"><code>local-seo-audit</code><p>Faz a auditoria completa em algumas unidades-amostra para achar os problemas típicos da rede.</p><div class="badges"><span class="b cred">🪙 créditos</span></div></div>
+        <div class="lbl">Entregáveis</div>
+        <ul><li>Planilha mestre: unidade, endereço, telefone, link do perfil e "dono" do acesso</li><li>Lista de duplicatas e perfis órfãos</li><li>Fichas (briefs) da rede e das unidades</li></ul>
+        <div class="lbl">Indicadores</div>
+        <ul><li>% de unidades com perfil verificado</li><li>Nº de perfis duplicados</li><li>% de perfis com acesso da matriz</li></ul>
+        <div class="warn">⚠️ <b>Cuidado no Brasil:</b> é comum o franqueado ter criado o perfil com o e-mail pessoal. Recupere o acesso antes de mexer em qualquer dado.</div>
+      </div>
+    </section>
+
+    <!-- FASE 1 -->
+    <section class="phase impl">
+      <div class="dot">1</div>
+      <div class="card">
+        <div class="ph-head">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8l10 10H22z" fill="var(--c)"/><rect x="28" y="18" width="8" height="10" fill="var(--c)"/><path d="M8 54V34l10-6 10 6v20M36 54V34l10-6 10 6v20" fill="none" stroke="var(--c)" stroke-width="3" stroke-linejoin="round"/><path d="M4 54h56" stroke="var(--c)" stroke-width="3" stroke-linecap="round"/><path d="M28 38h8M18 40v6M46 40v6" stroke="var(--c)" stroke-width="3" stroke-linecap="round"/></svg>
+          <div><h3>Implementação</h3><span class="when">Semanas 3–10</span></div>
+        </div>
+        <p class="goal">Montar a estrutura única da rede: um perfil por unidade, um padrão de marca e dados iguais em todo lugar.</p>
+        <div class="lbl">Skills necessárias</div>
+        <div class="skill"><code>multi-location-seo</code><p>Define o grupo de locais no Google, quem administra o quê (matriz × franqueado) e o padrão de nome.</p><div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>gbp-optimization</code><p>Cria o "perfil modelo": categorias, descrição, serviços e fotos que toda unidade deve seguir.</p><div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>gbp-api-automation</code><p>Aplica horários, feriados e posts em todos os perfis de uma vez, com aprovação antes de cada lote.</p><div class="badges"><span class="b key">🔑 API do Google</span></div></div>
+        <div class="skill"><code>local-landing-pages</code><p>Cria uma página por unidade no site, com endereço, horário, equipe e mapa, sem texto copiado.</p><div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>local-schema</code><p>Coloca o código de cada unidade na sua página, com identificador próprio e dados iguais aos do perfil.</p><div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>local-citations</code><p>Limpa as duplicatas e alinha nome, endereço e telefone de cada unidade nos diretórios.</p><div class="badges"><span class="b free">✅ grátis</span><span class="b cred">🪙 auditoria</span></div></div>
+        <div class="skill"><code>brightlocal-tool</code><p>Faz a auditoria e o envio de citações em escala, unidade por unidade.</p><div class="badges"><span class="b paid">💳 paga</span><span class="b key">🔑 conta</span></div></div>
+        <div class="skill"><code>whitespark-tool</code><p>Alternativa: construção manual de citações e busca de diretórios que faltam.</p><div class="badges"><span class="b paid">💳 paga</span></div></div>
+        <div class="skill"><code>review-management</code><p>Padroniza o pedido e a resposta de avaliações e define a meta de cada unidade.</p><div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="lbl">Entregáveis</div>
+        <ul><li>Mapa da estrutura de perfis e padrão de marca</li><li>Regras de acesso escritas (para o contrato de franquia)</li><li>Páginas por unidade com schema</li><li>Base de citações limpa</li><li>Roteiro de avaliações por loja</li></ul>
+        <div class="lbl">Indicadores</div>
+        <ul><li>% de perfis no padrão de nome e categoria</li><li>Duplicatas removidas</li><li>Consistência de NAP (meta: acima de 90%)</li><li>Unidades com página própria</li></ul>
+        <div class="warn">⚠️ <b>Cuidado no Brasil:</b> defina em contrato quem é o "dono" do perfil, para o franqueado não criar outro. Em shopping, siga o padrão do Google para endereço com número da loja ou piso. Nunca mude nome, categoria ou endereço em massa de uma vez: isso pode suspender perfis.</div>
+      </div>
+    </section>
+
+    <!-- FASE 2 -->
+    <section class="phase acomp">
+      <div class="dot">2</div>
+      <div class="card">
+        <div class="ph-head">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="8" width="52" height="40" rx="5" fill="none" stroke="var(--c)" stroke-width="3"/><rect x="14" y="30" width="7" height="12" fill="var(--c)"/><rect x="25" y="22" width="7" height="20" fill="var(--c)"/><rect x="36" y="26" width="7" height="16" fill="var(--c)"/><rect x="47" y="16" width="5" height="26" fill="var(--c)"/><path d="M24 56h16M32 48v8" stroke="var(--c)" stroke-width="3" stroke-linecap="round"/></svg>
+          <div><h3>Acompanhamento e gestão dos resultados</h3><span class="when">Mês 3 em diante · mensal</span></div>
+        </div>
+        <p class="goal">Comparar as unidades lado a lado, todo mês, e saber quais estão boas e quais precisam de ajuda.</p>
+        <div class="lbl">Skills necessárias</div>
+        <div class="skill"><code>local-reporting</code><p>Monta o painel geral da rede, a ficha de cada unidade e a nota de saúde de 0 a 100.</p><div class="badges"><span class="b free">✅ grátis</span><span class="b cred">🪙 dados</span></div></div>
+        <div class="skill"><code>geogrid-analysis</code><p>Lê o mapa de calor de cada loja e mostra onde ela aparece e onde some no Maps.</p><div class="badges"><span class="b cred">🪙 créditos</span></div></div>
+        <div class="skill"><code>local-falcon-tool</code><p>Roda as varreduras recorrentes das unidades e vigia edições indevidas nos perfis.</p><div class="badges"><span class="b paid">💳 paga</span><span class="b key">🔑 conta</span></div></div>
+        <div class="skill"><code>gbp-api-automation</code><p>Extrai ligações, rotas e cliques de todos os perfis e alerta avaliações negativas.</p><div class="badges"><span class="b key">🔑 API do Google</span></div></div>
+        <div class="skill"><code>google-analytics-tool</code><p>Mede visitas e contatos que cada página de unidade gera no site.</p><div class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 acesso</span></div></div>
+        <div class="skill"><code>google-search-console-tool</code><p>Mostra se as páginas de unidade estão no Google e por quais buscas aparecem.</p><div class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 acesso</span></div></div>
+        <div class="skill"><code>client-deliverables</code><p>Transforma os números no relatório para a diretoria ou para os franqueados.</p><div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="lbl">Entregáveis</div>
+        <ul><li>Painel por loja e ranking das unidades</li><li>Relatório mensal da rede</li><li>Lista de unidades em alerta</li><li>Briefs atualizados</li></ul>
+        <div class="lbl">Indicadores</div>
+        <ul><li>SoLV e posição média por unidade</li><li>Avaliações novas por mês e nota média por loja</li><li>Ligações, rotas e cliques no perfil</li><li>Tempo de resposta às avaliações</li></ul>
+        <div class="warn">⚠️ <b>Cuidado no Brasil:</b> muita gente liga ou chama no WhatsApp direto do perfil. Use links rastreáveis (UTM) e conte esses contatos, senão a loja parece "fraca" sem ser.</div>
+      </div>
+    </section>
+
+    <!-- FASE 3 -->
+    <section class="phase melh">
+      <div class="dot">3</div>
+      <div class="card">
+        <div class="ph-head">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 6a16 16 0 0 0-9 29v7h18v-7a16 16 0 0 0-9-29z" fill="none" stroke="var(--c)" stroke-width="3" stroke-linejoin="round"/><path d="M25 48h14M27 54h10" stroke="var(--c)" stroke-width="3" stroke-linecap="round"/><path d="M32 16v12M26 22l6-6 6 6" fill="none" stroke="var(--c)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div><h3>Proposição de melhorias</h3><span class="when">A cada trimestre</span></div>
+        </div>
+        <p class="goal">Pegar as unidades mais fracas ou os mercados mais disputados e propor ações específicas para elas.</p>
+        <div class="lbl">Skills necessárias</div>
+        <div class="skill"><code>multi-location-seo</code><p>Sobe as unidades prioritárias de nível: base → otimização → avançado.</p><div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>local-competitor-analysis</code><p>Descobre por que o concorrente vence numa cidade e onde dá para passar à frente.</p><div class="badges"><span class="b cred">🪙 créditos</span></div></div>
+        <div class="skill"><code>gbp-posts</code><p>Cria um calendário de posts com toque local para cada unidade, sem texto repetido.</p><div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>review-management</code><p>Ajusta as metas de avaliações das lojas que ficaram para trás e treina quem atende.</p><div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>local-landing-pages</code><p>Enriquece as páginas que convertem pouco com fotos, depoimentos e dúvidas locais.</p><div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>client-deliverables</code><p>Escreve o plano de 90 dias para a diretoria aprovar.</p><div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="lbl">Entregáveis</div>
+        <ul><li>Lista de unidades prioritárias e o porquê</li><li>Plano de 90 dias por grupo de lojas</li><li>Calendário de posts por unidade</li></ul>
+        <div class="lbl">Indicadores</div>
+        <ul><li>Lojas que subiram de nota de saúde</li><li>Diferença entre a melhor e a pior unidade</li></ul>
+        <div class="warn">⚠️ <b>Cuidado no Brasil:</b> página de unidade só com o nome da cidade trocado é vista como cópia. Use dados reais do bairro, da equipe e do shopping.</div>
+      </div>
+    </section>
+
+    <!-- FASE 4 -->
+    <section class="phase escala">
+      <div class="dot">4</div>
+      <div class="card">
+        <div class="ph-head">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 6c-9 0-16 7-16 16 0 12 16 30 16 30s16-18 16-30c0-9-7-16-16-16z" fill="none" stroke="var(--c)" stroke-width="3"/><path d="M32 15v14M25 22h14" stroke="var(--c)" stroke-width="4" stroke-linecap="round"/><path d="M10 58h44" stroke="var(--c)" stroke-width="3" stroke-dasharray="4 4" stroke-linecap="round"/></svg>
+          <div><h3>Escala: abrir, mudar e fechar unidades <span class="extra">extra</span></h3><span class="when">Contínuo · a cada mudança</span></div>
+        </div>
+        <p class="goal">Ter um roteiro pronto para cada loja nova, mudança de endereço ou fechamento, sem bagunçar a rede de novo.</p>
+        <div class="lbl">Skills necessárias</div>
+        <div class="skill"><code>multi-location-seo</code><p>Dá o passo a passo de abertura, mudança e fechamento de unidade.</p><div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>gbp-optimization</code><p>Cria e verifica o perfil da loja nova já no padrão da rede.</p><div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>local-landing-pages</code><p>Publica a página da nova unidade seguindo o modelo.</p><div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>local-schema</code><p>Inclui a nova unidade no código do site com identificador próprio.</p><div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>local-citations</code><p>Cadastra a loja nova e corrige os diretórios quando uma muda ou fecha.</p><div class="badges"><span class="b free">✅ grátis</span><span class="b paid">💳 se usar BrightLocal</span></div></div>
+        <div class="skill"><code>brief</code><p>Abre a ficha da unidade nova e registra mudanças e fechamentos.</p><div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="lbl">Entregáveis</div>
+        <ul><li>Checklist de abertura (perfil, página, schema, citações)</li><li>Checklist de mudança e de fechamento</li><li>Planilha mestre sempre atualizada</li></ul>
+        <div class="lbl">Indicadores</div>
+        <ul><li>Dias até a loja nova ficar verificada</li><li>Dias até aparecer no Maps</li><li>Perfis de lojas fechadas marcados corretamente</li></ul>
+        <div class="warn">⚠️ <b>Cuidado no Brasil:</b> loja que fecha deve ser marcada como "fechada permanentemente", não apagada nem deixada aberta. Em troca de franqueado, transfira o acesso antes de ele sair.</div>
+      </div>
+    </section>
+
+  </div>
+  </div>
+
+  <section class="marcos">
+    <h2>Marcos no caminho</h2>
+    <div class="mk-row">
+      <div class="mk diag"><div class="w">Semana 1</div><div class="t">Fichas da rede e das unidades criadas</div></div>
+      <div class="mk diag"><div class="w">Semana 2</div><div class="t">Planilha mestre e lista de duplicatas prontas</div></div>
+      <div class="mk impl"><div class="w">Semana 4</div><div class="t">Todos os perfis sob o acesso da matriz</div></div>
+      <div class="mk impl"><div class="w">Semana 6</div><div class="t">100% dos perfis no padrão de nome e categoria</div></div>
+      <div class="mk impl"><div class="w">Semana 8</div><div class="t">Páginas de unidade no ar, com schema</div></div>
+      <div class="mk impl"><div class="w">Semana 10</div><div class="t">Duplicatas removidas e NAP acima de 90%</div></div>
+      <div class="mk acomp"><div class="w">Mês 3</div><div class="t">1º painel comparando as unidades</div></div>
+      <div class="mk acomp"><div class="w">Mês 4</div><div class="t">Toda loja batendo a meta mensal de avaliações</div></div>
+      <div class="mk melh"><div class="w">Mês 6</div><div class="t">1º plano de 90 dias aprovado pela diretoria</div></div>
+      <div class="mk escala"><div class="w">A cada abertura</div><div class="t">Loja nova verificada e no padrão em até 30 dias</div></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="card">
+      <h3>Fases extras incluídas e por quê</h3>
+      <p><b>0 · Diagnóstico e inventário:</b> numa rede, ninguém sabe ao certo quantos perfis existem nem quem tem o acesso. Sem esse levantamento, a implementação cria mais duplicatas.</p>
+      <p><b>4 · Escala:</b> redes e franquias abrem, mudam e fecham lojas o tempo todo. Sem um roteiro fixo, a bagunça volta a cada nova unidade.</p>
+    </div>
+    <div class="card legend">
+      <h3>Legenda dos selos</h3>
+      <p><span class="b free">✅ grátis</span> não exige conta paga</p>
+      <p><span class="b cred">🪙 créditos</span> consome créditos do LocalSEOData</p>
+      <p><span class="b paid">💳 ferramenta paga</span> exige assinatura (ex.: BrightLocal, Local Falcon)</p>
+      <p><span class="b key">🔑 conta/acesso</span> precisa de login, API ou acesso do cliente</p>
+    </div>
+    <div class="card">
+      <h3>Lembrete</h3>
+      <p><code>brief</code> guarda o histórico da rede e de cada unidade, para retomar de onde parou.</p>
+      <p><code>dispatch</code> escolhe quais skills carregar em cada pedido.</p>
+    </div>
+  </footer>
+</div>

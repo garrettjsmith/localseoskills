@@ -1,0 +1,523 @@
+<meta charset="utf-8">
+<title>Caso 2 · Reinauguração em novo endereço</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #f6f8f7;
+    --grid: rgba(30, 60, 50, .07);
+    --card: #ffffff;
+    --ink: #1f2a27;
+    --muted: #55625e;
+    --line: #d5ddda;
+    --shadow: 0 2px 4px rgba(20, 40, 35, .06), 0 8px 22px rgba(20, 40, 35, .08);
+    --p0: #7a5af8;
+    --p1: #1f5da3;
+    --p2: #2e7d3c;
+    --p3: #c2410c;
+    --p0-soft: #efeafe;
+    --p1-soft: #e6eef8;
+    --p2-soft: #e7f3e9;
+    --p3-soft: #fbece3;
+    --warn-bg: #fff7e0;
+    --warn-ink: #6b4d00;
+    --warn-line: #f0d48a;
+    --pill-free: #e3f4e6;
+    --pill-free-ink: #1e5a29;
+    --pill-cred: #fdf2d6;
+    --pill-cred-ink: #6b4d00;
+    --pill-paid: #fde4e4;
+    --pill-paid-ink: #8a1f1f;
+    --pill-key: #e6eaf7;
+    --pill-key-ink: #27366e;
+    --hand: "Marker Felt", "Chalkboard SE", "Segoe Print", "Bradley Hand", cursive;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #151b1a;
+      --grid: rgba(200, 230, 220, .05);
+      --card: #1f2826;
+      --ink: #e7eeec;
+      --muted: #a7b5b0;
+      --line: #34413e;
+      --shadow: 0 2px 4px rgba(0, 0, 0, .3), 0 8px 22px rgba(0, 0, 0, .35);
+      --p0: #a08bff;
+      --p1: #6ea6e8;
+      --p2: #6cc27a;
+      --p3: #f08a55;
+      --p0-soft: #2a2442;
+      --p1-soft: #1c2b3f;
+      --p2-soft: #1d3322;
+      --p3-soft: #3b2418;
+      --warn-bg: #3a3118;
+      --warn-ink: #f3dc9b;
+      --warn-line: #6b5a26;
+      --pill-free: #1e3b24;
+      --pill-free-ink: #a6e3b0;
+      --pill-cred: #3d3318;
+      --pill-cred-ink: #f2d98c;
+      --pill-paid: #432020;
+      --pill-paid-ink: #f5b3b3;
+      --pill-key: #232b48;
+      --pill-key-ink: #b9c6f5;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    color: var(--ink);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 20px 16px 48px; }
+  a { color: var(--p1); }
+  .back { display: inline-block; margin-bottom: 14px; text-decoration: none; font-weight: 600; }
+  .back:hover { text-decoration: underline; }
+  h1, h2, h3, .hand { font-family: var(--hand); font-weight: normal; letter-spacing: .2px; }
+  code {
+    font: 600 .86em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: rgba(127, 127, 127, .14);
+    padding: 1px 6px; border-radius: 5px;
+  }
+
+  /* Cabeçalho */
+  header.hero {
+    background: var(--card); border-radius: 18px; box-shadow: var(--shadow);
+    padding: 22px 24px; display: grid; grid-template-columns: 1fr 260px; gap: 20px; align-items: center;
+  }
+  .hero .num { font-family: var(--hand); color: var(--p1); font-size: 1.1rem; }
+  .hero h1 { margin: 2px 0 10px; font-size: 2rem; line-height: 1.2; }
+  .hero p { margin: 6px 0; }
+  .hero b.lbl { color: var(--muted); font-weight: 600; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .chip { background: var(--p1-soft); color: var(--ink); border-radius: 999px; padding: 4px 12px; font-size: .9rem; }
+  .hero svg { width: 100%; height: auto; }
+
+  /* Timeline */
+  .tl-title { margin: 30px 0 4px; font-size: 1.6rem; }
+  .tl-sub { margin: 0 0 18px; color: var(--muted); }
+  .timeline { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+  .timeline::before {
+    content: ""; position: absolute; top: 27px; left: 12.5%; right: 12.5%; height: 8px; border-radius: 8px;
+    background: linear-gradient(90deg, var(--p0), var(--p1) 33%, var(--p2) 66%, var(--p3));
+  }
+  .phase { position: relative; display: flex; flex-direction: column; align-items: stretch; }
+  .node {
+    position: relative; z-index: 1; align-self: center;
+    width: 62px; height: 62px; border-radius: 50%;
+    background: var(--c); color: #fff; border: 5px solid var(--bg);
+    display: grid; place-items: center; font: 1.6rem var(--hand);
+    box-shadow: 0 0 0 3px var(--c);
+  }
+  .card {
+    margin-top: 16px; background: var(--card); border-radius: 16px; box-shadow: var(--shadow);
+    border-top: 6px solid var(--c); padding: 16px 16px 18px; flex: 1;
+  }
+  .card-head { display: flex; gap: 12px; align-items: center; }
+  .card-head svg { width: 64px; height: 64px; flex: none; }
+  .card h3 { margin: 0; font-size: 1.3rem; line-height: 1.2; color: var(--c); }
+  .when { display: inline-block; margin-top: 4px; font-size: .82rem; font-weight: 700; background: var(--soft); color: var(--ink); padding: 2px 10px; border-radius: 999px; }
+  .tag-extra { display: inline-block; margin-left: 4px; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--c); border: 1.5px dashed var(--c); border-radius: 999px; padding: 0 8px; }
+  .goal { margin: 12px 0 10px; font-weight: 600; }
+  .sec { margin: 14px 0 6px; font-size: .78rem; font-weight: 800; letter-spacing: .7px; text-transform: uppercase; color: var(--muted); }
+  .skill { background: var(--soft); border-radius: 10px; padding: 8px 10px; margin-bottom: 8px; }
+  .skill .top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .skill p { margin: 4px 0 0; font-size: .9rem; }
+  .skill .opt { font-size: .75rem; color: var(--muted); font-weight: 600; }
+  .pill { font-size: .72rem; font-weight: 700; border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
+  .free { background: var(--pill-free); color: var(--pill-free-ink); }
+  .cred { background: var(--pill-cred); color: var(--pill-cred-ink); }
+  .paid { background: var(--pill-paid); color: var(--pill-paid-ink); }
+  .key  { background: var(--pill-key); color: var(--pill-key-ink); }
+  ul.list { margin: 0; padding-left: 20px; font-size: .92rem; }
+  ul.list li { margin: 3px 0; }
+  .warn {
+    margin-top: 14px; background: var(--warn-bg); color: var(--warn-ink);
+    border: 1px solid var(--warn-line); border-radius: 10px; padding: 8px 10px; font-size: .9rem;
+  }
+  .warn b { display: block; margin-bottom: 2px; }
+
+  .ph0 { --c: var(--p0); --soft: var(--p0-soft); }
+  .ph1 { --c: var(--p1); --soft: var(--p1-soft); }
+  .ph2 { --c: var(--p2); --soft: var(--p2-soft); }
+  .ph3 { --c: var(--p3); --soft: var(--p3-soft); }
+
+  /* Marcos */
+  .marcos { margin-top: 28px; background: var(--card); border-radius: 16px; box-shadow: var(--shadow); padding: 16px 18px 20px; }
+  .marcos h2 { margin: 0 0 12px; font-size: 1.4rem; }
+  .track { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+  .track::before { content: ""; position: absolute; top: 10px; left: 0; right: 0; border-top: 3px dashed var(--line); }
+  .track .col { position: relative; display: flex; flex-direction: column; gap: 8px; padding-top: 28px; }
+  .track .col::before {
+    content: ""; position: absolute; top: 2px; left: 0; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--c); border: 3px solid var(--card); box-shadow: 0 0 0 2px var(--c);
+  }
+  .flag { border-left: 4px solid var(--c); background: var(--soft); border-radius: 0 8px 8px 0; padding: 5px 10px; font-size: .9rem; }
+  .flag small { display: block; color: var(--muted); font-weight: 700; }
+
+  /* Rodapé */
+  footer.notes { margin-top: 28px; display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 18px; }
+  footer .box { background: var(--card); border-radius: 16px; box-shadow: var(--shadow); padding: 16px 18px; }
+  footer h2 { margin: 0 0 8px; font-size: 1.25rem; }
+  footer p, footer li { font-size: .92rem; }
+  footer ul { margin: 0; padding-left: 0; list-style: none; }
+  footer ul li { margin: 6px 0; }
+
+  /* Celular: linha vertical à esquerda */
+  @media (max-width: 899px) {
+    header.hero { grid-template-columns: 1fr; }
+    .hero svg { max-width: 280px; justify-self: center; }
+    .hero h1 { font-size: 1.6rem; }
+    .timeline { grid-template-columns: 1fr; gap: 22px; padding-left: 46px; }
+    .timeline::before {
+      top: 0; bottom: 0; left: 17px; right: auto; width: 7px; height: auto;
+      background: linear-gradient(180deg, var(--p0), var(--p1) 33%, var(--p2) 66%, var(--p3));
+    }
+    .node { position: absolute; left: -46px; top: 0; width: 42px; height: 42px; font-size: 1.15rem; border-width: 4px; }
+    .card { margin-top: 0; }
+    .track { grid-template-columns: 1fr; padding-left: 30px; gap: 14px; }
+    .track::before { top: 0; bottom: 0; left: 8px; right: auto; border-top: 0; border-left: 3px dashed var(--line); }
+    .track .col { padding-top: 0; }
+    .track .col::before { left: -30px; top: 4px; }
+    footer.notes { grid-template-columns: 1fr; }
+  }
+  @media (min-width: 900px) and (max-width: 1180px) {
+    .timeline, .track { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .timeline::before { display: none; }
+    footer.notes { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+
+<div class="wrap">
+  <a class="back" href="index.html">← Todos os casos</a>
+
+  <header class="hero">
+    <div>
+      <div class="num">Caso 2</div>
+      <h1>Pequena empresa reinaugurando em novo endereço</h1>
+      <p><b class="lbl">Situação:</b> a empresa mudou de ponto (hoje ou há pouco tempo), mas já tem perfil no Google, avaliações e clientes que conhecem o endereço antigo.</p>
+      <p><b class="lbl">Objetivo:</b> trocar o endereço sem perder avaliações nem histórico, fazer o Google confiar no novo local e avisar os clientes.</p>
+      <div class="chips">
+        <span class="chip">🥖 Padaria</span>
+        <span class="chip">🐾 Pet shop</span>
+        <span class="chip">👓 Ótica</span>
+        <span class="chip">🔧 Oficina</span>
+      </div>
+    </div>
+    <svg viewBox="0 0 260 150" role="img" aria-label="Mudança do endereço antigo para o novo">
+      <path d="M40 112 C 90 40, 160 40, 212 104" fill="none" stroke="#1f5da3" stroke-width="3" stroke-dasharray="7 7"/>
+      <path d="M204 92 l10 14 l-16 2" fill="none" stroke="#1f5da3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <g opacity=".55">
+        <path d="M40 112 c-16 -20 -22 -30 -22 -42 a22 22 0 0 1 44 0 c0 12 -6 22 -22 42z" fill="#9aa7a3"/>
+        <circle cx="40" cy="70" r="8" fill="#fff"/>
+      </g>
+      <text x="40" y="138" text-anchor="middle" font-size="13" fill="#55625e" font-family="system-ui">antigo</text>
+      <rect x="184" y="78" width="56" height="40" rx="4" fill="#fff" stroke="#1f5da3" stroke-width="2.5"/>
+      <path d="M180 80 h64 l-6 -14 h-52z" fill="#c2410c"/>
+      <rect x="205" y="96" width="14" height="22" fill="#e6eef8" stroke="#1f5da3" stroke-width="2"/>
+      <path d="M222 50 c-12 -15 -16 -22 -16 -31 a16 16 0 0 1 32 0 c0 9 -4 16 -16 31z" fill="#2e7d3c"/>
+      <circle cx="222" cy="19" r="6" fill="#fff"/>
+      <text x="212" y="138" text-anchor="middle" font-size="13" fill="#2e7d3c" font-weight="700" font-family="system-ui">novo ponto</text>
+      <text x="124" y="34" text-anchor="middle" font-size="22">⭐</text>
+      <text x="124" y="56" text-anchor="middle" font-size="11" fill="#55625e" font-family="system-ui">avaliações vão junto</text>
+    </svg>
+  </header>
+
+  <h2 class="tl-title">Linha do tempo do trabalho</h2>
+  <p class="tl-sub">Quatro fases: uma de preparação, antes de mexer no perfil, e as três fases obrigatórias.</p>
+
+  <section class="timeline">
+
+    <!-- Fase 0 -->
+    <article class="phase ph0">
+      <div class="node">0</div>
+      <div class="card">
+        <div class="card-head">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="4" y="8" width="44" height="40" rx="6" fill="#efeafe" stroke="#7a5af8" stroke-width="2.5"/>
+            <path d="M4 22 h44 M18 8 v40 M34 8 v40" stroke="#7a5af8" stroke-width="1.5" opacity=".5"/>
+            <circle cx="26" cy="28" r="5" fill="#7a5af8"/>
+            <circle cx="42" cy="42" r="11" fill="#fff" stroke="#7a5af8" stroke-width="3.5"/>
+            <path d="M50 50 l9 9" stroke="#7a5af8" stroke-width="5" stroke-linecap="round"/>
+          </svg>
+          <div>
+            <h3>Diagnóstico e preparação</h3>
+            <span class="when">Semana 0 · antes ou no dia da mudança</span>
+            <span class="tag-extra">extra</span>
+          </div>
+        </div>
+        <p class="goal">Registrar a "foto do antes" e listar onde o endereço antigo aparece, para medir o resultado depois.</p>
+
+        <div class="sec">Skills necessárias</div>
+        <div class="skill">
+          <div class="top"><code>brief</code><span class="pill free">✅ grátis</span></div>
+          <p>Anota o endereço antigo e o novo, a data da mudança e o que já existe (perfil, site, redes).</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>localseodata-tool</code><span class="pill cred">🪙 créditos</span><span class="pill key">🔑 conta</span></div>
+          <p>Puxa os dados atuais do perfil e roda a auditoria de citações, que mostra onde está o endereço antigo.</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>geogrid-analysis</code><span class="pill cred">🪙 créditos</span></div>
+          <p>Faz o mapa de visibilidade inicial (o "antes"), de preferência ainda no endereço antigo.</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>local-citations</code><span class="pill free">✅ grátis</span></div>
+          <p>Define o NAP novo, escrito igual em todo lugar, e monta a lista de diretórios a corrigir.</p>
+        </div>
+
+        <div class="sec">Entregáveis</div>
+        <ul class="list">
+          <li>Brief do cliente criado</li>
+          <li>Mapa de visibilidade "antes"</li>
+          <li>Lista de diretórios com o endereço antigo</li>
+          <li>NAP novo padronizado</li>
+        </ul>
+
+        <div class="warn"><b>⚠️ Cuidado no Brasil</b>Separe antes a nota fiscal, o cartão CNPJ e o alvará com o endereço novo. O Google pode pedir um documento que comprove o endereço.</div>
+      </div>
+    </article>
+
+    <!-- Fase 1 -->
+    <article class="phase ph1">
+      <div class="node">1</div>
+      <div class="card">
+        <div class="card-head">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="3" y="24" width="34" height="22" rx="3" fill="#e6eef8" stroke="#1f5da3" stroke-width="2.5"/>
+            <path d="M37 30 h12 l8 9 v7 h-20z" fill="#1f5da3"/>
+            <rect x="41" y="33" width="7" height="5" fill="#fff"/>
+            <circle cx="14" cy="49" r="5" fill="#fff" stroke="#1f5da3" stroke-width="3"/>
+            <circle cx="47" cy="49" r="5" fill="#fff" stroke="#1f5da3" stroke-width="3"/>
+            <path d="M20 22 c-6 -7 -8 -11 -8 -15 a8 8 0 0 1 16 0 c0 4 -2 8 -8 15z" fill="#2e7d3c"/>
+            <circle cx="20" cy="7" r="3" fill="#fff"/>
+          </svg>
+          <div>
+            <h3>Implementação</h3>
+            <span class="when">Semanas 1–4</span>
+          </div>
+        </div>
+        <p class="goal">Mudar o endereço no perfil que já existe, corrigir todos os lugares e anunciar a casa nova.</p>
+
+        <div class="sec">Skills necessárias</div>
+        <div class="skill">
+          <div class="top"><code>gbp-optimization</code><span class="pill free">✅ grátis</span><span class="pill key">🔑 acesso ao perfil</span></div>
+          <p>Edita o endereço no mesmo perfil, ajusta o pino, os horários e as fotos novas, e orienta a nova verificação por vídeo.</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>gbp-posts</code><span class="pill free">✅ grátis</span></div>
+          <p>Cria a sequência "estamos de casa nova", reinauguração, evento de abertura, como chegar e onde estacionar.</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>local-citations</code><span class="pill free">✅ grátis</span><span class="pill key">🔑 contas nos sites</span></div>
+          <p>Corrige um por um: Facebook, Instagram, iFood, Waze, Apontador e guias locais.</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>apple-business-connect</code><span class="pill free">✅ grátis</span><span class="pill key">🔑 Apple ID</span></div>
+          <p>Atualiza o endereço no Apple Mapas, usado por quem tem iPhone.</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>bing-places</code><span class="pill free">✅ grátis</span><span class="pill key">🔑 conta Microsoft</span></div>
+          <p>Atualiza o Bing Maps, que também alimenta o Copilot.</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>local-schema</code><span class="pill free">✅ grátis</span></div>
+          <p>Troca o endereço no código de identificação do site, igual ao do perfil.</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>local-landing-pages</code><span class="pill free">✅ grátis</span></div>
+          <p>Atualiza o site com o novo endereço e o mapa, e cria a página "como chegar".</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>review-management</code><span class="pill free">✅ grátis</span></div>
+          <p>Começa a pedir avaliações a quem já visitou o novo ponto, de preferência citando o bairro.</p>
+        </div>
+
+        <div class="sec">Entregáveis</div>
+        <ul class="list">
+          <li>Perfil atualizado com as avaliações mantidas</li>
+          <li>Lista de diretórios corrigidos</li>
+          <li>Campanha de reinauguração (posts e mensagens)</li>
+          <li>Site com endereço, mapa e "como chegar"</li>
+        </ul>
+
+        <div class="sec">Indicadores</div>
+        <ul class="list">
+          <li>Perfil verificado no novo endereço</li>
+          <li>% de diretórios corrigidos</li>
+          <li>Avaliações novas por semana</li>
+        </ul>
+
+        <div class="warn"><b>⚠️ Cuidado no Brasil</b><strong>Nunca</strong> marque o perfil como "fechado permanentemente" para criar outro: as avaliações se perdem. Edite o endereço no mesmo perfil.</div>
+      </div>
+    </article>
+
+    <!-- Fase 2 -->
+    <article class="phase ph2">
+      <div class="node">2</div>
+      <div class="card">
+        <div class="card-head">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="4" y="6" width="56" height="48" rx="6" fill="#e7f3e9" stroke="#2e7d3c" stroke-width="2.5"/>
+            <path d="M12 44 L24 34 L34 38 L50 18" fill="none" stroke="#2e7d3c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="50" cy="18" r="4" fill="#2e7d3c"/>
+            <path d="M12 48 h40" stroke="#2e7d3c" stroke-width="2" opacity=".5"/>
+            <text x="18" y="22" font-size="12">⭐</text>
+          </svg>
+          <div>
+            <h3>Acompanhamento e gestão dos resultados</h3>
+            <span class="when">Meses 1–3 · mapas aos 30 e 60 dias</span>
+          </div>
+        </div>
+        <p class="goal">Conferir se o Google já "acredita" no novo ponto e onde a empresa aparece no bairro novo.</p>
+
+        <div class="sec">Skills necessárias</div>
+        <div class="skill">
+          <div class="top"><code>geogrid-analysis</code><span class="pill cred">🪙 créditos</span></div>
+          <p>Mede, 30 e 60 dias depois, em quais ruas a empresa já aparece no novo bairro e compara com o "antes".</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>local-falcon-tool</code><span class="pill paid">💳 paga</span><span class="opt">ou</span><code>localseodata-tool</code><span class="pill cred">🪙 créditos</span></div>
+          <p>Rodam os mapas. O Local Falcon ainda vigia o perfil contra edições indevidas.</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>review-management</code><span class="pill free">✅ grátis</span></div>
+          <p>Mantém o ritmo de avaliações e responde a todas, inclusive às que falam da mudança.</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>google-search-console-tool</code><span class="pill free">✅ grátis</span><span class="pill key">🔑 acesso</span></div>
+          <p>Confere se a página "como chegar" foi indexada e se recebe buscas.</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>local-reporting</code><span class="pill free">✅ grátis</span></div>
+          <p>Monta o relatório com o mapa de antes e depois, em linguagem simples para o dono.</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>gbp-suspension-recovery</code><span class="pill free">✅ grátis</span><span class="opt">só se precisar</span></div>
+          <p>Entra em ação se o perfil ficar "em análise" ou for suspenso depois da troca de endereço.</p>
+        </div>
+
+        <div class="sec">Entregáveis</div>
+        <ul class="list">
+          <li>Mapa de visibilidade de 30 e 60 dias</li>
+          <li>1º relatório de antes e depois</li>
+          <li>Diretórios que faltam corrigir</li>
+        </ul>
+
+        <div class="sec">Indicadores</div>
+        <ul class="list">
+          <li>SoLV e ARP no novo bairro</li>
+          <li>Avaliações novas por mês e nota média</li>
+          <li>Ligações, rotas e cliques no perfil</li>
+        </ul>
+
+        <div class="warn"><b>⚠️ Cuidado no Brasil</b>Se a mudança foi para outra cidade ou para longe, é normal cair bastante no início: o bairro antigo deixa de contar. Avise o cliente antes.</div>
+      </div>
+    </article>
+
+    <!-- Fase 3 -->
+    <article class="phase ph3">
+      <div class="node">3</div>
+      <div class="card">
+        <div class="card-head">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M32 6 a18 18 0 0 1 10 33 v7 h-20 v-7 a18 18 0 0 1 10 -33z" fill="#fbece3" stroke="#c2410c" stroke-width="2.5"/>
+            <path d="M24 52 h16 M26 58 h12" stroke="#c2410c" stroke-width="3" stroke-linecap="round"/>
+            <path d="M32 38 v-12 l-5 5 M32 26 l5 5" fill="none" stroke="#c2410c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 18 l5 2 M56 18 l-5 2 M32 0 v3" stroke="#c2410c" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <div>
+            <h3>Proposição de melhorias</h3>
+            <span class="when">Mês 3 em diante</span>
+          </div>
+        </div>
+        <p class="goal">Usar o que os mapas mostraram para conquistar as ruas do novo bairro onde a empresa ainda não aparece.</p>
+
+        <div class="sec">Skills necessárias</div>
+        <div class="skill">
+          <div class="top"><code>local-competitor-analysis</code><span class="pill cred">🪙 créditos</span></div>
+          <p>Mostra quem são os concorrentes do bairro novo e por que eles aparecem na frente.</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>gbp-optimization</code><span class="pill free">✅ grátis</span></div>
+          <p>Ajusta categorias, serviços e fotos conforme o que falta para vencer esses concorrentes.</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>local-link-building</code><span class="pill free">✅ grátis</span></div>
+          <p>Busca links de vizinhos, associação comercial e jornal do bairro, que reforçam o novo endereço.</p>
+        </div>
+        <div class="skill">
+          <div class="top"><code>gbp-posts</code><span class="pill free">✅ grátis</span></div>
+          <p>Passa da campanha de reinauguração para uma rotina de 1 a 3 posts por semana.</p>
+        </div>
+
+        <div class="sec">Entregáveis</div>
+        <ul class="list">
+          <li>Plano de melhorias priorizado</li>
+          <li>Lista de parcerias e links no bairro</li>
+          <li>Calendário de posts contínuo</li>
+        </ul>
+
+        <div class="sec">Indicadores</div>
+        <ul class="list">
+          <li>SoLV acima de 70% perto da loja</li>
+          <li>Posição frente aos 3 maiores concorrentes</li>
+          <li>Novos links locais conquistados</li>
+        </ul>
+
+        <div class="warn"><b>⚠️ Cuidado no Brasil</b>Não use o endereço antigo em nenhum texto novo. Se o ponto antigo virar outro negócio seu, ele precisa de um perfil separado e próprio.</div>
+      </div>
+    </article>
+  </section>
+
+  <section class="marcos">
+    <h2>📍 Marcos do caminho</h2>
+    <div class="track">
+      <div class="col ph0">
+        <div class="flag"><small>Semana 0</small>Brief criado</div>
+        <div class="flag"><small>Semana 0</small>Mapa "antes" salvo</div>
+        <div class="flag"><small>Semana 0</small>Lista de diretórios pronta</div>
+      </div>
+      <div class="col ph1">
+        <div class="flag"><small>Semana 1</small>Endereço editado no mesmo perfil</div>
+        <div class="flag"><small>Semanas 1–2</small>Perfil verificado no novo ponto</div>
+        <div class="flag"><small>Semana 3</small>Site e diretórios principais corrigidos</div>
+        <div class="flag"><small>Semana 4</small>Post da reinauguração no ar</div>
+      </div>
+      <div class="col ph2">
+        <div class="flag"><small>Dia 30</small>1º mapa no novo bairro</div>
+        <div class="flag"><small>Dia 60</small>2º mapa e 1º relatório de antes e depois</div>
+        <div class="flag"><small>Mês 2–3</small>10 avaliações citando o bairro novo</div>
+      </div>
+      <div class="col ph3">
+        <div class="flag"><small>Mês 3</small>Plano de melhorias aprovado</div>
+        <div class="flag"><small>Mês 4+</small>Visibilidade igual ou melhor que a do ponto antigo</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="notes">
+    <div class="box">
+      <h2>Fases extras incluídas e por quê</h2>
+      <p><strong>0 · Diagnóstico e preparação.</strong> O caso promete um "mapa de visibilidade antes e depois". Sem medir antes de mexer no perfil, não existe o "antes". Também é preciso listar todos os lugares com o endereço antigo antes de corrigir.</p>
+      <p>Nenhuma outra fase extra é necessária: a rotina contínua já está dentro da fase 3.</p>
+    </div>
+    <div class="box">
+      <h2>Legenda dos selos</h2>
+      <ul>
+        <li><span class="pill free">✅ grátis</span> não custa nada</li>
+        <li><span class="pill cred">🪙 créditos</span> consome créditos de um serviço de dados</li>
+        <li><span class="pill paid">💳 paga</span> exige assinatura de ferramenta paga</li>
+        <li><span class="pill key">🔑 conta/acesso</span> precisa de conta ou acesso ao perfil</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Lembrete</h2>
+      <p><code>brief</code> guarda o histórico do cliente: endereços, datas, mapas e relatórios, para retomar sem recomeçar.</p>
+      <p><code>dispatch</code> escolhe quais skills carregar juntas em cada pedido.</p>
+    </div>
+  </footer>
+</div>

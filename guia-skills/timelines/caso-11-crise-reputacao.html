@@ -1,0 +1,300 @@
+<meta charset="utf-8">
+<title>Caso 11 · Crise de reputação</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --bg:#f6f8f7; --grid:rgba(40,80,110,.08); --ink:#1d2830; --muted:#4f5d68; --paper:#ffffff; --line:#2b3a46;
+  --c0:#7a5af8; --c1:#1f5da3; --c2:#2e7d3c; --c3:#c2410c;
+  --c0-soft:#efeaff; --c1-soft:#e3eefb; --c2-soft:#e2f3e5; --c3-soft:#fdeadf;
+  --t-free-bg:#dff3e2; --t-free-fg:#1f6a2e;
+  --t-cred-bg:#fff0c7; --t-cred-fg:#7a5300;
+  --t-paid-bg:#ffe0dc; --t-paid-fg:#9c2a1e;
+  --t-acct-bg:#dde9fb; --t-acct-fg:#1c4f8c;
+  --warn-bg:#fff6d6; --warn-fg:#6b4a00; --warn-bd:#f0d27a;
+  --shadow:rgba(30,40,50,.14);
+  --hand:"Marker Felt","Chalkboard SE","Segoe Print","Bradley Hand",cursive;
+  --text:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#1b2023; --grid:rgba(200,220,235,.06); --ink:#e9edf0; --muted:#aab6bf; --paper:#262c30; --line:#cfd8de;
+  --c0:#b4a2ff; --c1:#7fb3ee; --c2:#8fd39a; --c3:#ffa173;
+  --c0-soft:#2f2a4a; --c1-soft:#1f3550; --c2-soft:#24402a; --c3-soft:#4a2c1c;
+  --t-free-bg:#1f3d26; --t-free-fg:#a6e3b0; --t-cred-bg:#463a14; --t-cred-fg:#f5d77c;
+  --t-paid-bg:#4d2420; --t-paid-fg:#ffb3a8; --t-acct-bg:#1e3452; --t-acct-fg:#a9cbf5;
+  --warn-bg:#3f3517; --warn-fg:#f5df9a; --warn-bd:#6e5b22;
+  --shadow:rgba(0,0,0,.45); color-scheme:dark;
+}}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);color:var(--ink);font-family:var(--text);font-size:15px;line-height:1.5;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px}
+.wrap{max-width:1280px;margin:0 auto;padding:24px 16px 56px;display:flex;flex-direction:column;gap:32px}
+h1,h2,h3{font-family:var(--hand);font-weight:700;margin:0;text-wrap:balance}
+a{color:var(--c1)}
+code{font-family:var(--mono);font-size:.88em;background:var(--c1-soft);padding:1px 6px;border-radius:5px;color:var(--ink)}
+.back{font-weight:600;text-decoration:none;font-size:.95rem}
+.back:hover{text-decoration:underline}
+.card{background:var(--paper);border-radius:14px;box-shadow:0 2px 10px var(--shadow);padding:18px}
+
+/* Cabeçalho */
+header.card{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;padding:22px}
+header .num{font-family:var(--hand);font-size:.95rem;color:var(--muted)}
+header h1{font-size:clamp(1.8rem,4.5vw,2.8rem);line-height:1.1;color:var(--c3)}
+header p{margin:6px 0 0;max-width:70ch}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;padding:0;list-style:none}
+.chips li{background:var(--c3-soft);border-radius:999px;padding:3px 12px;font-size:.88rem}
+@media (max-width:600px){header.card{grid-template-columns:1fr}header svg{width:84px;height:84px}}
+
+/* Marcos */
+.marcos h2{font-size:1.5rem;margin-bottom:12px}
+.marcos ol{list-style:none;margin:0;padding:0;display:flex;gap:10px;overflow-x:auto;padding-bottom:6px}
+.marcos li{flex:1 0 150px;background:var(--paper);border-radius:10px;box-shadow:0 1px 6px var(--shadow);padding:10px 12px;border-top:5px solid var(--pc);font-size:.88rem}
+.marcos li b{display:block;font-family:var(--hand);font-size:1rem}
+.marcos li span{color:var(--muted)}
+
+/* Timeline */
+.tl h2{font-size:1.6rem;margin-bottom:6px}
+.tl > p{margin:0 0 18px;color:var(--muted)}
+.fases{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;position:relative}
+.fases::before{content:"";position:absolute;left:12%;right:12%;top:26px;height:7px;border-radius:4px;
+  background:linear-gradient(90deg,var(--c0),var(--c1) 35%,var(--c2) 65%,var(--c3))}
+.fase{position:relative;display:flex;flex-direction:column;gap:12px}
+.dot{width:58px;height:58px;border-radius:50%;background:var(--pc);color:#fff;font-family:var(--hand);font-size:1.6rem;
+  display:grid;place-items:center;margin:0 auto;position:relative;z-index:1;box-shadow:0 0 0 6px var(--bg)}
+@media (prefers-color-scheme: dark){.dot{color:#14181b}}
+.fase .card{border-top:6px solid var(--pc);display:flex;flex-direction:column;gap:12px;flex:1}
+.fhead{display:flex;gap:10px;align-items:center}
+.fhead svg{flex:0 0 56px}
+.fhead h3{font-size:1.25rem;color:var(--pc);line-height:1.15}
+.prazo{display:inline-block;font-size:.8rem;font-weight:600;background:var(--ps);border-radius:999px;padding:2px 10px;margin-top:4px}
+.obj{margin:0;font-weight:500}
+.lbl{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin:0 0 6px}
+.skills{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.skill{background:var(--ps);border-radius:10px;padding:8px 10px;font-size:.88rem}
+.skill .top{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:3px}
+.skill code{background:var(--paper);font-weight:700}
+.skill p{margin:0}
+.opt{font-size:.75rem;color:var(--muted);font-style:italic}
+.sel{display:inline-block;border-radius:999px;padding:1px 8px;font-size:.74rem;font-weight:600;white-space:nowrap}
+.free{background:var(--t-free-bg);color:var(--t-free-fg)}
+.cred{background:var(--t-cred-bg);color:var(--t-cred-fg)}
+.paid{background:var(--t-paid-bg);color:var(--t-paid-fg)}
+.acct{background:var(--t-acct-bg);color:var(--t-acct-fg)}
+ul.lst{margin:0;padding-left:18px;font-size:.88rem}
+ul.lst li{margin-bottom:2px}
+.warn{background:var(--warn-bg);color:var(--warn-fg);border:1px dashed var(--warn-bd);border-radius:10px;padding:8px 10px;font-size:.86rem}
+.warn p{margin:0}
+.p0{--pc:var(--c0);--ps:var(--c0-soft)}
+.p1{--pc:var(--c1);--ps:var(--c1-soft)}
+.p2{--pc:var(--c2);--ps:var(--c2-soft)}
+.p3{--pc:var(--c3);--ps:var(--c3-soft)}
+
+@media (max-width:1100px) and (min-width:900px){.fase .card{padding:14px}.fhead svg{flex-basis:44px;width:44px;height:44px}}
+@media (max-width:899px){
+  .fases{grid-template-columns:1fr;gap:22px;padding-left:62px}
+  .fases::before{left:26px;right:auto;top:10px;bottom:10px;width:7px;height:auto;
+    background:linear-gradient(180deg,var(--c0),var(--c1) 35%,var(--c2) 65%,var(--c3))}
+  .dot{position:absolute;left:-62px;top:0;margin:0;width:52px;height:52px;font-size:1.4rem}
+}
+
+/* Rodapé */
+footer{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+footer h2{font-size:1.25rem;margin-bottom:8px}
+footer p,footer li{font-size:.9rem}
+footer ul{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+</style>
+
+<div class="wrap">
+  <a class="back" href="index.html">← Todos os casos</a>
+
+  <header class="card">
+    <svg width="110" height="110" viewBox="0 0 110 110" aria-hidden="true">
+      <circle cx="55" cy="55" r="50" fill="var(--c3-soft)"/>
+      <path d="M22 70 L40 52 L52 62 L72 36 L88 30" fill="none" stroke="var(--c3)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M22 70 L40 78 L56 60 L70 66 L88 46" fill="none" stroke="var(--c2)" stroke-width="4" stroke-dasharray="6 5" stroke-linecap="round"/>
+      <g fill="var(--c3)"><path d="M55 14 l3.5 7 7.7 1.1 -5.6 5.4 1.3 7.6 -6.9-3.6 -6.9 3.6 1.3-7.6 -5.6-5.4 7.7-1.1z"/></g>
+      <text x="55" y="100" text-anchor="middle" font-size="12" font-family="system-ui" fill="var(--muted)">nota em queda → recuperação</text>
+    </svg>
+    <div>
+      <div class="num">Caso 11</div>
+      <h1>Crise de reputação: avaliações negativas e Reclame Aqui</h1>
+      <p><b>Situação:</b> a nota caiu, chegaram avaliações ruins em sequência (algumas falsas ou de ex-funcionário) ou a empresa está mal no Reclame Aqui.</p>
+      <p><b>Objetivo:</b> responder do jeito certo, remover o que viola as regras, recuperar a nota e corrigir a causa real do problema.</p>
+      <ul class="chips" aria-label="Exemplos de negócio">
+        <li>🍕 Restaurante e delivery</li><li>🦷 Clínica odontológica</li><li>🔧 Oficina mecânica</li><li>🏋️ Academia</li><li>🛋️ Loja de móveis planejados</li><li>🏨 Pousada</li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="marcos" aria-labelledby="m-t">
+    <h2 id="m-t">📍 Marcos do caminho</h2>
+    <ol>
+      <li class="p0"><b>Dia 2 · Foto da crise</b><span>nota, volume e causa registrados no brief</span></li>
+      <li class="p0"><b>Dia 3 · Triagem pronta</b><span>cada avaliação com rótulo</span></li>
+      <li class="p1"><b>Semana 1 · Respostas no ar</b><span>todas as negativas respondidas</span></li>
+      <li class="p1"><b>Semana 2 · Denúncias enviadas</b><span>falsas e ofensivas sinalizadas ao Google</span></li>
+      <li class="p1"><b>Semana 4 · Pedidos rodando</b><span>clientes reais convidados a avaliar</span></li>
+      <li class="p2"><b>Mês 2 · 1º relatório</b><span>nota, tempo de resposta e volume</span></li>
+      <li class="p2"><b>Mês 3 · Reclame Aqui em dia</b><span>reclamações respondidas e resolvidas</span></li>
+      <li class="p3"><b>Mês 4 · Revisão trimestral</b><span>novo plano de 90 dias</span></li>
+    </ol>
+  </section>
+
+  <section class="tl" aria-labelledby="tl-t">
+    <h2 id="tl-t">🗺️ Linha do tempo do trabalho</h2>
+    <p>Quatro fases. A fase 0 entra antes das três obrigatórias porque, numa crise, é preciso separar o que é legítimo do que é falso antes de responder qualquer coisa.</p>
+
+    <ol class="fases">
+      <!-- FASE 0 -->
+      <li class="fase p0">
+        <div class="dot">0</div>
+        <div class="card">
+          <div class="fhead">
+            <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+              <rect x="4" y="4" width="48" height="48" rx="12" fill="var(--c0-soft)"/>
+              <rect x="13" y="12" width="22" height="30" rx="3" fill="none" stroke="var(--c0)" stroke-width="3"/>
+              <path d="M17 20h14M17 26h10M17 32h12" stroke="var(--c0)" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="36" cy="36" r="8" fill="var(--paper)" stroke="var(--c0)" stroke-width="3"/>
+              <path d="M42 42l6 6" stroke="var(--c0)" stroke-width="3.5" stroke-linecap="round"/>
+            </svg>
+            <div><h3>Diagnóstico e triagem</h3><span class="prazo">Dias 1–3</span></div>
+          </div>
+          <p class="obj">Entender o tamanho da crise e classificar cada avaliação antes de agir.</p>
+          <div>
+            <p class="lbl">Skills necessárias</p>
+            <ul class="skills">
+              <li class="skill"><div class="top"><code>brief</code><span class="sel free">✅ grátis</span></div><p>Registra a nota atual, o total de avaliações e o motivo das críticas.</p></li>
+              <li class="skill"><div class="top"><code>localseodata-tool</code><span class="sel cred">🪙 créditos</span></div><p>Puxa as avaliações, a velocidade e o sentimento ao longo do tempo, e compara o Google com outras plataformas.</p></li>
+              <li class="skill"><div class="top"><code>review-management</code><span class="sel free">✅ grátis</span></div><p>Separa cada avaliação: legítima, falsa, ofensiva ou de concorrente/ex-funcionário.</p></li>
+              <li class="skill"><div class="top"><code>local-competitor-analysis</code><span class="sel cred">🪙 créditos</span></div><p>Mostra onde a nota está em relação aos concorrentes do bairro.</p></li>
+            </ul>
+          </div>
+          <div><p class="lbl">Entregáveis</p>
+            <ul class="lst"><li>Brief com a "foto" da crise</li><li>Planilha de triagem das avaliações</li><li>Lista das causas reais (atendimento, prazo, produto)</li><li>Comparativo de nota com 3 a 5 concorrentes</li></ul>
+          </div>
+          <div class="warn"><p>⚠️ <b>Cuidado no Brasil:</b> olhe também o Reclame Aqui. Ele aparece no Google e pesa muito na decisão do consumidor.</p></div>
+        </div>
+      </li>
+
+      <!-- FASE 1 -->
+      <li class="fase p1">
+        <div class="dot">1</div>
+        <div class="card">
+          <div class="fhead">
+            <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+              <rect x="4" y="4" width="48" height="48" rx="12" fill="var(--c1-soft)"/>
+              <path d="M12 14h26a4 4 0 0 1 4 4v12a4 4 0 0 1-4 4H24l-8 7v-7h-4a4 4 0 0 1-4-4V18a4 4 0 0 1 4-4z" fill="var(--paper)" stroke="var(--c1)" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M16 22h18M16 27h12" stroke="var(--c1)" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M40 36l4 4 7-9" fill="none" stroke="var(--c2)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div><h3>Implementação</h3><span class="prazo">Semanas 1–4</span></div>
+          </div>
+          <p class="obj">Responder bem, denunciar o que viola as regras e voltar a receber avaliações de clientes reais.</p>
+          <div>
+            <p class="lbl">Skills necessárias</p>
+            <ul class="skills">
+              <li class="skill"><div class="top"><code>review-management</code><span class="sel free">✅ grátis</span><span class="sel acct">🔑 conta no GBP</span></div><p>Escreve respostas-modelo, monta a lista de denúncias ao Google e cria o plano de pedidos de avaliação.</p></li>
+              <li class="skill"><div class="top"><code>gbp-optimization</code><span class="sel free">✅ grátis</span></div><p>Ajusta o perfil para refletir a correção da causa (horários, serviços, fotos reais).</p></li>
+              <li class="skill"><div class="top"><code>whitespark-tool</code><span class="sel paid">💳 paga</span><span class="opt">opcional</span></div><p>O Reputation Builder envia pedidos de avaliação por e-mail ou SMS.</p></li>
+            </ul>
+          </div>
+          <div><p class="lbl">Entregáveis</p>
+            <ul class="lst"><li>Respostas publicadas em todas as negativas</li><li>Denúncias enviadas, com motivo de cada uma</li><li>Plano de recuperação (quem pede, quando e como)</li><li>Respostas no Reclame Aqui com solução oferecida</li></ul>
+          </div>
+          <div><p class="lbl">KPIs</p>
+            <ul class="lst"><li>% de negativas respondidas</li><li>Tempo médio de resposta</li><li>Denúncias aceitas pelo Google</li></ul>
+          </div>
+          <div class="warn"><p>⚠️ <b>Cuidado no Brasil:</b> resposta agressiva ou que expõe dados do cliente pode virar processo (danos morais, LGPD). Avaliação comprada ou "trocada por desconto" pode derrubar o perfil inteiro.</p></div>
+        </div>
+      </li>
+
+      <!-- FASE 2 -->
+      <li class="fase p2">
+        <div class="dot">2</div>
+        <div class="card">
+          <div class="fhead">
+            <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+              <rect x="4" y="4" width="48" height="48" rx="12" fill="var(--c2-soft)"/>
+              <path d="M12 44V12M12 44h34" stroke="var(--line)" stroke-width="2.5" stroke-linecap="round"/>
+              <rect x="17" y="32" width="6" height="10" rx="1.5" fill="var(--c2)"/>
+              <rect x="27" y="26" width="6" height="16" rx="1.5" fill="var(--c2)"/>
+              <rect x="37" y="18" width="6" height="24" rx="1.5" fill="var(--c2)"/>
+              <path d="M16 28l10-6 10 2 10-10" fill="none" stroke="var(--c3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div><h3>Acompanhamento e gestão dos resultados</h3><span class="prazo">Meses 2–6 (mensal)</span></div>
+          </div>
+          <p class="obj">Medir todo mês se a nota está voltando e se as respostas continuam rápidas.</p>
+          <div>
+            <p class="lbl">Skills necessárias</p>
+            <ul class="skills">
+              <li class="skill"><div class="top"><code>local-reporting</code><span class="sel free">✅ grátis</span></div><p>Monta o relatório mensal com nota, volume e tempo de resposta.</p></li>
+              <li class="skill"><div class="top"><code>localseodata-tool</code><span class="sel cred">🪙 créditos</span></div><p>Atualiza a velocidade e o sentimento das avaliações a cada mês.</p></li>
+              <li class="skill"><div class="top"><code>brightlocal-tool</code><span class="sel paid">💳 paga</span><span class="opt">alternativa</span></div><p>Painel de monitoramento de avaliações em várias plataformas.</p></li>
+              <li class="skill"><div class="top"><code>brief</code><span class="sel free">✅ grátis</span></div><p>Guarda cada relatório e anota o que mudou e por quê.</p></li>
+            </ul>
+          </div>
+          <div><p class="lbl">Entregáveis</p>
+            <ul class="lst"><li>Relatório mensal simples para o dono</li><li>Alerta de nova avaliação negativa</li><li>Histórico no brief</li></ul>
+          </div>
+          <div><p class="lbl">KPIs</p>
+            <ul class="lst"><li>Nota média no Google (meta: voltar acima de 4,5)</li><li>Avaliações novas por mês</li><li>Tempo de resposta (meta: até 48 h)</li><li>% de reclamações resolvidas no Reclame Aqui</li></ul>
+          </div>
+          <div class="warn"><p>⚠️ <b>Cuidado no Brasil:</b> acompanhe o índice do Reclame Aqui junto com o Google. Nota boa no perfil não apaga reclamação sem resposta lá.</p></div>
+        </div>
+      </li>
+
+      <!-- FASE 3 -->
+      <li class="fase p3">
+        <div class="dot">3</div>
+        <div class="card">
+          <div class="fhead">
+            <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+              <rect x="4" y="4" width="48" height="48" rx="12" fill="var(--c3-soft)"/>
+              <path d="M28 12a11 11 0 0 1 6.5 19.9c-1.3 1-2 2.3-2 3.8V37h-9v-1.3c0-1.5-.7-2.8-2-3.8A11 11 0 0 1 28 12z" fill="var(--paper)" stroke="var(--c3)" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M23.5 42h9M25 46h6" stroke="var(--c3)" stroke-width="3" stroke-linecap="round"/>
+              <path d="M28 6v2M12 16l2 1.5M44 16l-2 1.5" stroke="var(--c3)" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <div><h3>Proposição de melhorias</h3><span class="prazo">A cada trimestre (mês 4 em diante)</span></div>
+          </div>
+          <p class="obj">Usar o que os clientes dizem para corrigir a causa e prevenir a próxima crise.</p>
+          <div>
+            <p class="lbl">Skills necessárias</p>
+            <ul class="skills">
+              <li class="skill"><div class="top"><code>review-management</code><span class="sel free">✅ grátis</span></div><p>Revisa respostas-modelo e o fluxo de pedidos a partir das críticas que se repetem.</p></li>
+              <li class="skill"><div class="top"><code>local-competitor-analysis</code><span class="sel cred">🪙 créditos</span></div><p>Mede de novo a distância para os concorrentes e aponta onde dá para passar na frente.</p></li>
+              <li class="skill"><div class="top"><code>client-deliverables</code><span class="sel free">✅ grátis</span></div><p>Monta a recomendação de 90 dias e o estudo de caso da recuperação.</p></li>
+            </ul>
+          </div>
+          <div><p class="lbl">Entregáveis</p>
+            <ul class="lst"><li>Lista das críticas recorrentes e da causa de cada uma</li><li>Plano de 90 dias com 2 ou 3 prioridades</li><li>Manual de resposta para a equipe</li></ul>
+          </div>
+          <div><p class="lbl">KPIs</p>
+            <ul class="lst"><li>Queda das críticas sobre o mesmo tema</li><li>Nota em relação à média dos concorrentes</li></ul>
+          </div>
+          <div class="warn"><p>⚠️ <b>Cuidado no Brasil:</b> o problema só some quando a operação muda. Leve as críticas ao dono e à equipe, não apenas ao marketing.</p></div>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <footer>
+    <div class="card">
+      <h2>➕ Fases extras incluídas e por quê</h2>
+      <p><b>0 · Diagnóstico e triagem.</b> Numa crise, responder antes de classificar é arriscado: uma resposta a uma avaliação falsa pode parecer confissão, e uma legítima ignorada piora tudo. Por isso a triagem vem antes da Implementação. Nenhuma outra fase extra foi necessária.</p>
+    </div>
+    <div class="card">
+      <h2>🏷️ Legenda dos selos</h2>
+      <ul>
+        <li><span class="sel free">✅ grátis</span> não exige pagamento</li>
+        <li><span class="sel cred">🪙 créditos</span> consome créditos (LocalSEOData)</li>
+        <li><span class="sel paid">💳 ferramenta paga</span> precisa de assinatura</li>
+        <li><span class="sel acct">🔑 conta/acesso</span> precisa de login ou permissão</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>🧭 Lembrete</h2>
+      <p><code>brief</code> guarda o histórico de cada cliente, para retomar sem recomeçar. <code>dispatch</code> escolhe quais skills carregar para cada pedido.</p>
+    </div>
+  </footer>
+</div>
