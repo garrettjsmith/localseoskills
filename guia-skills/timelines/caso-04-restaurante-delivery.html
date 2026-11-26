@@ -1,0 +1,296 @@
+<meta charset="utf-8">
+<title>Caso 4 · Restaurante, lanchonete ou delivery</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --bg:#f6f8f7; --grid:rgba(30,60,50,.07); --card:#ffffff; --ink:#1d2421; --muted:#55615b;
+    --line:#d9e0dc; --shadow:0 2px 10px rgba(20,40,30,.08);
+    --p0:#7a5af8; --p1:#1f5da3; --p2:#2e7d3c; --p3:#c2410c;
+    --free-bg:#e3f4e6; --free-ink:#1f6b2e;
+    --cred-bg:#fff3d1; --cred-ink:#8a5a00;
+    --paid-bg:#fde4e1; --paid-ink:#a3271b;
+    --key-bg:#e6eefb; --key-ink:#1f4f8f;
+    --warn-bg:#fff6e5; --warn-line:#f0b44c;
+    --code-bg:#eef2f0;
+    --hand:"Marker Felt","Chalkboard SE","Segoe Print","Bradley Hand",cursive;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#141917; --grid:rgba(200,230,215,.06); --card:#1f2623; --ink:#e8eeea; --muted:#a8b5ae;
+      --line:#34403a; --shadow:0 2px 12px rgba(0,0,0,.45);
+      --p0:#a48bff; --p1:#6aa5e8; --p2:#6cc47b; --p3:#f08a52;
+      --free-bg:#1e3a25; --free-ink:#9fe0ad;
+      --cred-bg:#3d3214; --cred-ink:#f5d27a;
+      --paid-bg:#45201c; --paid-ink:#ffb0a6;
+      --key-bg:#1c2c45; --key-ink:#a9c8f5;
+      --warn-bg:#33291a; --warn-line:#c98f2e;
+      --code-bg:#2a332f;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background-color:var(--bg);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:28px 28px;color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:1280px;margin:0 auto;padding:20px 16px 48px}
+  a{color:var(--p1)}
+  .back{display:inline-block;margin-bottom:14px;text-decoration:none;font-weight:600}
+  h1,h2,h3{font-family:var(--hand);font-weight:normal;margin:0}
+  h1{font-size:2.1rem;line-height:1.2}
+  h2{font-size:1.6rem;margin:28px 0 12px}
+  h3{font-size:1.35rem}
+  code{background:var(--code-bg);padding:1px 6px;border-radius:5px;font-size:.88em;font-family:ui-monospace,Menlo,Consolas,monospace}
+  .card{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:18px}
+  header.card{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+  header .txt{flex:1 1 380px}
+  header p{margin:6px 0}
+  .tag{font-family:var(--hand);color:var(--p3);font-size:1.1rem}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .chip{border:1.5px dashed var(--line);border-radius:999px;padding:3px 12px;font-size:.9rem;background:var(--card)}
+
+  /* timeline */
+  .timeline{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-top:8px}
+  .timeline::before{content:"";position:absolute;left:12%;right:12%;top:27px;height:8px;border-radius:8px;
+    background:linear-gradient(90deg,var(--p0),var(--p1),var(--p2),var(--p3))}
+  .phase{position:relative;display:flex;flex-direction:column;align-items:stretch}
+  .dot{position:relative;z-index:1;align-self:center;width:62px;height:62px;border-radius:50%;
+    background:var(--c);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-family:var(--hand);font-size:1.7rem;border:5px solid var(--bg);box-shadow:var(--shadow)}
+  @media (prefers-color-scheme: dark){ .dot{color:#141917} }
+  .phase .card{margin-top:12px;border-top:6px solid var(--c);flex:1}
+  .ph-head{display:flex;gap:10px;align-items:center}
+  .ph-head svg{flex:0 0 56px;width:56px;height:56px}
+  .ph-head h3{color:var(--c)}
+  .when{display:inline-block;font-size:.82rem;font-weight:700;color:var(--c);border:1.5px solid var(--c);border-radius:999px;padding:0 9px;margin-top:2px}
+  .goal{margin:10px 0 6px;font-style:italic;color:var(--muted)}
+  .lbl{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--muted);margin:14px 0 6px}
+  .skill{border:1px solid var(--line);border-left:4px solid var(--c);border-radius:10px;padding:8px 10px;margin-bottom:8px}
+  .skill .top{display:flex;flex-wrap:wrap;gap:5px;align-items:center;justify-content:space-between}
+  .skill p{margin:4px 0 0;font-size:.9rem}
+  .badges{display:flex;gap:4px;flex-wrap:wrap}
+  .b{font-size:.74rem;border-radius:999px;padding:1px 8px;white-space:nowrap;font-weight:600}
+  .free{background:var(--free-bg);color:var(--free-ink)}
+  .cred{background:var(--cred-bg);color:var(--cred-ink)}
+  .paid{background:var(--paid-bg);color:var(--paid-ink)}
+  .key{background:var(--key-bg);color:var(--key-ink)}
+  ul{margin:0;padding-left:20px;font-size:.92rem}
+  li{margin:2px 0}
+  .warn{background:var(--warn-bg);border-left:4px solid var(--warn-line);border-radius:8px;padding:8px 10px;font-size:.9rem;margin-top:14px}
+
+  /* marcos */
+  .milestones{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 10px}
+  .ms{flex:1 0 150px;background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:10px 12px;border-bottom:4px solid var(--c)}
+  .ms .w{font-size:.78rem;font-weight:700;color:var(--c)}
+  .ms .t{font-family:var(--hand);font-size:1.1rem;line-height:1.25}
+
+  footer .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  footer p{margin:6px 0;font-size:.94rem}
+  .legend{display:flex;flex-direction:column;gap:6px}
+
+  @media (max-width:899px){
+    h1{font-size:1.7rem}
+    .timeline{grid-template-columns:1fr;gap:22px;padding-left:44px}
+    .timeline::before{left:15px;right:auto;top:10px;bottom:10px;width:8px;height:auto;
+      background:linear-gradient(180deg,var(--p0),var(--p1),var(--p2),var(--p3))}
+    .dot{position:absolute;left:-58px;top:0;width:46px;height:46px;font-size:1.3rem;border-width:4px}
+    .phase .card{margin-top:0}
+  }
+</style>
+
+<div class="wrap">
+  <a class="back" href="index.html">← Todos os casos</a>
+
+  <header class="card">
+    <svg width="120" height="100" viewBox="0 0 120 100" aria-hidden="true">
+      <ellipse cx="60" cy="88" rx="48" ry="7" fill="#000" opacity=".08"/>
+      <path d="M14 62 L60 14 L106 62 Z" fill="#f2b84b" stroke="#c2410c" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M14 62 Q60 78 106 62" fill="none" stroke="#c2410c" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="50" cy="44" r="6" fill="#d9381e"/><circle cx="70" cy="50" r="6" fill="#d9381e"/><circle cx="60" cy="32" r="5" fill="#d9381e"/>
+      <circle cx="42" cy="56" r="3" fill="#2e7d3c"/><circle cx="80" cy="58" r="3" fill="#2e7d3c"/>
+      <path d="M92 10 c-8 0 -14 6 -14 14 c0 10 14 22 14 22 s14 -12 14 -22 c0 -8 -6 -14 -14 -14z" fill="#1f5da3"/>
+      <circle cx="92" cy="24" r="5" fill="#fff"/>
+    </svg>
+    <div class="txt">
+      <div class="tag">Caso 4</div>
+      <h1>Restaurante, lanchonete ou delivery</h1>
+      <p><strong>Situação:</strong> um negócio de comida que vive do "perto de mim", da nota no Google e da disputa com os apps de entrega.</p>
+      <p><strong>Objetivo:</strong> aparecer na hora da fome, ter nota alta e depender menos do iFood, com mais pedidos diretos.</p>
+      <div class="chips">
+        <span class="chip">🍕 Pizzaria</span><span class="chip">🍔 Hamburgueria</span><span class="chip">🍧 Açaí</span>
+        <span class="chip">🍽️ Restaurante por quilo</span><span class="chip">☕ Cafeteria</span>
+      </div>
+    </div>
+  </header>
+
+  <h2>Linha do tempo do trabalho</h2>
+  <div class="timeline">
+
+    <!-- FASE 0 -->
+    <section class="phase" style="--c:var(--p0)">
+      <div class="dot">0</div>
+      <div class="card">
+        <div class="ph-head">
+          <svg viewBox="0 0 56 56" aria-hidden="true">
+            <rect x="8" y="6" width="30" height="40" rx="4" fill="none" stroke="var(--c)" stroke-width="3"/>
+            <path d="M14 16h18M14 23h18M14 30h10" stroke="var(--c)" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="38" cy="36" r="9" fill="var(--card)" stroke="var(--c)" stroke-width="3"/>
+            <path d="M45 43l7 7" stroke="var(--c)" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+          <div><h3>Diagnóstico inicial</h3><span class="when">Semana 1</span></div>
+        </div>
+        <p class="goal">Registrar como a casa está hoje e contra quem ela disputa a fome do bairro.</p>
+
+        <div class="lbl">Skills necessárias</div>
+        <div class="skill"><div class="top"><code>brief</code><span class="badges"><span class="b free">✅ grátis</span><span class="b cred">🪙 créditos</span></span></div>
+          <p>Anota cardápio, horários (salão e delivery), link de pedido próprio e apps em que a casa está.</p></div>
+        <div class="skill"><div class="top"><code>local-competitor-analysis</code><span class="badges"><span class="b cred">🪙 créditos</span></span></div>
+          <p>Compara com as 5 casas acima no mapa: nota, nº de avaliações, fotos e categorias.</p></div>
+        <div class="skill"><div class="top"><code>geogrid-analysis</code><span class="badges"><span class="b cred">🪙 créditos</span></span></div>
+          <p>Mede onde a casa aparece no mapa para "pizzaria perto de mim" (ponto de partida).</p></div>
+        <div class="skill"><div class="top"><code>ai-local-search</code><span class="badges"><span class="b free">✅ grátis</span><span class="b cred">🪙 créditos</span></span></div>
+          <p>Tira o retrato: o ChatGPT/Gemini indica a casa em "melhor hambúrguer do bairro X"?</p></div>
+
+        <div class="lbl">Entregáveis</div>
+        <ul><li>Brief da casa preenchido</li><li>Quadro comparativo com 5 concorrentes</li><li>Mapa de ranking inicial e retrato nas IAs</li></ul>
+        <div class="lbl">Indicadores (ponto zero)</div>
+        <ul><li>Nota média e total de avaliações</li><li>Posição média no mapa (ARP)</li><li>Nº de respostas de IA que citam a casa</li></ul>
+      </div>
+    </section>
+
+    <!-- FASE 1 -->
+    <section class="phase" style="--c:var(--p1)">
+      <div class="dot">1</div>
+      <div class="card">
+        <div class="ph-head">
+          <svg viewBox="0 0 56 56" aria-hidden="true">
+            <rect x="10" y="8" width="36" height="42" rx="4" fill="none" stroke="var(--c)" stroke-width="3"/>
+            <path d="M16 18h12M16 26h20M16 34h16" stroke="var(--c)" stroke-width="3" stroke-linecap="round"/>
+            <path d="M33 41l4 4 8-9" fill="none" stroke="var(--c)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 4v8M34 4v8" stroke="var(--c)" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <div><h3>Implementação</h3><span class="when">Semanas 2–6</span></div>
+        </div>
+        <p class="goal">Deixar o perfil completo, com cardápio, botões de pedido e uma máquina de avaliações rodando.</p>
+
+        <div class="lbl">Skills necessárias</div>
+        <div class="skill"><div class="top"><code>gbp-optimization</code><span class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 acesso ao perfil</span></span></div>
+          <p>Categorias ("Pizzaria" + "Entrega de pizza"), cardápio, botões de pedido/reserva, atributos e fotos de pratos.</p></div>
+        <div class="skill"><div class="top"><code>review-management</code><span class="badges"><span class="b free">✅ grátis</span></span></div>
+          <p>QR Code na mesa, bilhete no pacote do delivery e modelos de resposta para atraso e comida fria.</p></div>
+        <div class="skill"><div class="top"><code>gbp-posts</code><span class="badges"><span class="b free">✅ grátis</span></span></div>
+          <p>Monta o calendário de 4 semanas: prato da semana, promoção de dia fraco, jogos e eventos.</p></div>
+        <div class="skill"><div class="top"><code>local-citations</code><span class="badges"><span class="b cred">🪙 créditos</span><span class="b paid">💳 opcional</span></span></div>
+          <p>Deixa nome, endereço e telefone idênticos em iFood, TripAdvisor, Instagram, Apple Mapas e Waze.</p></div>
+        <div class="skill"><div class="top"><code>apple-business-connect</code><span class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 Apple ID</span></span></div>
+          <p>Reivindica a casa no Apple Mapas, com horários, fotos e botão "Pedir comida".</p></div>
+
+        <div class="lbl">Entregáveis</div>
+        <ul><li>Perfil do Google completo com cardápio</li><li>Kit de avaliações (QR Code, bilhete, respostas-modelo)</li><li>Calendário de posts do 1º mês</li><li>Dados iguais no Google, apps e Apple Mapas</li></ul>
+        <div class="lbl">Indicadores</div>
+        <ul><li>Checklist do perfil 100% preenchido</li><li>Nº de citações corrigidas</li></ul>
+        <div class="warn">⚠️ <strong>Cuidado no Brasil:</strong> no iFood, o nome e o telefone precisam ser <strong>idênticos</strong> aos do Google. Cadastre já os <strong>horários especiais</strong> dos próximos feriados.</div>
+      </div>
+    </section>
+
+    <!-- FASE 2 -->
+    <section class="phase" style="--c:var(--p2)">
+      <div class="dot">2</div>
+      <div class="card">
+        <div class="ph-head">
+          <svg viewBox="0 0 56 56" aria-hidden="true">
+            <path d="M8 48h42" stroke="var(--c)" stroke-width="3" stroke-linecap="round"/>
+            <rect x="12" y="32" width="7" height="14" rx="2" fill="var(--c)" opacity=".55"/>
+            <rect x="24" y="24" width="7" height="22" rx="2" fill="var(--c)" opacity=".75"/>
+            <rect x="36" y="14" width="7" height="32" rx="2" fill="var(--c)"/>
+            <path d="M10 26 L22 16 L32 20 L46 6" fill="none" stroke="var(--c)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M40 6h6v6" fill="none" stroke="var(--c)" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <div><h3>Acompanhamento e gestão dos resultados</h3><span class="when">Mês 2 em diante · semanal e mensal</span></div>
+        </div>
+        <p class="goal">Manter o perfil vivo toda semana e provar, todo mês, que a casa está subindo.</p>
+
+        <div class="lbl">Skills necessárias</div>
+        <div class="skill"><div class="top"><code>review-management</code><span class="badges"><span class="b free">✅ grátis</span><span class="b cred">🪙 créditos</span></span></div>
+          <p>Responde toda avaliação em até 48 h e mede o ritmo de avaliações novas por mês.</p></div>
+        <div class="skill"><div class="top"><code>gbp-posts</code><span class="badges"><span class="b free">✅ grátis</span></span></div>
+          <p>Mantém 2 a 3 posts por semana, com fotos reais dos pratos.</p></div>
+        <div class="skill"><div class="top"><code>geogrid-analysis</code><span class="badges"><span class="b cred">🪙 créditos</span></span></div>
+          <p>Refaz o mapa de ranking e mostra em que ruas a casa ganhou ou perdeu espaço.</p></div>
+        <div class="skill"><div class="top"><code>local-reporting</code><span class="badges"><span class="b free">✅ grátis</span><span class="b cred">🪙 créditos</span><span class="b key">🔑 acesso ao GBP</span></span></div>
+          <p>Monta o relatório mensal para o dono: ligações, rotas, cliques em "Pedir" e nota.</p></div>
+        <div class="skill"><div class="top"><code>brief</code><span class="badges"><span class="b free">✅ grátis</span></span></div>
+          <p>Guarda o histórico de cada mês para explicar quedas e altas depois.</p></div>
+
+        <div class="lbl">Entregáveis</div>
+        <ul><li>Relatório mensal simples</li><li>Mapa de ranking comparado ao ponto zero</li><li>Avaliações respondidas e registro de críticas recorrentes</li></ul>
+        <div class="lbl">Indicadores</div>
+        <ul><li>Avaliações novas por mês e nota média</li><li>Cliques em "Pedir online", ligações e rotas</li><li>Posição média e % do mapa dominado (SoLV)</li><li>% de avaliações respondidas</li></ul>
+        <div class="warn">⚠️ <strong>Cuidado no Brasil:</strong> horário errado no feriado é o motivo nº 1 de avaliação 1 estrela. Revise os horários especiais antes de Carnaval, Páscoa, Natal e Ano-Novo.</div>
+      </div>
+    </section>
+
+    <!-- FASE 3 -->
+    <section class="phase" style="--c:var(--p3)">
+      <div class="dot">3</div>
+      <div class="card">
+        <div class="ph-head">
+          <svg viewBox="0 0 56 56" aria-hidden="true">
+            <path d="M28 6a14 14 0 0 0-8 25c2 2 3 4 3 7h10c0-3 1-5 3-7A14 14 0 0 0 28 6z" fill="none" stroke="var(--c)" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M23 43h10M24 49h8" stroke="var(--c)" stroke-width="3" stroke-linecap="round"/>
+            <path d="M28 14v10M23 19h10" stroke="var(--c)" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <div><h3>Proposição de melhorias</h3><span class="when">A cada trimestre</span></div>
+        </div>
+        <p class="goal">Usar os números para decidir o próximo passo e ganhar espaço das casas que ainda estão à frente.</p>
+
+        <div class="lbl">Skills necessárias</div>
+        <div class="skill"><div class="top"><code>local-competitor-analysis</code><span class="badges"><span class="b cred">🪙 créditos</span></span></div>
+          <p>Refaz a comparação e mostra onde ainda falta: fotos, avaliações, categorias ou spam a denunciar.</p></div>
+        <div class="skill"><div class="top"><code>ai-local-search</code><span class="badges"><span class="b free">✅ grátis</span><span class="b cred">🪙 créditos</span></span></div>
+          <p>Propõe ações para a casa ser recomendada pelas IAs e mede de novo as respostas.</p></div>
+        <div class="skill"><div class="top"><code>local-schema</code><span class="badges"><span class="b free">✅ grátis</span></span></div>
+          <p>Se há site com pedido próprio, coloca os dados estruturados com horários e link do cardápio.</p></div>
+        <div class="skill"><div class="top"><code>gbp-optimization</code><span class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 acesso ao perfil</span></span></div>
+          <p>Ajusta categorias, atributos e cardápio conforme o que funcionou e o que mudou.</p></div>
+
+        <div class="lbl">Entregáveis</div>
+        <ul><li>Lista de melhorias priorizada para o próximo trimestre</li><li>Novo retrato da presença nas IAs</li><li>Plano para levar mais pedidos ao canal próprio</li></ul>
+        <div class="lbl">Indicadores</div>
+        <ul><li>Distância para o 1º colocado em nota e avaliações</li><li>% de respostas de IA que citam a casa</li><li>Parte dos pedidos feita fora do iFood</li></ul>
+      </div>
+    </section>
+  </div>
+
+  <h2>Marcos pelo caminho</h2>
+  <div class="milestones">
+    <div class="ms" style="--c:var(--p0)"><div class="w">Semana 1</div><div class="t">Brief e ponto zero registrados</div></div>
+    <div class="ms" style="--c:var(--p1)"><div class="w">Semana 3</div><div class="t">Cardápio e botão de pedido no perfil</div></div>
+    <div class="ms" style="--c:var(--p1)"><div class="w">Semana 4</div><div class="t">QR Code nas mesas e bilhete no delivery</div></div>
+    <div class="ms" style="--c:var(--p1)"><div class="w">Semana 6</div><div class="t">Dados iguais no Google, iFood e Apple Mapas</div></div>
+    <div class="ms" style="--c:var(--p2)"><div class="w">Mês 2</div><div class="t">1º relatório mensal</div></div>
+    <div class="ms" style="--c:var(--p2)"><div class="w">Mês 3</div><div class="t">+30 avaliações novas</div></div>
+    <div class="ms" style="--c:var(--p3)"><div class="w">Mês 3–4</div><div class="t">1ª revisão trimestral de melhorias</div></div>
+  </div>
+
+  <footer>
+    <h2>Notas finais</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Fases extras incluídas e por quê</h3>
+        <p><strong>0 · Diagnóstico inicial:</strong> o caso pede comparar a casa com as 5 concorrentes e fazer um retrato nas IAs. Sem esse ponto zero não dá para provar, depois, que a nota e a posição no mapa melhoraram.</p>
+        <p>Nenhuma outra fase extra foi necessária: a rotina semanal de posts e respostas já cabe no acompanhamento.</p>
+      </div>
+      <div class="card legend">
+        <h3>Legenda dos selos</h3>
+        <span><span class="b free">✅ grátis</span> sem custo, só estratégia e trabalho</span>
+        <span><span class="b cred">🪙 créditos</span> consome créditos da LocalSEOData</span>
+        <span><span class="b paid">💳 ferramenta paga</span> ex.: Whitespark ou BrightLocal para enviar listagens</span>
+        <span><span class="b key">🔑 conta/acesso</span> precisa de login no perfil ou em uma conta</span>
+      </div>
+      <div class="card">
+        <h3>Lembrete</h3>
+        <p><code>brief</code> guarda o histórico da casa, mês a mês, para retomar sem recomeçar.</p>
+        <p><code>dispatch</code> escolhe quais skills carregar juntas em cada pedido.</p>
+      </div>
+    </div>
+  </footer>
+</div>

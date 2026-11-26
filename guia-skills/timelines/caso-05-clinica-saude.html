@@ -1,0 +1,502 @@
+<meta charset="utf-8">
+<title>Caso 5 · Clínica de saúde</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #f6f8f7;
+    --grid: rgba(31, 93, 163, 0.07);
+    --card: #ffffff;
+    --ink: #1d2422;
+    --muted: #55605c;
+    --line: #d5dcd9;
+    --shadow: 0 2px 10px rgba(20, 40, 30, 0.08);
+    --pre: #7a5af8;
+    --impl: #1f5da3;
+    --acomp: #2e7d3c;
+    --melh: #c2410c;
+    --extra: #0e7490;
+    --free-bg: #e3f4e6; --free-fg: #1e5f2b;
+    --cred-bg: #fdf1d6; --cred-fg: #7a5200;
+    --paid-bg: #fde4e1; --paid-fg: #8f2417;
+    --key-bg:  #e6ecfb; --key-fg:  #24418f;
+    --warn-bg: #fff6e5; --warn-line: #e0a33a;
+    --hand: "Marker Felt", "Chalkboard SE", "Segoe Print", "Bradley Hand", cursive;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141917;
+      --grid: rgba(160, 200, 255, 0.06);
+      --card: #1e2523;
+      --ink: #e8eeeb;
+      --muted: #a9b5b0;
+      --line: #34403c;
+      --shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+      --pre: #a48dff;
+      --impl: #6fa8e8;
+      --acomp: #6cc47b;
+      --melh: #f08a55;
+      --extra: #4cc0d6;
+      --free-bg: #1f3a25; --free-fg: #9fe0ac;
+      --cred-bg: #3b3018; --cred-fg: #f3d28a;
+      --paid-bg: #42231f; --paid-fg: #f6b3a8;
+      --key-bg:  #1f2a46; --key-fg:  #b4c6f5;
+      --warn-bg: #352c1a; --warn-line: #c98f2e;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    color: var(--ink);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 20px 16px 48px; }
+  a { color: var(--impl); }
+  .back { display: inline-block; margin-bottom: 14px; text-decoration: none; font-weight: 600; }
+  .back:hover { text-decoration: underline; }
+  h1, h2, h3 { font-family: var(--hand); font-weight: normal; margin: 0; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.92em;
+    background: rgba(127, 127, 127, 0.14);
+    padding: 1px 6px; border-radius: 5px;
+  }
+
+  /* Cabeçalho */
+  header.hero {
+    background: var(--card); border-radius: 16px; box-shadow: var(--shadow);
+    padding: 22px 22px 18px; display: flex; gap: 20px; align-items: center;
+  }
+  .hero svg { flex: 0 0 auto; }
+  .kicker { color: var(--muted); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; font-weight: 600; }
+  header h1 { font-size: 34px; line-height: 1.15; margin: 2px 0 8px; }
+  header p { margin: 4px 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .chip { background: rgba(31, 93, 163, 0.10); color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 2px 11px; font-size: 13px; }
+
+  /* Linha do tempo */
+  .timeline { margin-top: 26px; }
+  .track { display: none; }
+  .phases { display: grid; gap: 18px; }
+  .phase {
+    --c: var(--impl);
+    background: var(--card); border-radius: 14px; box-shadow: var(--shadow);
+    border-top: 6px solid var(--c); padding: 16px 16px 14px; position: relative;
+  }
+  .phase.pre { --c: var(--pre); }
+  .phase.impl { --c: var(--impl); }
+  .phase.acomp { --c: var(--acomp); }
+  .phase.melh { --c: var(--melh); }
+  .ph-head { display: flex; gap: 12px; align-items: center; }
+  .ph-head svg { flex: 0 0 auto; }
+  .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 50%; background: var(--c); color: #fff;
+    font-weight: 700; font-size: 14px; margin-right: 6px; vertical-align: middle;
+  }
+  @media (prefers-color-scheme: dark) { .num, .dot { color: #10151a; } }
+  .phase h2 { font-size: 23px; color: var(--c); line-height: 1.2; }
+  .when { display: inline-block; margin-top: 3px; font-size: 13px; font-weight: 600; color: var(--muted); }
+  .goal { margin: 10px 0 12px; font-style: italic; }
+  .lbl { font-family: var(--hand); font-size: 17px; color: var(--c); margin: 14px 0 6px; }
+  .skills { display: grid; gap: 8px; }
+  .skill {
+    border: 1px solid var(--line); border-left: 4px solid var(--c);
+    border-radius: 10px; padding: 8px 10px; background: var(--card);
+  }
+  .skill .top { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+  .skill .top code { font-weight: 700; margin-right: auto; }
+  .skill p { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
+  .b { font-size: 12px; border-radius: 999px; padding: 1px 8px; white-space: nowrap; font-weight: 600; }
+  .b.free { background: var(--free-bg); color: var(--free-fg); }
+  .b.cred { background: var(--cred-bg); color: var(--cred-fg); }
+  .b.paid { background: var(--paid-bg); color: var(--paid-fg); }
+  .b.key  { background: var(--key-bg);  color: var(--key-fg); }
+  ul { margin: 0; padding-left: 20px; }
+  li { margin: 2px 0; font-size: 14px; }
+  .warn {
+    margin-top: 14px; background: var(--warn-bg); border-left: 4px solid var(--warn-line);
+    border-radius: 8px; padding: 8px 10px; font-size: 14px;
+  }
+  .warn strong { display: block; margin-bottom: 2px; }
+
+  /* Marcos */
+  .milestones {
+    margin-top: 26px; background: var(--card); border-radius: 14px; box-shadow: var(--shadow); padding: 16px;
+  }
+  .milestones h2 { font-size: 24px; margin-bottom: 10px; }
+  .ms-row { display: flex; flex-direction: column; gap: 10px; position: relative; padding-left: 22px; }
+  .ms-row::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 3px; background: var(--line); border-radius: 2px; }
+  .ms { position: relative; font-size: 14px; }
+  .ms::before {
+    content: "🚩"; position: absolute; left: -24px; top: -1px; font-size: 14px;
+  }
+  .ms b { color: var(--c, var(--ink)); }
+  .ms small { display: block; color: var(--muted); }
+
+  /* Rodapé */
+  footer { margin-top: 26px; display: grid; gap: 16px; }
+  footer section { background: var(--card); border-radius: 14px; box-shadow: var(--shadow); padding: 16px; }
+  footer h2 { font-size: 22px; margin-bottom: 8px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 14px; }
+
+  /* Desktop: linha horizontal */
+  @media (min-width: 900px) {
+    header h1 { font-size: 40px; }
+    .track {
+      display: grid; grid-template-columns: repeat(4, 1fr); position: relative;
+      margin: 0 0 14px; height: 54px; align-items: center;
+    }
+    .track::before {
+      content: ""; position: absolute; left: 12.5%; right: 12.5%; top: 50%; height: 8px;
+      transform: translateY(-50%); border-radius: 4px;
+      background: linear-gradient(90deg, var(--pre), var(--impl), var(--acomp), var(--melh));
+    }
+    .dot {
+      justify-self: center; position: relative; width: 48px; height: 48px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; color: #fff;
+      font: 700 20px/1 system-ui, sans-serif; border: 4px solid var(--bg);
+      box-shadow: var(--shadow);
+    }
+    .phases { grid-template-columns: repeat(4, 1fr); align-items: start; }
+    .phase .num { display: none; }
+    .ms-row { flex-direction: row; padding-left: 0; padding-top: 26px; justify-content: space-between; gap: 10px; }
+    .ms-row::before { left: 2%; right: 2%; top: 9px; bottom: auto; width: auto; height: 3px; }
+    .ms { flex: 1; text-align: center; }
+    .ms::before { left: 50%; top: -28px; transform: translateX(-50%); }
+    footer { grid-template-columns: 1.3fr 1fr 1fr; }
+  }
+
+  /* Celular: linha vertical à esquerda */
+  @media (max-width: 899px) {
+    header.hero { flex-direction: column; align-items: flex-start; }
+    .phases { position: relative; padding-left: 26px; }
+    .phases::before {
+      content: ""; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 6px; border-radius: 3px;
+      background: linear-gradient(180deg, var(--pre), var(--impl), var(--acomp), var(--melh));
+    }
+    .phase::before {
+      content: ""; position: absolute; left: -26px; top: 18px; width: 20px; height: 20px; border-radius: 50%;
+      background: var(--c); border: 3px solid var(--bg);
+    }
+  }
+</style>
+
+<div class="wrap">
+  <a class="back" href="index.html">← Todos os casos</a>
+
+  <header class="hero">
+    <svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true">
+      <rect x="10" y="22" width="76" height="62" rx="8" fill="none" stroke="#1f5da3" stroke-width="3"/>
+      <path d="M10 38 H86" stroke="#1f5da3" stroke-width="3"/>
+      <rect x="40" y="48" width="16" height="36" fill="none" stroke="#1f5da3" stroke-width="3"/>
+      <path d="M48 6 v16 M40 14 h16" stroke="#c2410c" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="24" cy="56" r="6" fill="none" stroke="#2e7d3c" stroke-width="3"/>
+      <circle cx="72" cy="56" r="6" fill="none" stroke="#2e7d3c" stroke-width="3"/>
+    </svg>
+    <div>
+      <div class="kicker">Caso 5 · Guia de casos de uso no Brasil</div>
+      <h1>Clínica ou consultório de saúde</h1>
+      <p><strong>Situação:</strong> profissional ou clínica da área da saúde que quer mais pacientes vindos do Google e do Maps.</p>
+      <p><strong>Objetivo:</strong> ser encontrado por especialidade e bairro, passar confiança pelas avaliações e respeitar as regras do conselho de classe.</p>
+      <div class="chips">
+        <span class="chip">🦷 Dentista</span><span class="chip">🩺 Médico</span><span class="chip">🦴 Fisioterapeuta</span>
+        <span class="chip">🧠 Psicólogo</span><span class="chip">🥗 Nutricionista</span><span class="chip">✨ Clínica de estética</span>
+        <span class="chip">🐾 Veterinário</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="timeline">
+    <div class="track" aria-hidden="true">
+      <div class="dot" style="background:var(--pre)">0</div>
+      <div class="dot" style="background:var(--impl)">1</div>
+      <div class="dot" style="background:var(--acomp)">2</div>
+      <div class="dot" style="background:var(--melh)">3</div>
+    </div>
+
+    <div class="phases">
+
+      <!-- FASE 0 -->
+      <article class="phase pre">
+        <div class="ph-head">
+          <svg width="54" height="54" viewBox="0 0 54 54" aria-hidden="true">
+            <rect x="9" y="6" width="28" height="38" rx="4" fill="none" stroke="#7a5af8" stroke-width="3"/>
+            <path d="M15 16 h16 M15 23 h16 M15 30 h10" stroke="#7a5af8" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="36" cy="36" r="9" fill="none" stroke="#7a5af8" stroke-width="3"/>
+            <path d="M42.5 42.5 L50 50" stroke="#7a5af8" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+          <div>
+            <h2><span class="num">0</span>Diagnóstico inicial</h2>
+            <span class="when">Semana 1</span>
+          </div>
+        </div>
+        <p class="goal">Registrar quem atende, o que atende e quais regras valem, e ver como a clínica aparece hoje antes de mexer em qualquer coisa.</p>
+
+        <div class="lbl">Skills necessárias</div>
+        <div class="skills">
+          <div class="skill">
+            <div class="top"><code>brief</code><span class="b free">✅ grátis</span><span class="b cred">🪙 créditos</span></div>
+            <p>Anota especialidades, profissionais com número de registro (CRM, CRO, CRP…), convênios e endereço. A auditoria inicial automática gasta créditos.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>local-seo-audit</code><span class="b cred">🪙 créditos</span></div>
+            <p>Mostra perfis duplicados ou antigos de profissionais, dados divergentes e o ponto de partida no mapa.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>local-competitor-analysis</code><span class="b cred">🪙 créditos</span></div>
+            <p>Compara com as clínicas da mesma especialidade que já aparecem no bairro.</p>
+          </div>
+        </div>
+
+        <div class="lbl">Entregáveis</div>
+        <ul>
+          <li>Ficha da clínica: profissionais, registros, especialidades e convênios</li>
+          <li>Lista de perfis e cadastros existentes (inclusive duplicados)</li>
+          <li>Retrato de como a clínica aparece hoje (posição e avaliações)</li>
+          <li>Resumo das regras de publicidade do conselho de cada profissional</li>
+        </ul>
+
+        <div class="lbl">Indicadores</div>
+        <ul>
+          <li>Posição atual nas buscas principais (linha de base)</li>
+          <li>Nota média e número de avaliações</li>
+        </ul>
+
+        <div class="warn"><strong>⚠️ Cuidado no Brasil</strong>Cada profissional segue o seu conselho (CFM, CFO, COFFITO, CFP, CFN, CFMV…). Uma clínica com várias áreas pode ter regras diferentes para cada pessoa.</div>
+      </article>
+
+      <!-- FASE 1 -->
+      <article class="phase impl">
+        <div class="ph-head">
+          <svg width="54" height="54" viewBox="0 0 54 54" aria-hidden="true">
+            <path d="M27 4 C17 4 10 11 10 20 C10 32 27 50 27 50 C27 50 44 32 44 20 C44 11 37 4 27 4 Z" fill="none" stroke="#1f5da3" stroke-width="3"/>
+            <path d="M27 12 v16 M19 20 h16" stroke="#1f5da3" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+          <div>
+            <h2><span class="num">1</span>Implementação</h2>
+            <span class="when">Semanas 2–8</span>
+          </div>
+        </div>
+        <p class="goal">Deixar perfis, palavras, páginas, avaliações e cadastros prontos para a clínica ser achada por especialidade e bairro.</p>
+
+        <div class="lbl">Skills necessárias</div>
+        <div class="skills">
+          <div class="skill">
+            <div class="top"><code>gbp-optimization</code><span class="b free">✅ grátis</span><span class="b key">🔑 conta</span></div>
+            <p>Monta o perfil da clínica e, quando cabe, perfis dos profissionais, com categorias e serviços ("Clareamento dental", "Implante").</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>local-keyword-research</code><span class="b cred">🪙 créditos</span></div>
+            <p>Levanta buscas como "dentista que aceita Amil em Moema" e "fisioterapia para coluna perto de mim".</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>local-content-strategy</code><span class="b free">✅ grátis</span></div>
+            <p>Planeja conteúdo educativo a partir das dúvidas reais dos pacientes.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>local-content-briefs</code><span class="b free">✅ grátis</span></div>
+            <p>Transforma cada tema em uma pauta clara para o site e para os posts.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>local-landing-pages</code><span class="b free">✅ grátis</span></div>
+            <p>Cria uma página por especialidade ou tratamento, sem páginas copiadas.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>local-schema</code><span class="b free">✅ grátis</span></div>
+            <p>Coloca nas páginas o código de "clínica médica" que o Google entende.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>review-management</code><span class="b cred">🪙 créditos</span><span class="b key">🔑 conta</span></div>
+            <p>Define como pedir avaliação de forma ética e modelos de resposta que não confirmam que a pessoa é paciente.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>local-citations</code><span class="b cred">🪙 créditos</span><span class="b paid">💳 opcional</span></div>
+            <p>Alinha nome, endereço e telefone na Doctoralia, BoaConsulta e sites de convênios.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>apple-business-connect</code><span class="b free">✅ grátis</span><span class="b key">🔑 Apple ID</span></div>
+            <p>Cadastra a clínica no Apple Mapas, usado por quem tem iPhone.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>bing-places</code><span class="b free">✅ grátis</span><span class="b key">🔑 conta Microsoft</span></div>
+            <p>Publica a clínica no Bing, importando os dados do perfil do Google.</p>
+          </div>
+        </div>
+
+        <div class="lbl">Entregáveis</div>
+        <ul>
+          <li>Perfis da clínica e dos profissionais organizados</li>
+          <li>Mapa de palavras por especialidade, convênio e bairro</li>
+          <li>Pauta de conteúdo educativo</li>
+          <li>Páginas de tratamento com o código correto</li>
+          <li>Protocolo de pedido e de resposta de avaliações</li>
+          <li>Cadastros alinhados em diretórios, Apple Mapas e Bing</li>
+        </ul>
+
+        <div class="lbl">Indicadores</div>
+        <ul>
+          <li>Perfis verificados e sem duplicados</li>
+          <li>Páginas de especialidade publicadas</li>
+          <li>Cadastros com dados iguais em todos os sites</li>
+        </ul>
+
+        <div class="warn"><strong>⚠️ Cuidado no Brasil</strong>Nada de promessa de resultado, preço como chamariz ou "antes e depois" fora das regras do conselho. Nas respostas, nunca cite diagnóstico, tratamento ou dados do paciente (sigilo e LGPD).</div>
+      </article>
+
+      <!-- FASE 2 -->
+      <article class="phase acomp">
+        <div class="ph-head">
+          <svg width="54" height="54" viewBox="0 0 54 54" aria-hidden="true">
+            <rect x="5" y="8" width="44" height="38" rx="5" fill="none" stroke="#2e7d3c" stroke-width="3"/>
+            <path d="M10 30 h8 l4 -10 l6 18 l5 -12 h11" fill="none" stroke="#2e7d3c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>
+            <h2><span class="num">2</span>Acompanhamento e gestão dos resultados</h2>
+            <span class="when">Mês 3 em diante · todo mês</span>
+          </div>
+        </div>
+        <p class="goal">Medir se os pacientes estão achando e escolhendo a clínica, e manter perfil e avaliações vivos.</p>
+
+        <div class="lbl">Skills necessárias</div>
+        <div class="skills">
+          <div class="skill">
+            <div class="top"><code>local-reporting</code><span class="b cred">🪙 créditos</span></div>
+            <p>Monta o relatório mensal em linguagem simples: posições, ligações, agendamentos e avaliações.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>geogrid-analysis</code><span class="b cred">🪙 créditos</span></div>
+            <p>Mostra em um mapa de quadrados em quais bairros a clínica aparece para cada especialidade.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>google-search-console-tool</code><span class="b key">🔑 acesso</span></div>
+            <p>Mostra quais buscas levam às páginas de tratamento e quais estão quase no topo.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>google-analytics-tool</code><span class="b key">🔑 acesso</span></div>
+            <p>Conta quantos visitantes viram contato: WhatsApp, ligação ou agendamento.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>review-management</code><span class="b cred">🪙 créditos</span><span class="b key">🔑 conta</span></div>
+            <p>Acompanha o ritmo de avaliações novas e responde todas dentro do protocolo de sigilo.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>gbp-posts</code><span class="b free">✅ grátis</span><span class="b key">🔑 conta</span></div>
+            <p>Publica no perfil os temas educativos da pauta, em calendário semanal.</p>
+          </div>
+        </div>
+
+        <div class="lbl">Entregáveis</div>
+        <ul>
+          <li>Relatório mensal comparado com a linha de base</li>
+          <li>Mapa de bairros por especialidade (a cada 1–3 meses)</li>
+          <li>Avaliações respondidas e calendário de posts em dia</li>
+        </ul>
+
+        <div class="lbl">Indicadores</div>
+        <ul>
+          <li>Posição no mapa por especialidade e bairro</li>
+          <li>Ligações, cliques em rotas e agendamentos vindos do perfil</li>
+          <li>Avaliações novas por mês, nota média e tempo de resposta</li>
+          <li>Visitas e contatos nas páginas de tratamento</li>
+        </ul>
+
+        <div class="warn"><strong>⚠️ Cuidado no Brasil</strong>Avaliação negativa se responde com calma e convite para conversar em particular. Nunca confirme que a pessoa foi atendida nem discuta o caso em público.</div>
+      </article>
+
+      <!-- FASE 3 -->
+      <article class="phase melh">
+        <div class="ph-head">
+          <svg width="54" height="54" viewBox="0 0 54 54" aria-hidden="true">
+            <path d="M27 6 a14 14 0 0 1 8 25 v6 h-16 v-6 a14 14 0 0 1 8 -25 Z" fill="none" stroke="#c2410c" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M20 42 h14 M22 48 h10" stroke="#c2410c" stroke-width="3" stroke-linecap="round"/>
+            <path d="M4 20 h5 M45 20 h5 M10 6 l4 4 M44 6 l-4 4" stroke="#c2410c" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <div>
+            <h2><span class="num">3</span>Proposição de melhorias</h2>
+            <span class="when">A cada trimestre</span>
+          </div>
+        </div>
+        <p class="goal">Usar os números para decidir o próximo passo: nova especialidade, novo conteúdo, presença em IA ou anúncio.</p>
+
+        <div class="lbl">Skills necessárias</div>
+        <div class="skills">
+          <div class="skill">
+            <div class="top"><code>local-competitor-analysis</code><span class="b cred">🪙 créditos</span></div>
+            <p>Mostra o que as clínicas à frente têm a mais (avaliações, categorias, páginas).</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>local-content-briefs</code><span class="b free">✅ grátis</span></div>
+            <p>Gera pautas novas para as buscas que quase chegaram ao topo.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>local-landing-pages</code><span class="b free">✅ grátis</span></div>
+            <p>Cria páginas para tratamentos ou convênios ainda sem página própria.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>ai-local-search</code><span class="b free">✅ grátis</span><span class="b paid">💳 medição opcional</span></div>
+            <p>Ajusta perfil e páginas para a clínica ser citada por ChatGPT, Gemini e outras IAs.</p>
+          </div>
+          <div class="skill">
+            <div class="top"><code>local-search-ads</code><span class="b key">🔑 conta Google Ads</span><span class="b paid">💳 verba de anúncio</span></div>
+            <p>Avalia anúncios no mapa onde o orgânico não alcança e avisa os temas de saúde com restrição.</p>
+          </div>
+        </div>
+
+        <div class="lbl">Entregáveis</div>
+        <ul>
+          <li>Lista curta de melhorias, em ordem de impacto</li>
+          <li>Novas pautas e páginas para o próximo trimestre</li>
+          <li>Recomendação de anúncio, se fizer sentido</li>
+        </ul>
+
+        <div class="lbl">Indicadores</div>
+        <ul>
+          <li>Distância para o 1º colocado em avaliações e posição</li>
+          <li>Buscas entre a 4ª e a 15ª posição (as mais fáceis de subir)</li>
+          <li>Citações da clínica em respostas de IA</li>
+        </ul>
+
+        <div class="warn"><strong>⚠️ Cuidado no Brasil</strong>O Google Ads restringe alguns temas de saúde, e o anúncio também precisa seguir o código do conselho. Revise o texto com o responsável técnico da clínica.</div>
+      </article>
+
+    </div>
+  </div>
+
+  <section class="milestones">
+    <h2>🚩 Marcos no caminho</h2>
+    <div class="ms-row">
+      <div class="ms" style="--c:var(--pre)"><b>Ficha completa</b><small>Semana 1 · profissionais e registros anotados</small></div>
+      <div class="ms" style="--c:var(--impl)"><b>Perfis verificados</b><small>Semana 3 · clínica e profissionais, sem duplicados</small></div>
+      <div class="ms" style="--c:var(--impl)"><b>Páginas no ar</b><small>Semana 6 · uma por especialidade</small></div>
+      <div class="ms" style="--c:var(--impl)"><b>Cadastros alinhados</b><small>Semana 8 · Doctoralia, convênios, Apple, Bing</small></div>
+      <div class="ms" style="--c:var(--acomp)"><b>1º relatório</b><small>Mês 3 · comparado com a linha de base</small></div>
+      <div class="ms" style="--c:var(--acomp)"><b>20 avaliações novas</b><small>Mês 4 · todas respondidas</small></div>
+      <div class="ms" style="--c:var(--melh)"><b>1º plano de melhorias</b><small>Mês 6 · revisão trimestral</small></div>
+    </div>
+  </section>
+
+  <footer>
+    <section>
+      <h2>Fases extras incluídas e por quê</h2>
+      <p><strong>0 · Diagnóstico inicial.</strong> Clínicas costumam ter perfis antigos ou duplicados de profissionais e cadastros desencontrados em Doctoralia e convênios. Também é preciso saber o registro e o conselho de cada profissional antes de publicar qualquer coisa. Sem esse retrato, não dá para medir o resultado depois.</p>
+    </section>
+    <section>
+      <h2>Legenda dos selos</h2>
+      <div class="legend">
+        <span class="b free">✅ grátis</span>
+        <span class="b cred">🪙 créditos</span>
+        <span class="b paid">💳 ferramenta paga</span>
+        <span class="b key">🔑 precisa de conta/acesso</span>
+      </div>
+    </section>
+    <section>
+      <h2>Lembrete</h2>
+      <p><code>brief</code> guarda o histórico de tudo o que foi feito na clínica. <code>dispatch</code> escolhe quais skills usar em cada pedido.</p>
+    </section>
+  </footer>
+</div>

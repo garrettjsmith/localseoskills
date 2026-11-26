@@ -1,0 +1,321 @@
+<meta charset="utf-8">
+<title>Caso 1 · Greenfield</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --bg:#f6f8f7; --grid:rgba(30,60,50,.07); --card:#ffffff; --ink:#1d2622; --muted:#55615c;
+    --line:#d5ddd9; --shadow:0 2px 10px rgba(20,40,30,.08);
+    --diag:#7a5af8; --impl:#1f5da3; --acomp:#2e7d3c; --melh:#c2410c; --extra:#0e7490;
+    --free-bg:#e3f5e6; --free-ink:#1f6b2c;
+    --cred-bg:#fff3cd; --cred-ink:#7a5a00;
+    --paid-bg:#fde2e1; --paid-ink:#9b1c1c;
+    --key-bg:#e4ecfb; --key-ink:#1f4b8f;
+    --warn-bg:#fff7ed; --warn-line:#fdba74;
+    --hand:"Marker Felt","Chalkboard SE","Segoe Print","Bradley Hand",cursive;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#141a18; --grid:rgba(200,230,215,.06); --card:#1e2623; --ink:#e8eeeb; --muted:#a8b5af;
+      --line:#34413c; --shadow:0 2px 12px rgba(0,0,0,.4);
+      --diag:#a48bff; --impl:#6fa8ea; --acomp:#6cc47a; --melh:#f08a52; --extra:#4cc3d9;
+      --free-bg:#1d3a24; --free-ink:#9be3a8;
+      --cred-bg:#3a3014; --cred-ink:#f3d37a;
+      --paid-bg:#3d1f1f; --paid-ink:#f6a5a5;
+      --key-bg:#1b2b45; --key-ink:#a9c6f5;
+      --warn-bg:#33251a; --warn-line:#a3612a;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0}
+  .page{
+    min-height:100vh; color:var(--ink); font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background-color:var(--bg);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:24px 24px; padding:20px 16px 48px;
+  }
+  .wrap{max-width:1240px;margin:0 auto}
+  a.back{color:var(--impl);text-decoration:none;font-weight:600}
+  a.back:hover{text-decoration:underline}
+  h1,h2,h3{font-family:var(--hand);font-weight:normal;margin:0}
+  header.hero{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:22px 24px;margin:14px 0 26px;display:flex;gap:20px;align-items:center}
+  .hero svg{flex:0 0 auto}
+  .hero h1{font-size:2rem;line-height:1.2}
+  .hero .num{color:var(--impl)}
+  .hero p{margin:6px 0}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .chip{background:var(--bg);border:1.5px dashed var(--line);border-radius:999px;padding:3px 12px;font-size:.9rem}
+  code{font:600 .92em ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--bg);padding:1px 6px;border-radius:5px;border:1px solid var(--line)}
+  h2.sec{font-size:1.6rem;margin:30px 0 12px}
+
+  /* Timeline */
+  .timeline{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .timeline::before{content:"";position:absolute;top:30px;left:16.66%;right:16.66%;height:8px;border-radius:8px;
+    background:linear-gradient(90deg,var(--impl),var(--acomp),var(--melh))}
+  .phase{position:relative;display:flex;flex-direction:column;align-items:stretch}
+  .dot{position:relative;z-index:1;align-self:center;width:68px;height:68px;border-radius:50%;background:var(--card);
+    border:6px solid var(--c);color:var(--c);display:grid;place-items:center;font:2rem/1 var(--hand);box-shadow:var(--shadow)}
+  .when{align-self:center;margin:8px 0 10px;font-weight:700;color:var(--c);font-size:.95rem}
+  .card{background:var(--card);border-radius:14px;box-shadow:var(--shadow);border-top:6px solid var(--c);padding:18px;flex:1}
+  .card-head{display:flex;gap:12px;align-items:center;margin-bottom:6px}
+  .card-head h3{font-size:1.45rem;color:var(--c);line-height:1.15}
+  .goal{font-style:italic;color:var(--muted);margin:4px 0 12px}
+  .label{font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:16px 0 6px}
+  .skill{border:1.5px solid var(--line);border-left:5px solid var(--c);border-radius:10px;padding:9px 11px;margin-bottom:8px}
+  .skill p{margin:4px 0 6px;font-size:.93rem}
+  .badges{display:flex;flex-wrap:wrap;gap:5px}
+  .b{font-size:.78rem;border-radius:999px;padding:1px 9px;white-space:nowrap}
+  .free{background:var(--free-bg);color:var(--free-ink)}
+  .cred{background:var(--cred-bg);color:var(--cred-ink)}
+  .paid{background:var(--paid-bg);color:var(--paid-ink)}
+  .key{background:var(--key-bg);color:var(--key-ink)}
+  ul{margin:0;padding-left:20px}
+  li{margin:2px 0;font-size:.94rem}
+  .warn{background:var(--warn-bg);border:1.5px dashed var(--warn-line);border-radius:10px;padding:10px 12px;margin-top:14px;font-size:.93rem}
+  .warn strong{display:block;margin-bottom:4px}
+
+  /* Marcos */
+  .milestones{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:18px 18px 8px;position:relative}
+  .ms-track{display:flex;gap:0;overflow-x:auto;padding:8px 0 12px;position:relative}
+  .ms{flex:1 0 120px;text-align:center;position:relative;padding:0 6px}
+  .ms::before{content:"";position:absolute;top:13px;left:0;right:0;height:3px;background:var(--line)}
+  .ms:first-child::before{left:50%} .ms:last-child::before{right:50%}
+  .flag{position:relative;z-index:1;display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--card);border:4px solid var(--c);font-size:.9rem}
+  .ms b{display:block;font-size:.9rem;margin-top:6px}
+  .ms small{color:var(--muted);font-size:.8rem}
+
+  footer.foot{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:28px}
+  .foot section{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:16px 18px}
+  .foot h3{font-size:1.25rem;margin-bottom:8px}
+  .foot p{margin:6px 0;font-size:.94rem}
+  .legend{display:flex;flex-direction:column;gap:6px}
+
+  @media (max-width:899px){
+    header.hero{flex-direction:column;align-items:flex-start}
+    .hero h1{font-size:1.6rem}
+    .timeline{grid-template-columns:1fr;gap:26px;padding-left:44px}
+    .timeline::before{top:0;bottom:0;left:15px;right:auto;width:8px;height:auto;background:linear-gradient(180deg,var(--impl),var(--acomp),var(--melh))}
+    .dot{position:absolute;left:-58px;top:0;width:50px;height:50px;border-width:5px;font-size:1.5rem}
+    .when{align-self:flex-start;margin:10px 0 8px}
+    .ms-track{flex-direction:column;overflow:visible;padding-left:4px}
+    .ms{flex:none;text-align:left;display:grid;grid-template-columns:36px 1fr;column-gap:10px;padding:0 0 14px}
+    .ms::before{top:0;bottom:0;left:13px;right:auto;width:3px;height:auto}
+    .ms:first-child::before{left:13px;top:15px} .ms:last-child::before{right:auto;bottom:calc(100% - 15px)}
+    .ms b{margin-top:2px;grid-column:2} .ms small{grid-column:2}
+    .flag{grid-row:span 2}
+    footer.foot{grid-template-columns:1fr}
+  }
+</style>
+
+<div class="page"><div class="wrap">
+  <a class="back" href="index.html">← Todos os casos</a>
+
+  <header class="hero">
+    <svg width="110" height="110" viewBox="0 0 110 110" aria-hidden="true">
+      <rect x="8" y="14" width="94" height="72" rx="8" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="6 5"/>
+      <path d="M55 26c-11 0-19 8-19 18 0 14 19 32 19 32s19-18 19-32c0-10-8-18-19-18z" fill="none" stroke="var(--impl)" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="55" cy="44" r="6" fill="var(--impl)"/>
+      <path d="M78 74l6 6 12-14" fill="none" stroke="var(--acomp)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="16" y="102" font-family="Marker Felt,Chalkboard SE,cursive" font-size="13" fill="var(--muted)">do zero ao Maps</text>
+    </svg>
+    <div>
+      <h1><span class="num">Caso 1</span> · Greenfield: perfil novo no Google, sem site e sem redes sociais</h1>
+      <p><strong>Situação:</strong> o negócio acabou de abrir (ou nunca esteve na internet): não tem Perfil da Empresa no Google, site, Instagram nem avaliações. Pode ser MEI ou ter CNPJ.</p>
+      <p><strong>Objetivo:</strong> aparecer no Google Maps com um perfil completo e verificado, ganhar as primeiras avaliações e ter o mínimo de presença fora do Google.</p>
+      <div class="chips">
+        <span class="chip">🍱 Marmitaria caseira</span>
+        <span class="chip">💅 Manicure com espaço próprio</span>
+        <span class="chip">🛞 Borracharia de bairro</span>
+      </div>
+    </div>
+  </header>
+
+  <h2 class="sec">🗺️ Linha do tempo</h2>
+  <div class="timeline">
+
+    <!-- FASE 1 -->
+    <article class="phase" style="--c:var(--impl)">
+      <div class="dot">1</div>
+      <div class="when">Semanas 1–4</div>
+      <div class="card">
+        <div class="card-head">
+          <svg width="54" height="54" viewBox="0 0 54 54" aria-hidden="true">
+            <path d="M27 6c8 5 12 14 11 25l-5 6H21l-5-6C15 20 19 11 27 6z" fill="none" stroke="var(--c)" stroke-width="3" stroke-linejoin="round"/>
+            <circle cx="27" cy="22" r="4" fill="none" stroke="var(--c)" stroke-width="3"/>
+            <path d="M16 31l-6 8 9-1M38 31l6 8-9-1M24 41l3 8 3-8" fill="none" stroke="var(--c)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h3>Implementação</h3>
+        </div>
+        <p class="goal">Criar e verificar o perfil no Google, preenchê-lo por completo e colocar o negócio nos outros mapas e redes.</p>
+
+        <div class="label">Skills necessárias</div>
+        <div class="skill"><code>brief</code><p>Abre a ficha do cliente: nome oficial, endereço, WhatsApp, horários e o que vende.</p>
+          <div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>local-keyword-research</code><p>Descobre como a vizinhança procura o serviço e define a categoria principal do perfil.</p>
+          <div class="badges"><span class="b cred">🪙 créditos</span><span class="b key">🔑 conta LocalSEOData</span></div></div>
+        <div class="skill"><code>gbp-optimization</code><p>Cria e verifica o perfil (em geral por vídeo) e preenche categorias, serviços, fotos e horários.</p>
+          <div class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 conta Google</span></div></div>
+        <div class="skill"><code>review-management</code><p>Monta o kit das primeiras 10 a 20 avaliações: mensagem de WhatsApp, QR Code e respostas-modelo.</p>
+          <div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>gbp-posts</code><p>Prepara o calendário das primeiras 8 semanas: inauguração, cardápio/serviços, ofertas e bastidores.</p>
+          <div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>local-citations</code><p>Cadastra os mesmos dados no Waze, Facebook, Instagram e guias brasileiros, e registra tudo numa planilha.</p>
+          <div class="badges"><span class="b free">✅ grátis (manual)</span><span class="b paid">💳 Whitespark/BrightLocal, opcional</span></div></div>
+        <div class="skill"><code>apple-business-connect</code><p>Coloca o negócio no Apple Mapas, usado por quem tem iPhone.</p>
+          <div class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 Apple ID</span></div></div>
+        <div class="skill"><code>bing-places</code><p>Cadastra no Bing, importando os dados do perfil do Google.</p>
+          <div class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 conta Microsoft</span></div></div>
+
+        <div class="label">Entregáveis</div>
+        <ul>
+          <li>Perfil da Empresa no Google verificado e 100% preenchido</li>
+          <li>Lista de categorias e palavras-chave</li>
+          <li>Kit de avaliações (texto de WhatsApp, cartão com QR Code, respostas)</li>
+          <li>Calendário de posts de 8 semanas</li>
+          <li>Planilha das listagens criadas (Apple, Bing, Waze, redes, guias)</li>
+        </ul>
+
+        <div class="label">Indicadores</div>
+        <ul>
+          <li>Perfil verificado (sim/não) e itens preenchidos</li>
+          <li>Nº de listagens no ar com dados idênticos</li>
+          <li>Primeiras avaliações recebidas</li>
+        </ul>
+
+        <div class="warn"><strong>⚠️ Cuidado no Brasil</strong>
+          Use o nome real, igual ao da fachada. Encher o nome de palavras ("Marmitex Barato SP") leva à suspensão. Para a verificação por vídeo, mostre a placa, a fachada e o interior. Atende só em domicílio? Esconda o endereço (caso 3).</div>
+      </div>
+    </article>
+
+    <!-- FASE 2 -->
+    <article class="phase" style="--c:var(--acomp)">
+      <div class="dot">2</div>
+      <div class="when">Meses 2–3 (revisão mensal)</div>
+      <div class="card">
+        <div class="card-head">
+          <svg width="54" height="54" viewBox="0 0 54 54" aria-hidden="true">
+            <path d="M8 46h40M8 46V8" fill="none" stroke="var(--c)" stroke-width="3" stroke-linecap="round"/>
+            <rect x="14" y="32" width="7" height="12" rx="1.5" fill="none" stroke="var(--c)" stroke-width="3"/>
+            <rect x="26" y="24" width="7" height="20" rx="1.5" fill="none" stroke="var(--c)" stroke-width="3"/>
+            <rect x="38" y="14" width="7" height="30" rx="1.5" fill="none" stroke="var(--c)" stroke-width="3"/>
+            <path d="M13 24l12-8 8 4 12-10" fill="none" stroke="var(--c)" stroke-width="2.5" stroke-dasharray="3 3" stroke-linecap="round"/>
+          </svg>
+          <h3>Acompanhamento e gestão dos resultados</h3>
+        </div>
+        <p class="goal">Medir se o perfil novo está sendo encontrado e manter o ritmo de avaliações e postagens.</p>
+
+        <div class="label">Skills necessárias</div>
+        <div class="skill"><code>local-reporting</code><p>Monta o relatório mensal simples: visualizações, ligações, cliques no WhatsApp e pedidos de rota.</p>
+          <div class="badges"><span class="b cred">🪙 créditos</span><span class="b free">✅ Looker Studio grátis</span></div></div>
+        <div class="skill"><code>geogrid-analysis</code><p>Faz um mapa de calor que mostra em quais ruas do bairro o negócio aparece no Maps.</p>
+          <div class="badges"><span class="b cred">🪙 ~50 créditos (grade 5x5)</span></div></div>
+        <div class="skill"><code>review-management</code><p>Acompanha o ritmo e a nota das avaliações e responde a todas, boas e ruins.</p>
+          <div class="badges"><span class="b free">✅ grátis</span><span class="b cred">🪙 monitoramento, opcional</span></div></div>
+        <div class="skill"><code>gbp-posts</code><p>Mantém pelo menos um post por semana e vê quais temas trazem mais cliques.</p>
+          <div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>brief</code><p>Anota cada medição e decisão, para comparar mês a mês.</p>
+          <div class="badges"><span class="b free">✅ grátis</span></div></div>
+
+        <div class="label">Entregáveis</div>
+        <ul>
+          <li>1º e 2º relatórios mensais</li>
+          <li>Mapa de calor do bairro (ponto de partida)</li>
+          <li>Todas as avaliações respondidas</li>
+        </ul>
+
+        <div class="label">Indicadores</div>
+        <ul>
+          <li>Visualizações do perfil no Maps e na Busca</li>
+          <li>Ligações, cliques no WhatsApp e pedidos de rota</li>
+          <li>Nº de avaliações, nota média e avaliações novas por mês</li>
+          <li>Posição no mapa de calor para a palavra principal</li>
+        </ul>
+
+        <div class="warn"><strong>⚠️ Cuidado no Brasil</strong>
+          Não ofereça desconto ou brinde em troca de avaliação e não compre avaliações: o Google remove e pode punir o perfil. Peça a clientes reais, logo após o atendimento.</div>
+      </div>
+    </article>
+
+    <!-- FASE 3 -->
+    <article class="phase" style="--c:var(--melh)">
+      <div class="dot">3</div>
+      <div class="when">A partir do mês 3</div>
+      <div class="card">
+        <div class="card-head">
+          <svg width="54" height="54" viewBox="0 0 54 54" aria-hidden="true">
+            <path d="M27 8c-9 0-15 7-15 15 0 6 4 9 6 13v4h18v-4c2-4 6-7 6-13 0-8-6-15-15-15z" fill="none" stroke="var(--c)" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M20 45h14M22 50h10" stroke="var(--c)" stroke-width="3" stroke-linecap="round"/>
+            <path d="M6 10l4 3M48 10l-4 3M4 24h5M50 24h-5" stroke="var(--c)" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <h3>Proposição de melhorias</h3>
+        </div>
+        <p class="goal">Usar os números para propor os próximos passos, incluindo o site próprio quando houver verba.</p>
+
+        <div class="label">Skills necessárias</div>
+        <div class="skill"><code>local-competitor-analysis</code><p>Compara com os concorrentes do top 3 do Maps e mostra o que falta para alcançá-los.</p>
+          <div class="badges"><span class="b cred">🪙 créditos</span></div></div>
+        <div class="skill"><code>gbp-optimization</code><p>Ajusta categorias secundárias, serviços, produtos e fotos conforme o que os dados mostraram.</p>
+          <div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>local-landing-pages</code><p>Planeja um site simples de uma página, com o que o cliente precisa ver para chamar no WhatsApp.</p>
+          <div class="badges"><span class="b free">✅ grátis</span><span class="b paid">💳 domínio e hospedagem</span></div></div>
+        <div class="skill"><code>local-schema</code><p>Gera o "código de identificação" (LocalBusiness) que o Google lê no site.</p>
+          <div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>google-search-console-tool</code><p>Com o site no ar, mostra por quais buscas as pessoas o encontram.</p>
+          <div class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 acesso ao Search Console</span></div></div>
+
+        <div class="label">Entregáveis</div>
+        <ul>
+          <li>Lista de melhorias priorizada (o que fazer, por quê e quanto custa)</li>
+          <li>Comparativo com os 3 principais concorrentes</li>
+          <li>Proposta do site de uma página, com o código de identificação</li>
+        </ul>
+
+        <div class="label">Indicadores</div>
+        <ul>
+          <li>Diferença de avaliações e fotos para o top 3</li>
+          <li>Melhora no mapa de calor após os ajustes</li>
+          <li>Com site: cliques vindos do Google</li>
+        </ul>
+
+        <div class="warn"><strong>⚠️ Cuidado no Brasil</strong>
+          O Google encerrou em 2024 os sites gratuitos gerados pelo perfil. O site precisa ser próprio, mesmo que simples, e o link do Instagram não substitui um site.</div>
+      </div>
+    </article>
+  </div>
+
+  <h2 class="sec">🚩 Marcos no caminho</h2>
+  <div class="milestones">
+    <div class="ms-track">
+      <div class="ms" style="--c:var(--impl)"><span class="flag">📝</span><b>Ficha criada</b><small>semana 1</small></div>
+      <div class="ms" style="--c:var(--impl)"><span class="flag">🎯</span><b>Categoria definida</b><small>semana 1</small></div>
+      <div class="ms" style="--c:var(--impl)"><span class="flag">✔️</span><b>Perfil verificado</b><small>semanas 1–3</small></div>
+      <div class="ms" style="--c:var(--impl)"><span class="flag">📍</span><b>Apple, Bing e redes no ar</b><small>semana 4</small></div>
+      <div class="ms" style="--c:var(--impl)"><span class="flag">⭐</span><b>10 avaliações</b><small>semana 4</small></div>
+      <div class="ms" style="--c:var(--acomp)"><span class="flag">📊</span><b>1º relatório</b><small>mês 2</small></div>
+      <div class="ms" style="--c:var(--acomp)"><span class="flag">🌡️</span><b>1º mapa de calor</b><small>mês 2</small></div>
+      <div class="ms" style="--c:var(--acomp)"><span class="flag">🌟</span><b>20 avaliações</b><small>mês 3</small></div>
+      <div class="ms" style="--c:var(--melh)"><span class="flag">💡</span><b>Plano de melhorias</b><small>mês 3</small></div>
+      <div class="ms" style="--c:var(--melh)"><span class="flag">🌐</span><b>Site no ar</b><small>quando houver verba</small></div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <section>
+      <h3>Fases extras incluídas e por quê</h3>
+      <p><strong>Nenhuma fase extra necessária.</strong> Não há nada anterior para diagnosticar: o negócio não tem perfil, site nem redes, e a pesquisa de palavras já faz parte da implementação. Também não há várias unidades para escalar.</p>
+    </section>
+    <section>
+      <h3>Legenda dos selos</h3>
+      <div class="legend">
+        <span><span class="b free">✅ grátis</span> sem custo</span>
+        <span><span class="b cred">🪙 créditos</span> consome créditos de dados (LocalSEOData)</span>
+        <span><span class="b paid">💳 ferramenta paga</span> assinatura ou serviço pago</span>
+        <span><span class="b key">🔑 conta/acesso</span> precisa de login ou permissão</span>
+      </div>
+    </section>
+    <section>
+      <h3>Lembrete</h3>
+      <p><code>brief</code> guarda o histórico de cada cliente, para retomar de onde parou.</p>
+      <p><code>dispatch</code> escolhe quais skills carregar em cada pedido.</p>
+    </section>
+  </footer>
+</div></div>

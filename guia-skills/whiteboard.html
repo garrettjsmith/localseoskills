@@ -1,0 +1,628 @@
+<meta charset="utf-8">
+<title>Mapa das Skills de SEO Local</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: quadro branco com grade; um diagrama de fluxo no topo, depois zonas temáticas com post-its em grade fluida. */
+:root{
+  --bg:#f6f8f7; --grid:rgba(40,80,110,.08); --ink:#1d2830; --muted:#4f5d68; --line:#2b3a46;
+  --blue:#1f5da3; --red:#b8392c; --green:#2e7d3c;
+  --paper:#ffffff;
+  --z-meta:#fff1a8; --z-gbp:#d6eaff; --z-site:#dcf3d9; --z-aut:#ffdfe6; --z-ia:#e8defd;
+  --z-ads:#ffe3c4; --z-diag:#d3f1ec; --z-esp:#f1e2cf; --z-tool:#e7ebf0;
+  --t-free-bg:#dff3e2; --t-free-fg:#1f6a2e;
+  --t-cred-bg:#fff0c7; --t-cred-fg:#7a5300;
+  --t-paid-bg:#ffe0dc; --t-paid-fg:#9c2a1e;
+  --t-acct-bg:#dde9fb; --t-acct-fg:#1c4f8c;
+  --shadow:rgba(30,40,50,.14);
+  --hand:"Marker Felt","Chalkboard SE","Segoe Print","Bradley Hand","Comic Sans MS",cursive;
+  --text:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1b2023; --grid:rgba(200,220,235,.06); --ink:#e9edf0; --muted:#aab6bf; --line:#cfd8de;
+  --blue:#7fb3ee; --red:#f08a7d; --green:#8fd39a; --paper:#262c30;
+  --z-meta:#4a4322; --z-gbp:#1f3550; --z-site:#24402a; --z-aut:#4b2832; --z-ia:#342b52;
+  --z-ads:#4a3420; --z-diag:#1d403b; --z-esp:#43362a; --z-tool:#30363d;
+  --t-free-bg:#1f3d26; --t-free-fg:#a6e3b0; --t-cred-bg:#463a14; --t-cred-fg:#f5d77c;
+  --t-paid-bg:#4d2420; --t-paid-fg:#ffb3a8; --t-acct-bg:#1e3452; --t-acct-fg:#a9cbf5;
+  --shadow:rgba(0,0,0,.45); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#1b2023; --grid:rgba(200,220,235,.06); --ink:#e9edf0; --muted:#aab6bf; --line:#cfd8de;
+  --blue:#7fb3ee; --red:#f08a7d; --green:#8fd39a; --paper:#262c30;
+  --z-meta:#4a4322; --z-gbp:#1f3550; --z-site:#24402a; --z-aut:#4b2832; --z-ia:#342b52;
+  --z-ads:#4a3420; --z-diag:#1d403b; --z-esp:#43362a; --z-tool:#30363d;
+  --t-free-bg:#1f3d26; --t-free-fg:#a6e3b0; --t-cred-bg:#463a14; --t-cred-fg:#f5d77c;
+  --t-paid-bg:#4d2420; --t-paid-fg:#ffb3a8; --t-acct-bg:#1e3452; --t-acct-fg:#a9cbf5;
+  --shadow:rgba(0,0,0,.45); color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background-color:var(--bg); color:var(--ink); font-family:var(--text); font-size:15px; line-height:1.5;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px;
+}
+.wrap{max-width:1240px; margin:0 auto; padding-block:28px 56px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:flex; flex-direction:column; gap:40px}
+h1,h2,h3{font-family:var(--hand); font-weight:700; text-wrap:balance; margin:0}
+h1{font-size:clamp(2rem,5vw,3.2rem); line-height:1.1; color:var(--blue)}
+h1 .u{background:linear-gradient(transparent 70%, var(--z-meta) 70%)}
+.intro{display:flex; flex-direction:column; gap:12px; max-width:68ch}
+.intro p{margin:0; font-size:1.05rem}
+.intro strong{color:var(--red)}
+code{font-family:var(--mono); font-size:.86em}
+a{color:var(--blue)}
+a:focus-visible{outline:3px solid var(--blue); outline-offset:2px; border-radius:4px}
+
+/* navegação */
+nav ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:8px}
+nav a{display:inline-flex; gap:6px; align-items:center; text-decoration:none; color:var(--ink);
+  padding:5px 12px; border:2px solid var(--line); background:var(--zc,var(--paper));
+  border-radius:255px 15px 225px 15px/15px 225px 15px 255px; font-size:.9rem}
+nav a:hover{transform:rotate(-1deg)}
+nav b{font-variant-numeric:tabular-nums; color:var(--muted); font-weight:600}
+
+/* diagrama */
+.board-fig{margin:0; display:flex; flex-direction:column; gap:10px}
+.board-fig h2{font-size:1.7rem}
+.scroll{overflow-x:auto; padding:6px 0 10px}
+.scroll svg{display:block; width:100%; min-width:820px; height:auto; color:var(--line)}
+figcaption{color:var(--muted); font-size:.92rem; max-width:80ch}
+.hint{display:none; font-size:.82rem; color:var(--muted)}
+@media (max-width:860px){.hint{display:block}}
+
+/* legenda */
+.legend{display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center; font-size:.9rem;
+  padding:12px 16px; border:2px dashed var(--line); border-radius:12px 22px 14px 26px; background:var(--paper)}
+.legend strong{font-family:var(--hand); font-size:1.1rem}
+
+/* zonas */
+.zone{--zc:var(--paper); display:flex; flex-direction:column; gap:16px; padding:20px 18px 24px;
+  border:2.5px dashed var(--line); border-radius:28px 10px 34px 14px/14px 30px 12px 26px; position:relative}
+.zone-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 14px}
+.zone-head h2{font-size:clamp(1.5rem,3.4vw,2rem); padding:0 10px; background:var(--zc);
+  border-radius:6px 14px 8px 12px; box-shadow:2px 3px 0 var(--shadow)}
+.zone-head p{margin:0; color:var(--muted); flex:1 1 280px; min-width:0}
+.count{font-family:var(--hand); color:var(--red); font-size:1.05rem; white-space:nowrap}
+.notes{display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,268px),1fr)); gap:22px 20px}
+
+/* post-it */
+.note{background:var(--zc); color:var(--ink); padding:14px 15px 14px; min-width:0;
+  box-shadow:3px 5px 0 var(--shadow); border-radius:3px 3px 14px 3px;
+  display:flex; flex-direction:column; gap:10px; transform:rotate(var(--r,0deg)); position:relative}
+.note:nth-child(3n+1){--r:-.7deg} .note:nth-child(3n+2){--r:.5deg} .note:nth-child(3n){--r:-.25deg}
+.note::before{content:""; position:absolute; top:-9px; left:50%; width:62px; height:18px; transform:translateX(-50%) rotate(-3deg);
+  background:var(--grid); border:1px solid var(--grid); backdrop-filter:blur(1px); opacity:.9}
+.note header{display:flex; gap:10px; align-items:flex-start}
+.ic{font-size:1.7rem; line-height:1; flex:none; width:2.2rem; height:2.2rem; display:grid; place-items:center;
+  background:var(--paper); border:2px solid var(--line); border-radius:50% 46% 52% 48%/48% 52% 46% 50%}
+.note h3{font-size:1.18rem; line-height:1.2}
+.note header code{display:inline-block; margin-top:2px; color:var(--muted); word-break:break-all}
+.note dl{margin:0; display:flex; flex-direction:column; gap:6px; font-size:.9rem; line-height:1.42}
+.note dl div{display:grid; grid-template-columns:5.6rem 1fr; gap:8px}
+.note dt{font-family:var(--hand); font-weight:700; color:var(--blue); font-size:.92rem}
+.note dd{margin:0; min-width:0}
+.note q{font-style:italic; quotes:"“" "”"}
+.tags{list-style:none; margin:2px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.t{font-size:.78rem; font-weight:600; padding:2px 9px; border-radius:999px 30px 999px 40px; border:1.5px solid currentColor; line-height:1.5}
+.t.free{background:var(--t-free-bg); color:var(--t-free-fg)}
+.t.cred{background:var(--t-cred-bg); color:var(--t-cred-fg)}
+.t.paid{background:var(--t-paid-bg); color:var(--t-paid-fg)}
+.t.acct{background:var(--t-acct-bg); color:var(--t-acct-fg)}
+@media (max-width:420px){.note dl div{grid-template-columns:1fr; gap:0}}
+
+/* glossário */
+.gloss{display:flex; flex-direction:column; gap:14px}
+.gloss h2{font-size:1.8rem}
+.gloss dl{margin:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr)); gap:10px 22px}
+.gloss dl div{padding:8px 0; border-bottom:2px dotted var(--grid)}
+.gloss dt{font-family:var(--hand); font-weight:700; color:var(--red); font-size:1.05rem}
+.gloss dd{margin:0; font-size:.9rem}
+footer{color:var(--muted); font-size:.85rem}
+@media (prefers-reduced-motion:reduce){nav a:hover{transform:none}}
+</style>
+
+<div class="wrap">
+
+<header class="intro">
+  <h1><span class="u">Mapa das Skills</span> de SEO Local</h1>
+  <p><strong>SEO local</strong> é o trabalho de fazer um negócio aparecer quando alguém da região procura por ele: no Google, no Google Maps, no Apple Maps, no Bing e nas respostas de IA, como em “dentista perto de mim”.</p>
+  <p>Uma <strong>skill</strong> é um manual que ensina o assistente de IA a fazer uma tarefa específica. Este quadro mostra as <b>39 skills</b> deste repositório: o que cada uma é, para que serve, como pedir e o que ela entrega.</p>
+</header>
+
+<nav aria-label="Zonas do quadro">
+  <ul>
+    <li><a href="#meta" style="--zc:var(--z-meta)">🧠 Organização <b>2</b></a></li>
+    <li><a href="#gbp" style="--zc:var(--z-gbp)">📍 Perfis e mapas <b>6</b></a></li>
+    <li><a href="#site" style="--zc:var(--z-site)">🌐 Site e conteúdo <b>5</b></a></li>
+    <li><a href="#autoridade" style="--zc:var(--z-aut)">⭐ Autoridade e reputação <b>3</b></a></li>
+    <li><a href="#ia" style="--zc:var(--z-ia)">🤖 Busca por IA <b>1</b></a></li>
+    <li><a href="#anuncios" style="--zc:var(--z-ads)">💰 Anúncios <b>3</b></a></li>
+    <li><a href="#diagnostico" style="--zc:var(--z-diag)">🩺 Diagnóstico e relatórios <b>4</b></a></li>
+    <li><a href="#especiais" style="--zc:var(--z-esp)">🏬 Cenários especiais <b>3</b></a></li>
+    <li><a href="#ferramentas" style="--zc:var(--z-tool)">🔧 Ferramentas <b>12</b></a></li>
+    <li><a href="#glossario">📖 Glossário</a></li>
+  </ul>
+</nav>
+
+<!-- ===== Diagrama ===== -->
+<figure class="board-fig">
+  <h2>Como as skills se encaixam</h2>
+  <p class="hint">Arraste o desenho para o lado para ver tudo.</p>
+  <div class="scroll">
+  <svg viewBox="0 0 1100 470" role="img" aria-label="Fluxo: o pedido chega ao dispatch, que escolhe as skills de estratégia; elas pedem dados às skills de ferramenta; o resultado vira relatórios, auditorias e planos; o brief guarda o histórico e a próxima ação.">
+    <defs>
+      <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+        <feDisplacementMap in="SourceGraphic" scale="3.2"/>
+      </filter>
+      <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+        <path d="M1 1 L9 5 L1 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+    </defs>
+
+    <!-- formas com traço "à mão" -->
+    <g filter="url(#rough)" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <!-- pedido (balão) -->
+      <path d="M22 150 Q22 128 44 128 L176 128 Q198 128 198 150 L198 222 Q198 244 176 244 L84 244 L58 268 L62 244 L44 244 Q22 244 22 222 Z" style="fill:var(--paper)"/>
+      <!-- dispatch -->
+      <rect x="246" y="72" width="170" height="116" rx="10" style="fill:var(--z-meta)"/>
+      <!-- brief -->
+      <rect x="246" y="250" width="170" height="116" rx="10" style="fill:var(--z-meta)"/>
+      <!-- estratégia -->
+      <rect x="470" y="40" width="200" height="350" rx="12" style="fill:var(--z-gbp)"/>
+      <!-- ferramenta -->
+      <rect x="722" y="40" width="170" height="350" rx="12" style="fill:var(--z-tool)"/>
+      <!-- entregas: pilha de folhas -->
+      <rect x="944" y="110" width="138" height="190" rx="6" style="fill:var(--z-diag)"/>
+      <rect x="936" y="102" width="138" height="190" rx="6" style="fill:var(--paper)"/>
+    </g>
+
+    <!-- setas -->
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" marker-end="url(#arr)">
+      <path d="M200 175 C220 160 228 140 242 132"/>
+      <path d="M418 128 C440 128 450 132 466 134"/>
+      <path d="M672 215 C690 205 702 205 718 212"/>
+      <path d="M894 205 C908 200 918 198 932 196"/>
+    </g>
+    <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="7 7">
+      <path d="M418 308 C440 308 450 300 466 296" marker-end="url(#arr)" marker-start="url(#arr)"/>
+      <path d="M1004 294 C1004 440 600 455 340 372" marker-end="url(#arr)"/>
+    </g>
+
+    <!-- textos -->
+    <g fill="currentColor" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="13">
+      <text x="110" y="156" text-anchor="middle" font-weight="700" font-size="14">Seu pedido</text>
+      <text x="110" y="182" text-anchor="middle" font-style="italic">“Por que não</text>
+      <text x="110" y="200" text-anchor="middle" font-style="italic">apareço no</text>
+      <text x="110" y="218" text-anchor="middle" font-style="italic">mapa?”</text>
+
+      <text x="331" y="104" text-anchor="middle" font-weight="700" font-size="16" font-family="ui-monospace,Menlo,monospace">dispatch</text>
+      <text x="331" y="130" text-anchor="middle">escolhe só as</text>
+      <text x="331" y="148" text-anchor="middle">2 ou 3 skills</text>
+      <text x="331" y="166" text-anchor="middle">certas</text>
+
+      <text x="331" y="282" text-anchor="middle" font-weight="700" font-size="16" font-family="ui-monospace,Menlo,monospace">brief</text>
+      <text x="331" y="308" text-anchor="middle">memória do cliente:</text>
+      <text x="331" y="326" text-anchor="middle">o que já foi feito e</text>
+      <text x="331" y="344" text-anchor="middle">a próxima ação</text>
+
+      <text x="570" y="72" text-anchor="middle" font-weight="800" font-size="15" letter-spacing="1">ESTRATÉGIA</text>
+      <text x="570" y="92" text-anchor="middle" font-style="italic">o que fazer</text>
+      <g font-family="ui-monospace,Menlo,monospace" font-size="12.5">
+        <text x="490" y="128">gbp-optimization</text>
+        <text x="490" y="152">local-seo-audit</text>
+        <text x="490" y="176">review-management</text>
+        <text x="490" y="200">local-citations</text>
+        <text x="490" y="224">local-landing-pages</text>
+        <text x="490" y="248">geogrid-analysis</text>
+        <text x="490" y="272">lsa-ads</text>
+      </g>
+      <text x="570" y="306" text-anchor="middle">+ outras 18</text>
+      <text x="570" y="336" text-anchor="middle" font-weight="700">25 skills</text>
+      <text x="570" y="356" text-anchor="middle" font-size="12">ensinam o plano</text>
+
+      <text x="807" y="72" text-anchor="middle" font-weight="800" font-size="15" letter-spacing="1">FERRAMENTA</text>
+      <text x="807" y="92" text-anchor="middle" font-style="italic">com qual serviço</text>
+      <g font-size="12.5">
+        <text x="740" y="128">LocalSEOData ★</text>
+        <text x="740" y="152">Local Falcon</text>
+        <text x="740" y="176">Search Console</text>
+        <text x="740" y="200">Analytics</text>
+        <text x="740" y="224">Semrush · Ahrefs</text>
+        <text x="740" y="248">BrightLocal</text>
+        <text x="740" y="272">SerpAPI · …</text>
+      </g>
+      <text x="807" y="336" text-anchor="middle" font-weight="700">12 skills</text>
+      <text x="807" y="356" text-anchor="middle" font-size="12">buscam os dados</text>
+
+      <text x="1005" y="134" text-anchor="middle" font-weight="800" font-size="15" letter-spacing="1">ENTREGAS</text>
+      <text x="954" y="166">📄 relatórios</text>
+      <text x="954" y="192">🩺 auditorias</text>
+      <text x="954" y="218">🗺️ planos de ação</text>
+      <text x="954" y="244">✍️ textos prontos</text>
+      <text x="954" y="270">📑 propostas</text>
+
+      <g font-size="12" font-style="italic" fill="currentColor">
+        <text x="440" y="118" text-anchor="middle">carrega</text>
+        <text x="697" y="196" text-anchor="middle">pede dados</text>
+        <text x="913" y="186" text-anchor="middle">gera</text>
+        <text x="440" y="290" text-anchor="middle">lembra</text>
+        <text x="690" y="460" text-anchor="middle">o brief anota os achados e a próxima ação</text>
+      </g>
+    </g>
+  </svg>
+  </div>
+  <figcaption>O <code>dispatch</code> lê o pedido e escolhe poucas skills. As de <b>estratégia</b> dizem o que fazer; quando precisam de números, chamam as de <b>ferramenta</b> (a padrão é a LocalSEOData ★). O resultado vira entrega, e o <code>brief</code> guarda tudo para a próxima conversa.</figcaption>
+</figure>
+
+<!-- ===== Legenda ===== -->
+<div class="legend" aria-label="Legenda dos selos">
+  <strong>Legenda dos selos:</strong>
+  <span class="t free">✅ grátis / sem pré-requisito</span>
+  <span class="t cred">🪙 usa créditos (serviço pago por consulta)</span>
+  <span class="t paid">💳 ferramenta paga</span>
+  <span class="t acct">🔑 precisa de conta ou acesso</span>
+  <span>Cada post-it traz: <b>O que é · Para que serve · Como usar · O que produz</b>. Frases em itálico são exemplos de pedido.</span>
+</div>
+
+<!-- ===== 1. Organização ===== -->
+<section class="zone" id="meta" style="--zc:var(--z-meta)">
+  <div class="zone-head"><h2>🧠 Organização (meta)</h2><p>As duas skills que coordenam o trabalho: uma escolhe o caminho, a outra lembra de tudo.</p><span class="count">2 skills</span></div>
+  <div class="notes">
+    <article class="note"><header><span class="ic" aria-hidden="true">🗂️</span><div><h3>Caderno do cliente</h3><code>brief</code></div></header>
+      <dl><div><dt>O que é</dt><dd>A memória do trabalho: um arquivo de acompanhamento por unidade do negócio.</dd></div>
+      <div><dt>Serve para</dt><dd>Guardar o que já foi feito, retomar sem recomeçar e registrar a próxima ação.</dd></div>
+      <div><dt>Como usar</dt><dd>Liga sozinha ao citar um cliente: <q>Continue de onde paramos com a Keystone Insurance.</q> Se o cliente é novo, faz 5 perguntas.</dd></div>
+      <div><dt>Produz</dt><dd>Pastas por marca e unidade, com o brief, relatórios, varreduras, rascunhos e alertas.</dd></div></dl>
+      <ul class="tags"><li class="t cred">🪙 auditoria inicial usa LocalSEOData</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🧭</span><div><h3>Guia de roteamento</h3><code>dispatch</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Um mapa de decisão. Não executa o trabalho de SEO.</dd></div>
+      <div><dt>Serve para</dt><dd>Indicar só as 2 ou 3 skills certas para cada pedido, em vez de carregar todas.</dd></div>
+      <div><dt>Como usar</dt><dd>Carregue primeiro quando não souber por onde começar: <q>Por que não apareço no mapa do Google?</q></dd></div>
+      <div><dt>Produz</dt><dd>Uma lista curta de skills e ferramentas, na ordem certa. Nenhum arquivo.</dd></div></dl>
+      <ul class="tags"><li class="t free">✅ sem pré-requisito</li></ul></article>
+  </div>
+</section>
+
+<!-- ===== 2. Perfis e mapas ===== -->
+<section class="zone" id="gbp" style="--zc:var(--z-gbp)">
+  <div class="zone-head"><h2>📍 Perfis no Google e nos mapas</h2><p>A ficha da empresa no Google, na Apple e no Bing, e como medir onde ela aparece no mapa.</p><span class="count">6 skills</span></div>
+  <div class="notes">
+    <article class="note"><header><span class="ic" aria-hidden="true">📍</span><div><h3>Otimizar o Perfil no Google</h3><code>gbp-optimization</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Estratégia para melhorar o Perfil da Empresa no Google (GBP).</dd></div>
+      <div><dt>Serve para</dt><dd>Entrar no map pack. Explica os 3 pilares: proximidade, relevância e prominência.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Por que não apareço no map pack?</q> Diga o tipo de negócio, serviços, área e unidades.</dd></div>
+      <div><dt>Produz</dt><dd>Diagnóstico do perfil, ações em ordem de prioridade e plano por prazo.</dd></div></dl>
+      <ul class="tags"><li class="t free">✅ grátis</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">📝</span><div><h3>Postagens no Perfil</h3><code>gbp-posts</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Estratégia para os posts do GBP: atualização, oferta e evento.</dd></div>
+      <div><dt>Serve para</dt><dd>Mostrar que o perfil está ativo e levar o cliente a ligar ou agendar. Ideal: 2 a 3 por semana.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Preciso de um calendário de GBP posts para minha clínica.</q></dd></div>
+      <div><dt>Produz</dt><dd>Calendário de 4 semanas, posts prontos (gancho, corpo, chamada) e dicas de fotos.</dd></div></dl>
+      <ul class="tags"><li class="t free">✅ grátis</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🚑</span><div><h3>Perfil suspenso</h3><code>gbp-suspension-recovery</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Guia para quando o perfil no Google é suspenso, desativado ou fica em análise.</dd></div>
+      <div><dt>Serve para</dt><dd>Achar a causa (a mais comum: palavra-chave no nome), corrigir e pedir a reativação.</dd></div>
+      <div><dt>Como usar</dt><dd><q>O Google suspendeu meu perfil de empresa. O que eu faço?</q> Tenha alvará ou conta de luz à mão.</dd></div>
+      <div><dt>Produz</dt><dd>Plano de recuperação em 5 etapas, checklist de prevenção e prazos (3 a 7 dias úteis).</dd></div></dl>
+      <ul class="tags"><li class="t free">✅ grátis</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🍎</span><div><h3>Empresa no Apple Maps</h3><code>apple-business-connect</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Consultora para o mundo Apple (Maps, Siri, Wallet) pelo Apple Business Connect.</dd></div>
+      <div><dt>Serve para</dt><dd>Reivindicar o perfil, criar Showcases (como posts) e corrigir dados vindos de agregadores.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Como configuro o Apple Business Connect?</q></dd></div>
+      <div><dt>Produz</dt><dd>Guia passo a passo: dados, categorias, fotos, botões de ação e erros a evitar.</dd></div></dl>
+      <ul class="tags"><li class="t acct">🔑 Apple ID (grátis)</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🔎</span><div><h3>Empresa no Bing</h3><code>bing-places</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Estratégia para o Bing Places: Bing, Bing Maps, Copilot e Windows.</dd></div>
+      <div><dt>Serve para</dt><dd>Cadastrar, verificar e otimizar a empresa onde há pouca concorrência.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Importe meu perfil do Google para o Bing.</q> Revise a cada trimestre.</dd></div>
+      <div><dt>Produz</dt><dd>Roteiro para reivindicar e importar, e checklist de NAP, categorias e fotos.</dd></div></dl>
+      <ul class="tags"><li class="t acct">🔑 conta Microsoft (grátis)</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🗺️</span><div><h3>Mapa de calor do ranking</h3><code>geogrid-analysis</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Leitura de um geogrid: grade de pontos no mapa com a sua posição em cada ponto.</dd></div>
+      <div><dt>Serve para</dt><dd>Ver onde você aparece e onde some, com ARP, ATRP e SoLV, e quem domina cada zona.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Explique meu ARP e meu SoLV.</q> Informe palavra-chave, grade e endereço.</dd></div>
+      <div><dt>Produz</dt><dd>Relatório da varredura: padrão geográfico, comparação e 3 a 5 ações.</dd></div></dl>
+      <ul class="tags"><li class="t cred">🪙 50 a 162 créditos por varredura</li></ul></article>
+  </div>
+</section>
+
+<!-- ===== 3. Site e conteúdo ===== -->
+<section class="zone" id="site" style="--zc:var(--z-site)">
+  <div class="zone-head"><h2>🌐 Site e conteúdo</h2><p>Da pesquisa de palavras até a página pronta. A ordem natural é: palavras → estratégia → roteiro → páginas → schema.</p><span class="count">5 skills</span></div>
+  <div class="notes">
+    <article class="note"><header><span class="ic" aria-hidden="true">🔤</span><div><h3>Palavras-chave locais</h3><code>local-keyword-research</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Estratégia para descobrir o que as pessoas digitam, ou perguntam à IA, ao buscar um negócio local.</dd></div>
+      <div><dt>Serve para</dt><dd>Listar buscas como “serviço + cidade”, “perto de mim” e problemas (“cano estourado”).</dd></div>
+      <div><dt>Como usar</dt><dd><q>Quais palavras “perto de mim” devo atacar?</q> Informe serviços, cidades e concorrentes.</dd></div>
+      <div><dt>Produz</dt><dd>Mapa de palavras-chave: volume, dificuldade, intenção, página de destino e prioridade.</dd></div></dl>
+      <ul class="tags"><li class="t cred">🪙 LocalSEOData (conta e créditos)</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🧩</span><div><h3>Estratégia de conteúdo</h3><code>local-content-strategy</code></div></header>
+      <dl><div><dt>O que é</dt><dd>A ponte entre a lista de palavras e a produção de conteúdo.</dd></div>
+      <div><dt>Serve para</dt><dd>Agrupar palavras parecidas e escolher o formato de cada grupo: página, GBP, blog, FAQ ou nada.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Tenho esta lista de palavras-chave. Que conteúdo devo criar?</q></dd></div>
+      <div><dt>Produz</dt><dd>Documento com grupos, páginas por prioridade, palavras para o geogrid e ordem em 4 fases.</dd></div></dl>
+      <ul class="tags"><li class="t free">✅ grátis</li><li class="t acct">🔑 precisa da lista de palavras</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">📋</span><div><h3>Roteiros de conteúdo</h3><code>local-content-briefs</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Monta um brief: o roteiro completo do que escrever numa página.</dd></div>
+      <div><dt>Serve para</dt><dd>Definir assuntos, profundidade, lugares citados e perguntas a responder.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Faça um brief da página de encanador de emergência em Phoenix.</q></dd></div>
+      <div><dt>Produz</dt><dd>Brief com palavra principal, 8 a 10 perguntas do leitor, títulos (H1, H2, H3) e checklist.</dd></div></dl>
+      <ul class="tags"><li class="t free">✅ grátis</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🏙️</span><div><h3>Páginas locais</h3><code>local-landing-pages</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Estratégia para páginas de cidade, bairro ou unidade com valor real, sem cópias que só trocam a cidade.</dd></div>
+      <div><dt>Serve para</dt><dd>Criar páginas de unidade, de área atendida e de “serviço + cidade”.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Crie páginas de cidade para minha empresa de encanamento.</q></dd></div>
+      <div><dt>Produz</dt><dd>Modelos de URL, título e H1, roteiro de seções, mapa de links internos e exemplos de schema.</dd></div></dl>
+      <ul class="tags"><li class="t free">✅ grátis</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🏷️</span><div><h3>Dados estruturados</h3><code>local-schema</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Código escondido no site (JSON-LD) que conta ao Google quem é a empresa.</dd></div>
+      <div><dt>Serve para</dt><dd>Fazer o site confirmar o que o GBP diz. Trata várias unidades e SAB.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Crie o schema LocalBusiness para o meu site.</q></dd></div>
+      <div><dt>Produz</dt><dd>Código JSON-LD pronto e a lista de erros da validação.</dd></div></dl>
+      <ul class="tags"><li class="t free">✅ grátis (testes do Google)</li></ul></article>
+  </div>
+</section>
+
+<!-- ===== 4. Autoridade e reputação ===== -->
+<section class="zone" id="autoridade" style="--zc:var(--z-aut)">
+  <div class="zone-head"><h2>⭐ Autoridade e reputação</h2><p>O que a internet diz sobre a empresa: cadastros em diretórios, links de sites da região e avaliações de clientes.</p><span class="count">3 skills</span></div>
+  <div class="notes">
+    <article class="note"><header><span class="ic" aria-hidden="true">📇</span><div><h3>Citações e NAP</h3><code>local-citations</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Estratégia para criar e limpar citações: menções de nome, endereço e telefone.</dd></div>
+      <div><dt>Serve para</dt><dd>Corrigir dados diferentes entre sites, tirar duplicatas e preencher diretórios que faltam.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Minhas citações estão consistentes?</q> Informe o NAP exato.</dd></div>
+      <div><dt>Produz</dt><dd>Auditoria com total de citações, precisão do NAP, o que corrigir e plano por prioridade.</dd></div></dl>
+      <ul class="tags"><li class="t cred">🪙 auditoria: 50 créditos</li><li class="t paid">💳 construir: Whitespark ou BrightLocal</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🔗</span><div><h3>Links locais</h3><code>local-link-building</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Estratégia para ganhar links de sites da região: jornal, associação, escola.</dd></div>
+      <div><dt>Serve para</dt><dd>Aumentar a autoridade do site e mostrar que a empresa é daquela região.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Como conseguir link da câmara de comércio?</q></dd></div>
+      <div><dt>Produz</dt><dd>Plano de onde buscar links, como abordar e o que evitar (como comprar links).</dd></div></dl>
+      <ul class="tags"><li class="t cred">🪙 LocalSEOData</li><li class="t paid">💳 Ahrefs (opcional)</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">⭐</span><div><h3>Avaliações</h3><code>review-management</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Estratégia para gerar, responder e acompanhar avaliações.</dd></div>
+      <div><dt>Serve para</dt><dd>Ganhar avaliações honestas todo mês. Avaliação recente pesa mais que o total.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Como respondo a esta avaliação negativa?</q></dd></div>
+      <div><dt>Produz</dt><dd>Comparação com concorrentes, plano de pedidos, modelos de resposta e metas de 90 dias.</dd></div></dl>
+      <ul class="tags"><li class="t cred">🪙 LocalSEOData</li><li class="t acct">🔑 conta GBP p/ denunciar falsas</li></ul></article>
+  </div>
+</section>
+
+<!-- ===== 5. IA ===== -->
+<section class="zone" id="ia" style="--zc:var(--z-ia)">
+  <div class="zone-head"><h2>🤖 Busca por IA</h2><p>Ser citado quando alguém pergunta a uma IA qual é o melhor negócio da cidade. Tema novo, que muda rápido.</p><span class="count">1 skill</span></div>
+  <div class="notes">
+    <article class="note"><header><span class="ic" aria-hidden="true">🤖</span><div><h3>Busca local com IA</h3><code>ai-local-search</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Estratégia para aparecer em AI Overviews, AI Mode, ChatGPT, Gemini, Perplexity e Grok.</dd></div>
+      <div><dt>Serve para</dt><dd>Ser recomendado pela IA, melhorando schema, avaliações, site e GBP. Mede o SAIV.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Como faço minha clínica aparecer nas respostas do ChatGPT?</q></dd></div>
+      <div><dt>Produz</dt><dd>Plano de ação com prioridades e o que acompanhar em cada plataforma.</dd></div></dl>
+      <ul class="tags"><li class="t free">✅ estratégia grátis</li><li class="t paid">💳 medir: Local Falcon</li></ul></article>
+  </div>
+</section>
+
+<!-- ===== 6. Anúncios ===== -->
+<section class="zone" id="anuncios" style="--zc:var(--z-ads)">
+  <div class="zone-head"><h2>💰 Anúncios</h2><p>Três jeitos de pagar para aparecer: por clique na busca, por clique no mapa ou por contato recebido.</p><span class="count">3 skills</span></div>
+  <div class="notes">
+    <article class="note"><header><span class="ic" aria-hidden="true">💰</span><div><h3>Google Ads na região</h3><code>local-ppc-ads</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Estratégia para anúncios pagos por clique (PPC) mirando uma região.</dd></div>
+      <div><dt>Serve para</dt><dd>Atrair contatos próximos sem desperdício: raio, palavras negativas e conversões.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Minhas campanhas locais gastam muito com gente de fora da cidade.</q></dd></div>
+      <div><dt>Produz</dt><dd>Plano de campanha completo e checklist semanal de otimização.</dd></div></dl>
+      <ul class="tags"><li class="t acct">🔑 ajuda ter conta Google Ads</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">📌</span><div><h3>Anúncios no mapa</h3><code>local-search-ads</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Estratégia para anúncios “Patrocinado” dentro do map pack, pagos por clique.</dd></div>
+      <div><dt>Serve para</dt><dd>Aparecer no mapa na hora, enquanto o ranking gratuito cresce.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Quero anunciar no mapa do Google para minha clínica.</q></dd></div>
+      <div><dt>Produz</dt><dd>Configuração das campanhas, palavras-chave, lances, negativas e métricas.</dd></div></dl>
+      <ul class="tags"><li class="t acct">🔑 Google Ads + GBP vinculado</li><li class="t paid">💳 orçamento de anúncios</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🛡️</span><div><h3>Anúncios de Serviços Locais</h3><code>lsa-ads</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Especialista em LSA: anúncios no topo com selo “Google Guaranteed”, pagos por lead.</dd></div>
+      <div><dt>Serve para</dt><dd>Mais leads e melhores: elegibilidade, ranking, orçamento e contestação de leads inválidos.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Como melhoro meu ranking nos LSA?</q></dd></div>
+      <div><dt>Produz</dt><dd>Plano de otimização. Prioridade nº 1: atender todas as ligações.</dd></div></dl>
+      <ul class="tags"><li class="t acct">🔑 conta Google Ads (LSA) + GBP em dia</li></ul></article>
+  </div>
+</section>
+
+<!-- ===== 7. Diagnóstico e relatórios ===== -->
+<section class="zone" id="diagnostico" style="--zc:var(--z-diag)">
+  <div class="zone-head"><h2>🩺 Diagnóstico e relatórios</h2><p>Descobrir o que está errado, comparar com os concorrentes e mostrar os resultados ao cliente.</p><span class="count">4 skills</span></div>
+  <div class="notes">
+    <article class="note"><header><span class="ic" aria-hidden="true">🩺</span><div><h3>Auditoria de SEO local</h3><code>local-seo-audit</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Estratégia para revisar toda a presença local: GBP, site, citações, avaliações, links, conteúdo e técnica.</dd></div>
+      <div><dt>Serve para</dt><dd>Descobrir por que o negócio não aparece no Maps e o que corrigir primeiro.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Faça uma auditoria de SEO local para minha clínica.</q></dd></div>
+      <div><dt>Produz</dt><dd>Relatório com nota de 1 a 10, os 3 maiores problemas, ganhos rápidos e plano de ação.</dd></div></dl>
+      <ul class="tags"><li class="t cred">🪙 auditoria completa: 50 créditos</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🥊</span><div><h3>Concorrentes locais</h3><code>local-competitor-analysis</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Roteiro para estudar os concorrentes nas buscas locais.</dd></div>
+      <div><dt>Serve para</dt><dd>Entender por que eles ranqueiam melhor, achar lacunas e spam para denunciar.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Quem está me ultrapassando no Google Maps?</q></dd></div>
+      <div><dt>Produz</dt><dd>Tabela de você contra 3 a 5 rivais, lacunas, spam encontrado e plano por prioridade.</dd></div></dl>
+      <ul class="tags"><li class="t cred">🪙 LocalSEOData</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">📈</span><div><h3>Relatórios de resultado</h3><code>local-reporting</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Estratégia para montar relatórios mensais, trimestrais e anuais que provam resultado.</dd></div>
+      <div><dt>Serve para</dt><dd>Responder: estamos melhorando? O que funcionou? O que fazer agora?</dd></div>
+      <div><dt>Como usar</dt><dd><q>Monte o relatório mensal de SEO local da Clínica X.</q></dd></div>
+      <div><dt>Produz</dt><dd>Estrutura do relatório em linguagem simples, cálculo de ROI e 3 próximos passos.</dd></div></dl>
+      <ul class="tags"><li class="t acct">🔑 acesso aos dados do cliente</li><li class="t cred">🪙 LocalSEOData</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">📑</span><div><h3>Documentos para clientes</h3><code>client-deliverables</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Ensina 6 documentos: auditoria, proposta, concorrência, onboarding, plano de 90 dias e estudo de caso.</dd></div>
+      <div><dt>Serve para</dt><dd>Fechar contratos e provar competência. Inclui faixas de preço e versão com a marca do parceiro.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Monte uma auditoria gratuita para este prospect.</q></dd></div>
+      <div><dt>Produz</dt><dd>Documento em seções, com resumo executivo, nota de saúde e próximo passo claro.</dd></div></dl>
+      <ul class="tags"><li class="t cred">🪙 LocalSEOData (5 créditos por prospect)</li></ul></article>
+  </div>
+</section>
+
+<!-- ===== 8. Cenários especiais ===== -->
+<section class="zone" id="especiais" style="--zc:var(--z-esp)">
+  <div class="zone-head"><h2>🏬 Cenários especiais</h2><p>Quando o negócio foge do padrão de “uma loja com endereço”: redes grandes, quem atende na casa do cliente e automação.</p><span class="count">3 skills</span></div>
+  <div class="notes">
+    <article class="note"><header><span class="ic" aria-hidden="true">🏬</span><div><h3>Várias unidades</h3><code>multi-location-seo</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Estratégia de SEO local para redes de 10 a 500+ unidades.</dd></div>
+      <div><dt>Serve para</dt><dd>Manter a qualidade em todas, em 3 níveis: base, otimização e avançado.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Preciso de SEO local para minha rede de franquias.</q></dd></div>
+      <div><dt>Produz</dt><dd>Plano com níveis, regras de acesso, estrutura de páginas e indicadores por unidade.</dd></div></dl>
+      <ul class="tags"><li class="t paid">💳 LocalSEOData e Local Falcon</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🚐</span><div><h3>Atende na casa do cliente</h3><code>service-area-seo</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Estratégia para SAB: negócios sem loja que vão até o cliente (encanador, eletricista).</dd></div>
+      <div><dt>Serve para</dt><dd>Compensar o endereço oculto: áreas no GBP, uma página por cidade, citações e schema.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Tenho um negócio sem loja, como configuro meu GBP?</q></dd></div>
+      <div><dt>Produz</dt><dd>Plano com a configuração do GBP, a estrutura do site e táticas para ganhar posição.</dd></div></dl>
+      <ul class="tags"><li class="t free">✅ grátis</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">⚙️</span><div><h3>Automação via API</h3><code>gbp-api-automation</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Estratégia para gerenciar muitos perfis do Google por API, sem clicar tela por tela.</dd></div>
+      <div><dt>Serve para</dt><dd>Atualizar dados, postar e vigiar avaliações em 10 a 500+ unidades sem causar suspensão.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Quero automatizar atualizações do GBP para 80 unidades.</q></dd></div>
+      <div><dt>Produz</dt><dd>Roteiro de automação, cuidados contra suspensão, base mestra de unidades e alertas.</dd></div></dl>
+      <ul class="tags"><li class="t acct">🔑 Google Cloud + OAuth + acesso de gerente</li></ul></article>
+  </div>
+</section>
+
+<!-- ===== 9. Ferramentas ===== -->
+<section class="zone" id="ferramentas" style="--zc:var(--z-tool)">
+  <div class="zone-head"><h2>🔧 Ferramentas</h2><p>Skills que ensinam a IA a usar um serviço externo, quase sempre conectado por MCP. Elas buscam os dados; as skills de estratégia interpretam.</p><span class="count">12 skills</span></div>
+  <div class="notes">
+    <article class="note"><header><span class="ic" aria-hidden="true">🗄️</span><div><h3>Central de dados (padrão)</h3><code>localseodata-tool</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Liga o Claude ao LocalSEOData. É a fonte padrão, consultada antes de qualquer outra.</dd></div>
+      <div><dt>Serve para</dt><dd>Ranking, GBP, avaliações, citações, auditoria, geogrid, palavras-chave, links e IA.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Rode uma auditoria de SEO local da Ace Plumbing em Buffalo, NY.</q></dd></div>
+      <div><dt>Produz</dt><dd>Dados e relatórios: posição, perfil, nota de citações, autoridade (0 a 100), mapa de ranking.</dd></div></dl>
+      <ul class="tags"><li class="t cred">🪙 1 crédito por checagem, 50 por auditoria</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🦅</span><div><h3>Local Falcon</h3><code>local-falcon-tool</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Serviço que mede a posição no Google Maps em vários pontos da região.</dd></div>
+      <div><dt>Serve para</dt><dd>Geogrid recorrente, tendências, concorrentes, Falcon Guard (vigia o GBP) e scans em IA.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Alguém editou meu perfil no Google?</q></dd></div>
+      <div><dt>Produz</dt><dd>Mapa de calor, ARP, ATRP, SoLV e histórico. A leitura fica com a geogrid-analysis.</dd></div></dl>
+      <ul class="tags"><li class="t paid">💳 paga (créditos)</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">📦</span><div><h3>DataForSEO</h3><code>dataforseo-tool</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Serviço de dados do Google em grande volume.</dd></div>
+      <div><dt>Serve para</dt><dd>Trabalhos grandes: centenas de palavras-chave, muitas cidades, perfis de concorrentes.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Preciso do volume de 500 palavras-chave de uma vez.</q></dd></div>
+      <div><dt>Produz</dt><dd>Dados brutos (volume, CPC, pacote local) para outra skill interpretar.</dd></div></dl>
+      <ul class="tags"><li class="t paid">💳 paga por tarefa</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">📸</span><div><h3>Foto da busca ao vivo</h3><code>serpapi-tool</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Mostra a página de resultados (SERP) em tempo real, no Google, Bing e outros.</dd></div>
+      <div><dt>Serve para</dt><dd>Ver mapa, orgânicos, anúncios, PAA e AI Overview de uma busca. Reserva do LocalSEOData.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Quem aparece no mapa para dentista em Orchard Park?</q></dd></div>
+      <div><dt>Produz</dt><dd>Análise rápida da concorrência naquela busca e o próximo passo.</dd></div></dl>
+      <ul class="tags"><li class="t acct">🔑 SerpAPI conectado (MCP)</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🔍</span><div><h3>Semrush</h3><code>semrush-tool</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Plataforma de SEO para palavras-chave e concorrentes.</dd></div>
+      <div><dt>Serve para</dt><dd>Volume, dificuldade e CPC, lacunas contra concorrentes, auditoria do site e posições por cidade.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Quais palavras-chave meu concorrente ranqueia e eu não?</q></dd></div>
+      <div><dt>Produz</dt><dd>Listas de palavras agrupadas, “vitórias rápidas” (posições 11 a 20) e problemas técnicos.</dd></div></dl>
+      <ul class="tags"><li class="t paid">💳 conta paga</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🕸️</span><div><h3>Ahrefs</h3><code>ahrefs-tool</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Ferramenta com o maior banco de dados de links da internet.</dd></div>
+      <div><dt>Serve para</dt><dd>Perfil de links, links do concorrente que você não tem, links perdidos e texto âncora.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Quem faz link para o meu concorrente e não para mim?</q></dd></div>
+      <div><dt>Produz</dt><dd>Leitura do perfil (DR), oportunidades por prioridade e se o problema é mesmo de links.</dd></div></dl>
+      <ul class="tags"><li class="t paid">💳 conta paga</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">📒</span><div><h3>BrightLocal</h3><code>brightlocal-tool</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Serviço de SEO local com conexão oficial (MCP) ao Claude.</dd></div>
+      <div><dt>Serve para</dt><dd>Auditar e construir citações, vigiar avaliações, dar nota ao GBP e fazer relatórios com sua marca.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Onde estou listado? Meu NAP está consistente?</q></dd></div>
+      <div><dt>Produz</dt><dd>Lista de citações, nota do NAP (acima de 90% é bom), duplicatas e resumo de avaliações.</dd></div></dl>
+      <ul class="tags"><li class="t paid">💳 conta paga</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">✨</span><div><h3>Whitespark</h3><code>whitespark-tool</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Serviço de SEO local usado pelo painel. Não tem MCP: você traz os dados.</dd></div>
+      <div><dt>Serve para</dt><dd>Achar e construir citações, pedir avaliações (Reputation Builder) e ver ranking num ponto.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Quais diretórios meus concorrentes têm e eu não?</q></dd></div>
+      <div><dt>Produz</dt><dd>Prioridade de diretórios, checklist de construção e plano de campanha de avaliações.</dd></div></dl>
+      <ul class="tags"><li class="t paid">💳 conta paga</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🕵️</span><div><h3>Espião de LSA</h3><code>lsa-spy-tool</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Acompanha os rankings dos Anúncios de Serviços Locais (LSA).</dd></div>
+      <div><dt>Serve para</dt><dd>Ver quem lidera num mercado, quem subiu ou caiu em 7 ou 30 dias e se vale entrar.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Quem está ranqueando nos LSA de encanador em Austin?</q></dd></div>
+      <div><dt>Produz</dt><dd>Análise do mercado comparada às suas avaliações, com o próximo passo.</dd></div></dl>
+      <ul class="tags"><li class="t acct">🔑 LSA Spy conectado (MCP)</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🔭</span><div><h3>Google Search Console</h3><code>google-search-console-tool</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Ferramenta gratuita do Google com dados reais de cliques e impressões do site.</dd></div>
+      <div><dt>Serve para</dt><dd>Ver buscas e páginas, CTR, indexação e velocidade. Não mostra cliques do mapa.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Minha página está indexada?</q></dd></div>
+      <div><dt>Produz</dt><dd>Análise dos dados reais. Exemplo: CTR baixo indica título fraco.</dd></div></dl>
+      <ul class="tags"><li class="t free">✅ grátis</li><li class="t acct">🔑 acesso ao GSC (MCP)</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">📊</span><div><h3>Google Analytics 4</h3><code>google-analytics-tool</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Ferramenta gratuita que mostra o que as pessoas fazem no site.</dd></div>
+      <div><dt>Serve para</dt><dd>Tráfego por unidade, conversões (ligações, formulários), origem das visitas e tráfego do GBP.</dd></div>
+      <div><dt>Como usar</dt><dd><q>Quantos leads meu site está gerando?</q></dd></div>
+      <div><dt>Produz</dt><dd>Análise de visitas, engajamento e conversão, e o que fazer depois.</dd></div></dl>
+      <ul class="tags"><li class="t free">✅ grátis</li><li class="t acct">🔑 conta GA4 + conversões configuradas</li></ul></article>
+
+    <article class="note"><header><span class="ic" aria-hidden="true">🐸</span><div><h3>Screaming Frog</h3><code>screaming-frog-tool</code></div></header>
+      <dl><div><dt>O que é</dt><dd>Programa que visita todas as páginas do site, como o Google, e anota os problemas.</dd></div>
+      <div><dt>Serve para</dt><dd>Auditoria técnica: títulos, duplicados, links quebrados, páginas órfãs, schema e NAP.</dd></div>
+      <div><dt>Como usar</dt><dd>Sem MCP, envie o CSV do rastreio: <q>Analise este CSV: tem conteúdo duplicado?</q></dd></div>
+      <div><dt>Produz</dt><dd>Problemas por prioridade e qual skill corrige cada um.</dd></div></dl>
+      <ul class="tags"><li class="t acct">🔑 programa instalado no computador</li></ul></article>
+  </div>
+</section>
+
+<!-- ===== Glossário ===== -->
+<section class="gloss" id="glossario">
+  <h2>📖 Mini-glossário</h2>
+  <dl>
+    <div><dt>GBP</dt><dd>Google Business Profile: o Perfil da Empresa no Google (antigo Google Meu Negócio).</dd></div>
+    <div><dt>Map pack / local pack</dt><dd>O mapa com os 3 negócios em destaque numa busca local.</dd></div>
+    <div><dt>NAP</dt><dd>Name, Address, Phone: nome, endereço e telefone. Devem ser iguais em todo lugar.</dd></div>
+    <div><dt>Citação</dt><dd>Qualquer menção online ao NAP da empresa, como num diretório (Yelp, Facebook).</dd></div>
+    <div><dt>SAB</dt><dd>Service Area Business: empresa que atende no local do cliente, sem loja aberta.</dd></div>
+    <div><dt>Schema / JSON-LD</dt><dd>Dados estruturados: código no site que descreve a empresa ao Google.</dd></div>
+    <div><dt>Geogrid</dt><dd>Grade de pontos no mapa que mostra a posição da empresa em cada ponto (mapa de calor).</dd></div>
+    <div><dt>ARP · ATRP · SoLV</dt><dd>Posição média na grade · média das 3 melhores posições · % de pontos em que você aparece.</dd></div>
+    <div><dt>SAIV</dt><dd>Share of AI Voice: % de respostas de IA que citam o negócio.</dd></div>
+    <div><dt>SERP</dt><dd>A página de resultados de uma busca.</dd></div>
+    <div><dt>AI Overview · PAA</dt><dd>Resumo de IA no topo do Google · “As pessoas também perguntam”.</dd></div>
+    <div><dt>PPC · CPC · CTR · CPL</dt><dd>Pagamento por clique · custo por clique · taxa de cliques · custo por lead.</dd></div>
+    <div><dt>LSA</dt><dd>Local Services Ads: anúncios de serviços locais, pagos por lead, com selo “Google Guaranteed”.</dd></div>
+    <div><dt>Lead</dt><dd>Contato de um possível cliente: ligação, mensagem ou agendamento.</dd></div>
+    <div><dt>Backlink · DR</dt><dd>Link de outro site para o seu · nota de autoridade do site (0 a 100) da Ahrefs.</dd></div>
+    <div><dt>KD · MSV</dt><dd>Dificuldade da palavra-chave · volume mensal de buscas.</dd></div>
+    <div><dt>MCP</dt><dd>A “ponte” que liga o Claude a uma ferramenta externa.</dd></div>
+    <div><dt>API · OAuth</dt><dd>Porta para um programa conversar com outro · forma segura de dar esse acesso.</dd></div>
+    <div><dt>UTM</dt><dd>Código no link que identifica de onde veio a visita.</dd></div>
+    <div><dt>Crédito</dt><dd>Unidade de cobrança de serviços pagos por consulta (LocalSEOData, Local Falcon).</dd></div>
+    <div><dt>White-label</dt><dd>Entregar o material com a marca da agência parceira.</dd></div>
+    <div><dt>SOW</dt><dd>Scope of Work: escopo de trabalho de uma proposta.</dd></div>
+  </dl>
+</section>
+
+<footer>Baseado nos 39 guias em <code>guia-skills/</code> deste repositório.</footer>
+</div>

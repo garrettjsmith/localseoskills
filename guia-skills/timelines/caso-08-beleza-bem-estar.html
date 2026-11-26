@@ -1,0 +1,369 @@
+<meta charset="utf-8">
+<title>Caso 8 · Beleza e bem-estar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #f6f8f7;
+    --grid: rgba(31, 93, 163, 0.07);
+    --card: #ffffff;
+    --ink: #1d2422;
+    --muted: #55605c;
+    --line: #d9e0dd;
+    --shadow: 0 2px 10px rgba(20, 40, 30, 0.08);
+    --p0: #7a5af8;
+    --p1: #1f5da3;
+    --p2: #2e7d3c;
+    --p3: #c2410c;
+    --code-bg: #eef2f0;
+    --free-bg: #dcf3e2;  --free-ink: #1c5c2b;
+    --cred-bg: #fdf0c8;  --cred-ink: #6d5200;
+    --paid-bg: #fbe0dc;  --paid-ink: #8a2414;
+    --key-bg:  #e4e9fb;  --key-ink:  #26408f;
+    --warn-bg: #fff6e5;  --warn-line: #f0c36d;
+    --hand: "Marker Felt", "Chalkboard SE", "Segoe Print", "Bradley Hand", cursive;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #151a18;
+      --grid: rgba(160, 200, 255, 0.06);
+      --card: #1f2624;
+      --ink: #e8eeeb;
+      --muted: #a9b5b0;
+      --line: #34403c;
+      --shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+      --p0: #a48bff;
+      --p1: #6aa5ea;
+      --p2: #6cc27c;
+      --p3: #f28a5a;
+      --code-bg: #2a3431;
+      --free-bg: #1d3a26;  --free-ink: #a6e3b5;
+      --cred-bg: #3d3313;  --cred-ink: #f1d77d;
+      --paid-bg: #42201b;  --paid-ink: #f6b1a4;
+      --key-bg:  #222c4a;  --key-ink:  #b3c4fa;
+      --warn-bg: #33291a;  --warn-line: #8a6a2c;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 24px 24px;
+    color: var(--ink);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 20px 16px 48px; }
+  a { color: var(--p1); }
+  .back { display: inline-block; font-size: 14px; text-decoration: none; margin-bottom: 14px; }
+  .back:hover { text-decoration: underline; }
+  h1, h2, h3 { font-family: var(--hand); font-weight: normal; line-height: 1.2; }
+  h1 { font-size: clamp(26px, 4.5vw, 40px); margin: 0 0 10px; }
+  h1 .num { color: var(--p3); }
+  h2 { font-size: 26px; margin: 34px 0 14px; }
+  .hero { background: var(--card); border-radius: 14px; box-shadow: var(--shadow); padding: 20px 22px; }
+  .hero p { margin: 6px 0; max-width: 820px; }
+  .hero b { color: var(--muted); font-weight: 600; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .chip { background: var(--code-bg); border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; font-size: 13px; }
+
+  /* Timeline */
+  .tl-scroll { overflow-x: auto; padding-bottom: 6px; }
+  .timeline { position: relative; display: grid; gap: 18px; }
+  .phase { position: relative; --c: var(--p1); }
+  .phase.p0 { --c: var(--p0); } .phase.p1 { --c: var(--p1); }
+  .phase.p2 { --c: var(--p2); } .phase.p3 { --c: var(--p3); }
+  .node {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: var(--c); color: #fff;
+    display: grid; place-items: center;
+    font-family: var(--hand); font-size: 22px;
+    border: 4px solid var(--bg); box-shadow: 0 0 0 2px var(--c);
+    position: relative; z-index: 2;
+  }
+  .pcard {
+    background: var(--card); border-radius: 14px; box-shadow: var(--shadow);
+    border-top: 6px solid var(--c); padding: 16px 16px 14px;
+  }
+  .phead { display: flex; gap: 12px; align-items: center; }
+  .phead svg { flex: 0 0 auto; width: 54px; height: 54px; color: var(--c); }
+  .phead h3 { margin: 0; font-size: 22px; color: var(--c); }
+  .when { display: inline-block; font-size: 12.5px; font-weight: 600; color: var(--c); border: 1.5px solid var(--c); border-radius: 999px; padding: 1px 10px; margin-top: 4px; }
+  .goal { margin: 12px 0 10px; font-size: 14.5px; }
+  .label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 14px 0 6px; }
+  .skill { border: 1px solid var(--line); border-left: 4px solid var(--c); border-radius: 10px; padding: 8px 10px; margin-bottom: 8px; background: var(--card); }
+  code { font: 600 13px/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: var(--code-bg); padding: 2px 6px; border-radius: 5px; }
+  .skill p { margin: 5px 0 6px; font-size: 13.5px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 5px; }
+  .b { font-size: 11.5px; border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
+  .b.free { background: var(--free-bg); color: var(--free-ink); }
+  .b.cred { background: var(--cred-bg); color: var(--cred-ink); }
+  .b.paid { background: var(--paid-bg); color: var(--paid-ink); }
+  .b.key  { background: var(--key-bg);  color: var(--key-ink); }
+  ul.list { margin: 0; padding-left: 18px; font-size: 13.5px; }
+  ul.list li { margin: 2px 0; }
+  .warn { background: var(--warn-bg); border: 1px dashed var(--warn-line); border-radius: 10px; padding: 8px 10px; font-size: 13px; margin-top: 12px; }
+  .warn ul { margin: 4px 0 0; padding-left: 18px; }
+
+  /* Mobile: vertical, line on the left */
+  .timeline::before {
+    content: ""; position: absolute; z-index: 1;
+    left: 21px; top: 10px; bottom: 10px; width: 6px; border-radius: 3px;
+    background: linear-gradient(var(--p0), var(--p1), var(--p2), var(--p3));
+  }
+  .phase { padding-left: 62px; }
+  .phase .node { position: absolute; left: 1px; top: 0; }
+
+  /* Desktop: horizontal */
+  @media (min-width: 900px) {
+    .timeline { grid-template-columns: repeat(4, minmax(240px, 1fr)); min-width: 1000px; gap: 16px; }
+    .timeline::before {
+      left: 4%; right: 4%; top: 20px; bottom: auto; height: 7px; width: auto;
+      background: linear-gradient(90deg, var(--p0), var(--p1), var(--p2), var(--p3));
+    }
+    .phase { padding-left: 0; padding-top: 64px; }
+    .phase .node { left: 50%; top: 0; transform: translateX(-50%); }
+  }
+
+  /* Milestones */
+  .miles { background: var(--card); border-radius: 14px; box-shadow: var(--shadow); padding: 16px; }
+  .miles ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+  .miles li { position: relative; display: flex; align-items: center; gap: 8px; border: 1.5px solid var(--c, var(--line)); border-radius: 10px; padding: 6px 10px; font-size: 13.5px; flex: 1 1 200px; }
+  .miles li .flag { width: 22px; height: 22px; flex: 0 0 auto; color: var(--c); }
+  .miles li small { display: block; color: var(--muted); font-size: 12px; }
+  .m0 { --c: var(--p0); } .m1 { --c: var(--p1); } .m2 { --c: var(--p2); } .m3 { --c: var(--p3); }
+
+  footer { margin-top: 34px; display: grid; gap: 16px; }
+  @media (min-width: 900px) { footer { grid-template-columns: 1.4fr 1fr; } }
+  .fbox { background: var(--card); border-radius: 14px; box-shadow: var(--shadow); padding: 16px 18px; font-size: 14px; }
+  .fbox h3 { margin: 0 0 8px; font-size: 21px; }
+  .fbox p { margin: 6px 0; }
+  .legend { display: grid; gap: 6px; }
+  .tip { grid-column: 1 / -1; }
+</style>
+
+<div class="wrap">
+  <a class="back" href="index.html">← Todos os casos</a>
+
+  <header class="hero">
+    <h1><span class="num">Caso 8</span> · Beleza, estética e bem-estar com agendamento</h1>
+    <p><b>Situação:</b> o negócio vive de agenda cheia e de Instagram, mas quem procura no Google nem sempre chega a marcar horário.</p>
+    <p><b>Objetivo:</b> transformar a busca no Google em horário marcado e aproveitar as fotos e o "boca a boca" digital das clientes.</p>
+    <div class="chips">
+      <span class="chip">💇 Salão</span><span class="chip">💈 Barbearia</span><span class="chip">💅 Esmalteria</span>
+      <span class="chip">✨ Estúdio de sobrancelha</span><span class="chip">🏋️ Academia</span>
+      <span class="chip">🧘 Estúdio de pilates</span><span class="chip">🖋️ Tatuagem</span>
+    </div>
+  </header>
+
+  <h2>Linha do tempo do trabalho</h2>
+  <div class="tl-scroll">
+  <div class="timeline">
+
+    <!-- Fase 0 -->
+    <section class="phase p0">
+      <div class="node">0</div>
+      <div class="pcard">
+        <div class="phead">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 14l14-6 16 6 16-6v40l-16 6-16-6-14 6z" opacity=".45"/>
+            <circle cx="34" cy="30" r="10"/><path d="M41 37l9 9"/>
+            <path d="M34 25v5l3 2"/>
+          </svg>
+          <div><h3>Diagnóstico inicial</h3><span class="when">Semana 1</span></div>
+        </div>
+        <p class="goal">Entender o ponto de partida: que serviços vender, o que as pessoas buscam e até onde o negócio aparece no mapa hoje.</p>
+        <div class="label">Skills necessárias</div>
+        <div class="skill"><code>brief</code>
+          <p>Abre a ficha do cliente: serviços, profissionais, link de agendamento (Trinks, Booksy, WhatsApp) e Instagram.</p>
+          <div class="badges"><span class="b free">✅ grátis</span><span class="b cred">🪙 auditoria inicial opcional</span></div></div>
+        <div class="skill"><code>local-keyword-research</code>
+          <p>Levanta buscas como "barbearia aberta domingo", "pilates perto de mim" e "luzes loiras Pinheiros".</p>
+          <div class="badges"><span class="b cred">🪙 créditos</span></div></div>
+        <div class="skill"><code>geogrid-analysis</code>
+          <p>Faz o mapa "antes": em quais ruas e quarteirões o negócio aparece e onde some.</p>
+          <div class="badges"><span class="b cred">🪙 créditos (5x5 = 50)</span></div></div>
+        <div class="label">Entregáveis</div>
+        <ul class="list">
+          <li>Ficha do cliente aberta e preenchida</li>
+          <li>Lista de serviços e buscas, em ordem de prioridade</li>
+          <li>Mapa de calor de partida, para comparar depois</li>
+        </ul>
+        <div class="label">Indicadores</div>
+        <ul class="list">
+          <li>Posição média no mapa (ARP) e fatia do mapa (SoLV)</li>
+          <li>Total de avaliações e quantas chegam por mês</li>
+        </ul>
+        <div class="warn">⚠️ <b>Cuidado no Brasil:</b> o volume de busca por bairro costuma vir baixo ou zerado nas ferramentas. Isso é normal e não quer dizer que ninguém procura.</div>
+      </div>
+    </section>
+
+    <!-- Fase 1 -->
+    <section class="phase p1">
+      <div class="node">1</div>
+      <div class="pcard">
+        <div class="phead">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="24" y="14" width="34" height="34" rx="4"/><path d="M24 24h34M32 9v9M50 9v9"/>
+            <path d="M33 35l5 5 10-10"/>
+            <circle cx="10" cy="44" r="5"/><circle cx="10" cy="56" r="5"/><path d="M14 41l12-11M14 59l12-11" opacity=".7"/>
+          </svg>
+          <div><h3>Implementação</h3><span class="when">Semanas 2–5</span></div>
+        </div>
+        <p class="goal">Deixar o Perfil da Empresa no Google pronto para virar horário marcado, com serviços, botão de agendar e muitas fotos reais.</p>
+        <div class="label">Skills necessárias</div>
+        <div class="skill"><code>gbp-optimization</code>
+          <p>Configura categorias, a lista de serviços (corte, progressiva, design de sobrancelha), o botão Agendar e as fotos de trabalhos e do espaço.</p>
+          <div class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 acesso ao perfil</span></div></div>
+        <div class="skill"><code>review-management</code>
+          <p>Monta a rotina de pedir avaliação logo após o atendimento, incentivando citar o profissional e o serviço.</p>
+          <div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="skill"><code>gbp-posts</code>
+          <p>Cria o calendário de 4 semanas: trabalhos recentes, horários livres da semana e pacotes.</p>
+          <div class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 acesso ao perfil</span></div></div>
+        <div class="label">Entregáveis</div>
+        <ul class="list">
+          <li>Perfil com serviços, horários e botão Agendar ligado ao link certo</li>
+          <li>Roteiro de pedido de avaliação (mensagem e QR code no balcão)</li>
+          <li>Modelos de resposta a avaliações</li>
+          <li>Calendário de posts do primeiro mês</li>
+        </ul>
+        <div class="label">Indicadores</div>
+        <ul class="list">
+          <li>Perfil completo (serviços, horários, fotos)</li>
+          <li>Fotos novas por semana</li>
+          <li>Primeiras avaliações citando profissional e serviço</li>
+        </ul>
+        <div class="warn">⚠️ <b>Cuidado no Brasil:</b>
+          <ul>
+            <li>Procedimento estético feito por profissional de saúde segue as regras do conselho da profissão (veja o caso 5).</li>
+            <li>Academia: horário por modalidade e "aberto 24h" precisam bater com a realidade.</li>
+            <li>Nada de brinde ou desconto em troca de avaliação. WhatsApp só para quem já é cliente, com contato obtido legalmente (LGPD).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fase 2 -->
+    <section class="phase p2">
+      <div class="node">2</div>
+      <div class="pcard">
+        <div class="phead">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8 8v48h48"/>
+            <path d="M16 44l11-12 9 7 16-19"/><path d="M44 20h8v8"/>
+            <path d="M50 44l2 4 4 .6-3 3 .7 4.4-3.7-2-3.7 2 .7-4.4-3-3 4-.6z" opacity=".7"/>
+          </svg>
+          <div><h3>Acompanhamento e gestão dos resultados</h3><span class="when">Mês 2 em diante · mensal</span></div>
+        </div>
+        <p class="goal">Manter avaliações e posts em ritmo constante e mostrar ao dono, todo mês, se a busca está virando agenda.</p>
+        <div class="label">Skills necessárias</div>
+        <div class="skill"><code>review-management</code>
+          <p>Mantém o ritmo mensal de avaliações e garante resposta a todas, boas e ruins.</p>
+          <div class="badges"><span class="b free">✅ grátis</span><span class="b cred">🪙 monitoramento opcional</span></div></div>
+        <div class="skill"><code>gbp-posts</code>
+          <p>Segue a rotina de 1 a 3 posts por semana, com horários livres e trabalhos do dia.</p>
+          <div class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 acesso ao perfil</span></div></div>
+        <div class="skill"><code>geogrid-analysis</code>
+          <p>Repete a varredura com a mesma grade e compara com o mapa "antes".</p>
+          <div class="badges"><span class="b cred">🪙 créditos</span></div></div>
+        <div class="skill"><code>local-reporting</code>
+          <p>Monta o relatório mensal em linguagem simples: avaliações, cliques em Agendar, ligações e mapa.</p>
+          <div class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 dados do perfil</span></div></div>
+        <div class="skill"><code>brief</code>
+          <p>Anota o que foi feito no mês e o próximo passo mais importante.</p>
+          <div class="badges"><span class="b free">✅ grátis</span></div></div>
+        <div class="label">Entregáveis</div>
+        <ul class="list">
+          <li>Relatório mensal para o dono do negócio</li>
+          <li>Mapa de calor comparado com o mês anterior</li>
+          <li>Avaliações respondidas em dia</li>
+        </ul>
+        <div class="label">Indicadores</div>
+        <ul class="list">
+          <li>Avaliações novas por mês e nota média</li>
+          <li>Cliques em Agendar, WhatsApp, ligações e rotas</li>
+          <li>ARP e SoLV no mapa</li>
+          <li>Posts publicados por semana</li>
+        </ul>
+        <div class="warn">⚠️ <b>Cuidado no Brasil:</b> muito agendamento acontece pelo direct do Instagram ou pelo WhatsApp e não aparece no Google. Pergunte "como nos conheceu?" na hora de marcar.</div>
+      </div>
+    </section>
+
+    <!-- Fase 3 -->
+    <section class="phase p3">
+      <div class="node">3</div>
+      <div class="pcard">
+        <div class="phead">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M32 6a16 16 0 0 0-9 29c2 2 3 4 3 7h12c0-3 1-5 3-7a16 16 0 0 0-9-29z"/>
+            <path d="M26 48h12M28 54h8"/>
+            <path d="M8 20h5M51 20h5M13 8l3 3M51 8l-3 3" opacity=".7"/>
+          </svg>
+          <div><h3>Proposição de melhorias</h3><span class="when">A cada 3 meses</span></div>
+        </div>
+        <p class="goal">Ver o que os concorrentes com mais avaliações fazem diferente e ajustar o plano para ganhar mais quarteirões.</p>
+        <div class="label">Skills necessárias</div>
+        <div class="skill"><code>local-competitor-analysis</code>
+          <p>Compara com 3 a 5 rivais: avaliações, fotos, serviços e categorias. Também aponta spam, como nome cheio de palavras-chave.</p>
+          <div class="badges"><span class="b cred">🪙 créditos</span></div></div>
+        <div class="skill"><code>geogrid-analysis</code>
+          <p>Mostra as zonas fracas do mapa e quais concorrentes dominam cada uma.</p>
+          <div class="badges"><span class="b cred">🪙 créditos</span></div></div>
+        <div class="skill"><code>local-keyword-research</code>
+          <p>Acha buscas novas ou da estação (noivas, formatura, verão) e serviços que vale destacar.</p>
+          <div class="badges"><span class="b cred">🪙 créditos</span></div></div>
+        <div class="skill"><code>gbp-optimization</code>
+          <p>Aplica as mudanças no perfil: novos serviços, categoria secundária, fotos e descrição.</p>
+          <div class="badges"><span class="b free">✅ grátis</span><span class="b key">🔑 acesso ao perfil</span></div></div>
+        <div class="label">Entregáveis</div>
+        <ul class="list">
+          <li>Comparativo com os concorrentes</li>
+          <li>Plano com as 2 ou 3 maiores lacunas</li>
+          <li>Lista de serviços e calendário de posts revisados</li>
+        </ul>
+        <div class="label">Indicadores</div>
+        <ul class="list">
+          <li>Diferença de avaliações para o líder do bairro</li>
+          <li>Zonas do mapa que passaram a mostrar o negócio</li>
+        </ul>
+        <div class="warn">⚠️ <b>Cuidado no Brasil:</b> só denuncie spam de concorrente com prova. E não copie fotos dos outros: use apenas trabalhos seus, com autorização de quem aparece na imagem.</div>
+      </div>
+    </section>
+
+  </div>
+  </div>
+
+  <h2>Marcos do caminho</h2>
+  <div class="miles">
+    <ol>
+      <li class="m0"><svg class="flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 21V4M5 4h12l-3 4 3 4H5"/></svg><span>Ficha aberta e mapa "antes"<small>Semana 1</small></span></li>
+      <li class="m1"><svg class="flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 21V4M5 4h12l-3 4 3 4H5"/></svg><span>Botão Agendar funcionando<small>Semana 2</small></span></li>
+      <li class="m1"><svg class="flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 21V4M5 4h12l-3 4 3 4H5"/></svg><span>Lista de serviços completa e 1º post de horários livres<small>Semana 3</small></span></li>
+      <li class="m1"><svg class="flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 21V4M5 4h12l-3 4 3 4H5"/></svg><span>Primeiras avaliações citando o profissional<small>Semanas 4–5</small></span></li>
+      <li class="m2"><svg class="flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 21V4M5 4h12l-3 4 3 4H5"/></svg><span>1º relatório mensal e mapa comparado<small>Mês 2</small></span></li>
+      <li class="m3"><svg class="flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 21V4M5 4h12l-3 4 3 4H5"/></svg><span>Comparativo de concorrentes e novo plano<small>Mês 3</small></span></li>
+    </ol>
+  </div>
+
+  <footer>
+    <div class="fbox">
+      <h3>Fases extras incluídas e por quê</h3>
+      <p><b>0 · Diagnóstico inicial:</b> o caso pede pesquisa de buscas e um mapa de alcance no bairro. Fazer isso antes diz quais serviços e termos entram no perfil e cria a "foto do antes", sem a qual não dá para provar resultado.</p>
+      <p>Nenhuma outra fase extra: é um negócio de uma unidade, então não há fase de escala, e a manutenção já faz parte do acompanhamento mensal.</p>
+    </div>
+    <div class="fbox">
+      <h3>Legenda dos selos</h3>
+      <div class="legend">
+        <span><span class="b free">✅ grátis</span> sem custo, só orientação</span>
+        <span><span class="b cred">🪙 créditos</span> usa créditos de uma ferramenta de dados (LocalSEOData)</span>
+        <span><span class="b paid">💳 ferramenta paga</span> exige assinatura (não usada neste caso)</span>
+        <span><span class="b key">🔑 conta/acesso</span> precisa de login ou acesso ao perfil do cliente</span>
+      </div>
+    </div>
+    <div class="fbox tip">
+      💡 <b>Lembrete:</b> a <code>brief</code> guarda o histórico do cliente de uma sessão para outra, e a <code>dispatch</code> escolhe quais skills usar quando a situação mistura vários casos.
+    </div>
+  </footer>
+</div>

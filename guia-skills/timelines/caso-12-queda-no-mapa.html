@@ -1,0 +1,313 @@
+<meta charset="utf-8">
+<title>Caso 12 · Queda no mapa</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --bg:#f6f8f7; --grid:rgba(30,60,50,.07); --card:#ffffff; --ink:#1d2421; --muted:#55615c;
+    --shadow:0 2px 10px rgba(20,40,30,.08),0 1px 2px rgba(20,40,30,.06);
+    --line:#d9e0dc;
+    --c0:#7a5af8; --c1:#1f5da3; --c2:#2e7d3c; --c3:#c2410c; --cx:#0e7490;
+    --free-bg:#e3f4e6; --free-fg:#1e6b2e;
+    --cred-bg:#fdf1d6; --cred-fg:#8a5a00;
+    --paid-bg:#fde4e4; --paid-fg:#a12a2a;
+    --key-bg:#e2ecfb; --key-fg:#1f4f8f;
+    --warn-bg:#fff4e5; --warn-bd:#f0b45a;
+    --hand:"Marker Felt","Chalkboard SE","Segoe Print","Bradley Hand",cursive;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#141a18; --grid:rgba(200,230,215,.05); --card:#1e2623; --ink:#e7eeea; --muted:#a9b6b0;
+      --shadow:0 2px 12px rgba(0,0,0,.45); --line:#34403b;
+      --c0:#a48dfb; --c1:#6aa3e6; --c2:#6cc47c; --c3:#f08a4b; --cx:#3fb6cf;
+      --free-bg:#1f3a25; --free-fg:#9fe0ad;
+      --cred-bg:#3b3015; --cred-fg:#f3d084;
+      --paid-bg:#45201f; --paid-fg:#f6aaa6;
+      --key-bg:#1c2d45; --key-fg:#a9c8f5;
+      --warn-bg:#3a2c16; --warn-bd:#b9822f;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background-color:var(--bg);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:24px 24px;color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:1320px;margin:0 auto;padding:20px 16px 48px}
+  a{color:var(--c1)}
+  .back{display:inline-block;margin-bottom:14px;text-decoration:none;font-weight:600}
+  h1,h2,h3{font-family:var(--hand);font-weight:normal;line-height:1.2;margin:0}
+  header.top{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:22px 24px;border-top:6px solid var(--c0)}
+  header.top .num{font-family:var(--hand);color:var(--c0);font-size:1.1rem}
+  header.top h1{font-size:2rem;margin:4px 0 10px}
+  header.top p{margin:6px 0;max-width:900px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .chip{background:var(--bg);border:1px dashed var(--line);border-radius:999px;padding:4px 12px;font-size:.88rem}
+  .sec-title{font-size:1.5rem;margin:30px 0 14px}
+
+  /* Timeline */
+  .timeline{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+  .timeline::before{content:"";position:absolute;top:30px;left:12.5%;right:12.5%;height:8px;border-radius:8px;
+    background:linear-gradient(90deg,var(--c0),var(--c1) 35%,var(--c2) 65%,var(--c3))}
+  .phase{position:relative;display:flex;flex-direction:column;gap:12px}
+  .node{position:relative;z-index:1;align-self:center;width:64px;height:64px;border-radius:50%;background:var(--card);
+    border:6px solid var(--pc);color:var(--pc);display:flex;align-items:center;justify-content:center;
+    font-family:var(--hand);font-size:1.6rem;box-shadow:var(--shadow)}
+  .card{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:16px;border-top:5px solid var(--pc)}
+  .phead{display:flex;gap:12px;align-items:center}
+  .phead svg{flex:0 0 64px;width:64px;height:64px}
+  .phead h3{font-size:1.35rem;color:var(--pc)}
+  .when{display:inline-block;margin-top:3px;font-size:.82rem;font-weight:600;background:var(--bg);border-radius:6px;padding:1px 8px;color:var(--muted)}
+  .extra{font-size:.72rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--pc);border:1px solid var(--pc);border-radius:6px;padding:0 6px;margin-left:6px}
+  .goal{margin:12px 0 4px;font-weight:600}
+  .lbl{font-family:var(--hand);font-size:1.05rem;margin:14px 0 6px;color:var(--pc)}
+  .skill{border:1px solid var(--line);border-left:4px solid var(--pc);border-radius:10px;padding:8px 10px;margin-bottom:8px;background:var(--card)}
+  .skill code{font:600 .86rem ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--bg);padding:1px 6px;border-radius:5px;word-break:break-word}
+  .skill p{margin:4px 0 6px;font-size:.9rem}
+  .pills{display:flex;flex-wrap:wrap;gap:4px}
+  .pill{font-size:.75rem;font-weight:600;border-radius:999px;padding:1px 8px;white-space:nowrap}
+  .free{background:var(--free-bg);color:var(--free-fg)} .cred{background:var(--cred-bg);color:var(--cred-fg)}
+  .paid{background:var(--paid-bg);color:var(--paid-fg)} .key{background:var(--key-bg);color:var(--key-fg)}
+  ul.list{margin:0;padding-left:18px;font-size:.9rem} ul.list li{margin:2px 0}
+  .warn{margin-top:12px;background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:10px;padding:8px 10px;font-size:.88rem}
+
+  /* Marcos */
+  .miles{position:relative;display:flex;gap:10px;overflow-x:auto;padding:26px 4px 8px}
+  .miles::before{content:"";position:absolute;left:0;right:0;top:12px;border-top:3px dashed var(--line)}
+  .mile{position:relative;flex:1 0 140px;background:var(--card);box-shadow:var(--shadow);border-radius:10px;padding:10px;border-bottom:4px solid var(--pc);font-size:.88rem}
+  .mile::before{content:"";position:absolute;top:-20px;left:14px;width:14px;height:14px;border-radius:50%;background:var(--pc);border:3px solid var(--bg)}
+  .mile b{display:block;font-family:var(--hand);font-weight:normal;color:var(--pc);font-size:1rem}
+
+  footer{margin-top:30px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  footer .card{border-top-color:var(--cx)}
+  footer h3{font-size:1.2rem;margin-bottom:6px;color:var(--cx)}
+  footer p,footer li{font-size:.9rem}
+
+  @media (max-width:899px){
+    .timeline{grid-template-columns:1fr;padding-left:52px;gap:24px}
+    .timeline::before{top:0;bottom:0;left:22px;right:auto;width:7px;height:auto;
+      background:linear-gradient(180deg,var(--c0),var(--c1) 35%,var(--c2) 65%,var(--c3))}
+    .node{position:absolute;left:-56px;top:0;width:50px;height:50px;border-width:5px;font-size:1.3rem}
+    .miles{flex-direction:column;overflow:visible;padding:0 0 0 30px}
+    .miles::before{left:10px;right:auto;top:0;bottom:0;border-top:0;border-left:3px dashed var(--line)}
+    .mile{flex:none}
+    .mile::before{top:12px;left:-27px}
+    footer{grid-template-columns:1fr}
+    header.top h1{font-size:1.6rem}
+  }
+</style>
+
+<div class="wrap">
+  <a class="back" href="index.html">← Todos os casos</a>
+
+  <header class="top">
+    <div class="num">Caso 12</div>
+    <h1>O concorrente passou na frente ou caí no mapa</h1>
+    <p><strong>Situação:</strong> o negócio aparecia entre os 3 primeiros do Google Maps e caiu, ou um concorrente novo dominou o bairro, e as ligações diminuíram.</p>
+    <p><strong>Objetivo:</strong> descobrir por que caiu, corrigir o que pesa mais primeiro e voltar ao topo, acompanhando a recuperação com números.</p>
+    <div class="chips">
+      <span class="chip">🦷 Dentista de bairro</span>
+      <span class="chip">🔧 Desentupidora</span>
+      <span class="chip">🍕 Pizzaria com delivery</span>
+      <span class="chip">🚗 Oficina mecânica</span>
+      <span class="chip">🐾 Pet shop</span>
+    </div>
+  </header>
+
+  <h2 class="sec-title">Linha do tempo do trabalho</h2>
+
+  <section class="timeline">
+
+    <!-- FASE 0 -->
+    <article class="phase" style="--pc:var(--c0)">
+      <div class="node">0</div>
+      <div class="card">
+        <div class="phead">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="4" y="10" width="40" height="40" rx="6" fill="none" stroke="currentColor" style="color:var(--pc)" stroke-width="3"/>
+            <path d="M4 26h40M4 38h40M18 10v40M30 10v40" stroke="var(--pc)" stroke-width="1.5" opacity=".35"/>
+            <path d="M24 30c-4-5-6-8-6-11a6 6 0 0 1 12 0c0 3-2 6-6 11z" fill="var(--pc)"/>
+            <circle cx="44" cy="42" r="10" fill="var(--card)" stroke="var(--pc)" stroke-width="4"/>
+            <path d="M51 49l9 9" stroke="var(--pc)" stroke-width="5" stroke-linecap="round"/>
+            <path d="M40 40l3 4 4-6" stroke="var(--pc)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          </svg>
+          <div>
+            <h3>Diagnóstico da queda <span class="extra">extra</span></h3>
+            <span class="when">Semanas 1–2</span>
+          </div>
+        </div>
+        <p class="goal">Entender por que o negócio caiu e quem passou na frente, antes de mexer em qualquer coisa.</p>
+
+        <div class="lbl">Skills necessárias</div>
+        <div class="skill"><code>brief</code><p>Registra quando a queda começou e em quais buscas.</p><div class="pills"><span class="pill free">✅ grátis</span></div></div>
+        <div class="skill"><code>local-seo-audit</code><p>Check-up de perfil, site, avaliações, listagens e links, com problemas por ordem de impacto.</p><div class="pills"><span class="pill cred">🪙 créditos (~50)</span></div></div>
+        <div class="skill"><code>localseodata-tool</code><p>Puxa os dados da auditoria, do mapa e dos concorrentes.</p><div class="pills"><span class="pill cred">🪙 créditos</span><span class="pill key">🔑 conta</span></div></div>
+        <div class="skill"><code>geogrid-analysis</code><p>Mapa de calor rua por rua: onde você ainda aparece e onde o rival domina.</p><div class="pills"><span class="pill cred">🪙 50–162 créditos</span></div></div>
+        <div class="skill"><code>local-competitor-analysis</code><p>Compara item a item com quem está na frente e aponta spam a denunciar.</p><div class="pills"><span class="pill cred">🪙 créditos</span></div></div>
+        <div class="skill"><code>google-search-console-tool</code><p>Mostra se o site perdeu cliques ou teve erro de indexação.</p><div class="pills"><span class="pill free">✅ grátis</span><span class="pill key">🔑 acesso ao GSC</span></div></div>
+        <div class="skill"><code>google-analytics-tool</code><p>Confere se as visitas e os contatos pelo site caíram junto.</p><div class="pills"><span class="pill free">✅ grátis</span><span class="pill key">🔑 acesso ao GA4</span></div></div>
+        <div class="skill"><code>screaming-frog-tool</code><p>Varre o site atrás de erros técnicos (páginas quebradas, NAP errado).</p><div class="pills"><span class="pill paid">💳 programa (versão grátis limitada)</span></div></div>
+        <div class="skill"><code>client-deliverables</code><p>Junta tudo em relatório de diagnóstico e plano de ação priorizado.</p><div class="pills"><span class="pill free">✅ grátis</span></div></div>
+
+        <div class="lbl">Entregáveis</div>
+        <ul class="list">
+          <li>Auditoria com prioridades</li>
+          <li>Mapa de calor de posição (linha de base)</li>
+          <li>Comparativo com o concorrente</li>
+          <li>Diagnóstico do site</li>
+          <li>Plano de recuperação apresentado ao cliente</li>
+        </ul>
+        <div class="lbl">Indicadores</div>
+        <ul class="list"><li>SoLV e ARP iniciais</li><li>Posição nas buscas principais</li><li>Ligações e cliques antes x depois da queda</li></ul>
+        <div class="warn">⚠️ <strong>Cuidado no Brasil:</strong> quedas logo após grandes atualizações do Google atingem muita gente ao mesmo tempo. Compare com os concorrentes antes de mudar tudo.</div>
+      </div>
+    </article>
+
+    <!-- FASE 1 -->
+    <article class="phase" style="--pc:var(--c1)">
+      <div class="node">1</div>
+      <div class="card">
+        <div class="phead">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="6" y="34" width="30" height="24" rx="4" fill="none" stroke="var(--pc)" stroke-width="3"/>
+            <path d="M6 42h30" stroke="var(--pc)" stroke-width="2"/>
+            <circle cx="14" cy="50" r="2.5" fill="var(--pc)"/><path d="M20 50h10" stroke="var(--pc)" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M40 10a10 10 0 0 0-9 14L14 41l5 5 17-17a10 10 0 0 0 14-9l-6 3-5-5 3-6z" fill="var(--pc)" opacity=".9"/>
+            <path d="M46 40l4 4 9-10" stroke="var(--c2)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>
+            <h3>Implementação</h3>
+            <span class="when">Semanas 2–8</span>
+          </div>
+        </div>
+        <p class="goal">Executar o plano de recuperação na ordem de impacto: perfil, avaliações, listagens e site.</p>
+
+        <div class="lbl">Skills necessárias</div>
+        <div class="skill"><code>gbp-optimization</code><p>Corrige categorias, serviços, fotos e dados do perfil; orienta a denúncia de spam do rival.</p><div class="pills"><span class="pill free">✅ grátis</span><span class="pill key">🔑 acesso ao perfil</span></div></div>
+        <div class="skill"><code>review-management</code><p>Retoma o ritmo de avaliações novas e responde todas, para fechar a distância do rival.</p><div class="pills"><span class="pill free">✅ grátis</span></div></div>
+        <div class="skill"><code>local-citations</code><p>Arruma nome, endereço e telefone divergentes e limpa listagens duplicadas.</p><div class="pills"><span class="pill free">✅ grátis</span></div></div>
+        <div class="skill"><code>gbp-posts</code><p>Volta a postar toda semana para mostrar que o perfil está ativo.</p><div class="pills"><span class="pill free">✅ grátis</span></div></div>
+        <div class="skill"><code>local-schema</code><p>Corrige os dados estruturados do site para baterem com o perfil.</p><div class="pills"><span class="pill free">✅ grátis</span></div></div>
+
+        <div class="lbl">Entregáveis</div>
+        <ul class="list">
+          <li>Perfil corrigido (categoria principal certa)</li>
+          <li>Denúncia de spam enviada, com prints</li>
+          <li>Campanha de pedidos de avaliação rodando</li>
+          <li>Listagens principais com NAP idêntico</li>
+          <li>Erros técnicos do site corrigidos</li>
+        </ul>
+        <div class="lbl">Indicadores</div>
+        <ul class="list"><li>Avaliações novas por mês</li><li>Itens do plano concluídos</li><li>Listagens corrigidas</li></ul>
+        <div class="warn">⚠️ <strong>Cuidado no Brasil:</strong> concorrente com nome cheio de palavras-chave ou endereço falso pode ser denunciado em "Sugerir alteração" ou no formulário de spam do Perfil da Empresa. Nunca copie a prática: o seu perfil pode ser suspenso.</div>
+      </div>
+    </article>
+
+    <!-- FASE 2 -->
+    <article class="phase" style="--pc:var(--c2)">
+      <div class="node">2</div>
+      <div class="card">
+        <div class="phead">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M8 8v48h50" fill="none" stroke="var(--pc)" stroke-width="3" stroke-linecap="round"/>
+            <path d="M12 22l10 14 10-6 9 10 15-22" fill="none" stroke="var(--pc)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="22" r="3" fill="var(--c3)"/>
+            <circle cx="56" cy="18" r="4" fill="var(--pc)"/>
+            <path d="M48 46h8M48 51h5" stroke="var(--pc)" stroke-width="2.5" stroke-linecap="round" opacity=".6"/>
+          </svg>
+          <div>
+            <h3>Acompanhamento e gestão dos resultados</h3>
+            <span class="when">Meses 2–4 (mensal)</span>
+          </div>
+        </div>
+        <p class="goal">Medir, mês a mês, se o negócio está voltando ao topo e corrigir a rota cedo.</p>
+
+        <div class="lbl">Skills necessárias</div>
+        <div class="skill"><code>geogrid-analysis</code><p>Repete o mapa de calor e compara com a linha de base.</p><div class="pills"><span class="pill cred">🪙 créditos</span></div></div>
+        <div class="skill"><code>local-falcon-tool</code><p>Varreduras recorrentes, tendência e alerta de edições indevidas no perfil (Falcon Guard).</p><div class="pills"><span class="pill paid">💳 pago</span><span class="pill key">🔑 conta</span></div></div>
+        <div class="skill"><code>google-search-console-tool</code><p>Acompanha cliques, impressões e indexação do site.</p><div class="pills"><span class="pill free">✅ grátis</span><span class="pill key">🔑 acesso</span></div></div>
+        <div class="skill"><code>google-analytics-tool</code><p>Mede contatos vindos do site e do perfil (com link UTM).</p><div class="pills"><span class="pill free">✅ grátis</span><span class="pill key">🔑 acesso</span></div></div>
+        <div class="skill"><code>local-reporting</code><p>Monta o relatório mensal: estamos melhorando, o que funcionou, o que fazer agora.</p><div class="pills"><span class="pill free">✅ grátis</span></div></div>
+        <div class="skill"><code>brief</code><p>Guarda cada varredura e relatório no histórico do cliente.</p><div class="pills"><span class="pill free">✅ grátis</span></div></div>
+
+        <div class="lbl">Entregáveis</div>
+        <ul class="list">
+          <li>Mapa de calor mensal (antes x depois)</li>
+          <li>Relatório mensal em linguagem simples</li>
+          <li>Status da denúncia de spam</li>
+        </ul>
+        <div class="lbl">Indicadores</div>
+        <ul class="list"><li>SoLV (meta: acima de 70% na área próxima)</li><li>ARP caindo (menor é melhor)</li><li>Ligações e rotas do perfil</li><li>Avaliações por mês x concorrente</li></ul>
+        <div class="warn">⚠️ <strong>Cuidado no Brasil:</strong> a recuperação leva semanas. Evite mudar nome, categoria ou endereço várias vezes seguidas; isso pode travar o perfil para nova verificação.</div>
+      </div>
+    </article>
+
+    <!-- FASE 3 -->
+    <article class="phase" style="--pc:var(--c3)">
+      <div class="node">3</div>
+      <div class="card">
+        <div class="phead">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M32 6a16 16 0 0 0-9 29c2 2 3 4 3 7h12c0-3 1-5 3-7A16 16 0 0 0 32 6z" fill="none" stroke="var(--pc)" stroke-width="3.5"/>
+            <path d="M26 48h12M27 54h10" stroke="var(--pc)" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M32 16v14M25 23h14" stroke="var(--pc)" stroke-width="3" stroke-linecap="round"/>
+            <path d="M6 14l5 2M58 14l-5 2M4 30h5M60 30h-5" stroke="var(--pc)" stroke-width="2.5" stroke-linecap="round" opacity=".6"/>
+          </svg>
+          <div>
+            <h3>Proposição de melhorias</h3>
+            <span class="when">Mês 4 em diante (trimestral)</span>
+          </div>
+        </div>
+        <p class="goal">Ir além de recuperar: criar vantagens que o concorrente não copia fácil.</p>
+
+        <div class="lbl">Skills necessárias</div>
+        <div class="skill"><code>local-competitor-analysis</code><p>Refaz o comparativo e mostra onde dá para ultrapassar.</p><div class="pills"><span class="pill cred">🪙 créditos</span></div></div>
+        <div class="skill"><code>local-link-building</code><p>Busca links locais: associação comercial, imprensa, patrocínios, parceiros.</p><div class="pills"><span class="pill free">✅ grátis</span></div></div>
+        <div class="skill"><code>local-content-strategy</code><p>Acha lacunas de conteúdo e escolhe as buscas a reforçar.</p><div class="pills"><span class="pill free">✅ grátis</span></div></div>
+        <div class="skill"><code>local-landing-pages</code><p>Cria páginas de serviço + bairro onde o rival domina.</p><div class="pills"><span class="pill free">✅ grátis</span></div></div>
+        <div class="skill"><code>client-deliverables</code><p>Apresenta o plano dos próximos 90 dias ao cliente.</p><div class="pills"><span class="pill free">✅ grátis</span></div></div>
+
+        <div class="lbl">Entregáveis</div>
+        <ul class="list">
+          <li>Novo comparativo com o concorrente</li>
+          <li>Lista de links locais a conquistar</li>
+          <li>Páginas novas para bairros fracos</li>
+          <li>Plano de 90 dias</li>
+        </ul>
+        <div class="lbl">Indicadores</div>
+        <ul class="list"><li>Links locais conquistados</li><li>Bairros onde o SoLV subiu</li><li>Contatos vindos das páginas novas</li></ul>
+        <div class="warn">⚠️ <strong>Cuidado no Brasil:</strong> não compre links nem crie páginas iguais trocando só o nome do bairro. O Google penaliza as duas coisas.</div>
+      </div>
+    </article>
+  </section>
+
+  <h2 class="sec-title">Marcos do caminho</h2>
+  <section class="miles">
+    <div class="mile" style="--pc:var(--c0)"><b>Semana 1</b>Queda registrada no brief</div>
+    <div class="mile" style="--pc:var(--c0)"><b>Semana 2</b>Auditoria e mapa de calor prontos</div>
+    <div class="mile" style="--pc:var(--c0)"><b>Semana 2</b>Plano aprovado pelo cliente</div>
+    <div class="mile" style="--pc:var(--c1)"><b>Semana 3</b>Perfil corrigido e spam denunciado</div>
+    <div class="mile" style="--pc:var(--c1)"><b>Semana 8</b>Avaliações no ritmo do rival</div>
+    <div class="mile" style="--pc:var(--c2)"><b>Mês 2</b>1º relatório mensal</div>
+    <div class="mile" style="--pc:var(--c2)"><b>Mês 3</b>De volta ao top 3 perto da loja</div>
+    <div class="mile" style="--pc:var(--c3)"><b>Mês 4</b>Plano de 90 dias apresentado</div>
+  </section>
+
+  <footer>
+    <div class="card">
+      <h3>Fases extras incluídas e por quê</h3>
+      <p><strong>0 · Diagnóstico da queda.</strong> Neste caso não dá para implementar nada antes de saber a causa: pode ser um concorrente com spam, uma atualização do Google, um problema no site ou um descuido no perfil. Cada causa pede um remédio diferente, por isso o diagnóstico vem antes.</p>
+    </div>
+    <div class="card">
+      <h3>Legenda dos selos</h3>
+      <div class="pills" style="gap:8px">
+        <span class="pill free">✅ grátis</span>
+        <span class="pill cred">🪙 créditos</span>
+        <span class="pill paid">💳 ferramenta paga</span>
+        <span class="pill key">🔑 precisa de conta/acesso</span>
+      </div>
+      <p>As skills de estratégia são grátis; o custo vem das ferramentas de dados que elas consultam.</p>
+    </div>
+    <div class="card">
+      <h3>Lembrete</h3>
+      <p><code>brief</code> guarda o histórico de cada cliente (o que foi feito, quando e por quê). <code>dispatch</code> escolhe quais skills carregar quando a situação mistura vários casos.</p>
+    </div>
+  </footer>
+</div>
